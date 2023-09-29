@@ -1,0 +1,236 @@
+<?php
+include("../conf/conf.php");
+session_start();
+
+if(isset($_SESSION["idmaster_pa_admin"])){
+	
+	if ($_SESSION["idmaster_pa_admin"]<>"" || $_SESSION["idmaster_pa_admin"]<>null)
+	{
+	?>
+		<script language="JavaScript">
+			document.location='home.php?link=dataemp';
+		</script>
+	<?php	
+	} 
+}
+
+$browser = $_SERVER['HTTP_USER_AGENT'];
+$chrome = '/Chrome/';
+$firefox = '/Firefox/';
+$ie = '/MSIE/';
+if (preg_match($chrome, $browser))
+{
+    $nambrow =  "Chrome/Opera";
+}
+else if (preg_match($firefox, $browser))
+{
+    $nambrow = "Firefox";
+}
+else if (preg_match($ie, $browser))
+{
+    $nambrow = "Ie";
+}
+
+		
+if 	($nambrow=="Ie")
+{
+?>
+	<script language="JavaScript">
+		alert("Browser not Compatible");
+		var brow = confirm("Do you want download recomended browser ?");
+		if (brow == true) 
+		{
+			document.location='https://www.mozilla.org/id/firefox/new/';
+			
+		} 
+		else 
+		{
+			window.location.assign("http://www.google.com")
+		}
+		
+		
+	</script>
+<?php	
+}
+
+?>
+<head>
+	<meta charset="UTF-8">
+	<title>Administrator Performance Appraisal</title>
+	<link rel="icon" type="image/png" href="../img/favicon.PNG">
+	<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+	<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="../login/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link href="../dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+	<link href="../plugins/iCheck/square/blue.css" rel="stylesheet" type="text/css" />
+	
+	<script type="text/javascript"> 
+	function createRequestObject() {
+		var ro;
+		var browser = navigator.appName;
+		if(browser == "Microsoft Internet Explorer")
+		{
+			ro = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		else
+		{
+			ro = new XMLHttpRequest();
+		}
+		 return ro;
+	}
+
+	var xmlhttp = createRequestObject();
+
+	function entercode(event)
+	{
+		if(event.keyCode==13)
+		{
+			cekvalid();
+		}
+	}
+	
+	function cekvalid()
+	{
+		var letterNumber = /^[0-9a-zA-Z\-_]+$/;
+		
+		if(document.getElementById('username').value=='')
+		{
+			alert("Input your NIK");
+			document.getElementById('username').focus();
+		}
+		else if(document.getElementById('password').value=='')
+		{	
+			alert("Input your Password");
+			document.getElementById('password').focus();
+		}
+		else
+		{	
+			var username = document.getElementById('username').value;
+			var password = document.getElementById('password').value;
+			
+			if(password.match(letterNumber) && username.match(letterNumber)) 
+			{
+				document.getElementById('proses').style.display = 'inline';
+				xmlhttp.open("GET", "ceklogin.php?username="+username+"&password="+password, true);
+				xmlhttp.onreadystatechange = function() 
+				{
+					if ((xmlhttp.readyState == 4) && (xmlhttp.status == 200))
+					{
+						// alert(xmlhttp.responseText);
+						var result = xmlhttp.responseText;	
+										
+						if (result==0)
+						{
+							alert("Login Failed");
+							window.location='';
+						}	
+						else
+						{
+							alert("WELCOME!");
+							window.location='home.php?link=dataemp';
+						}
+					}
+				return false;
+				}
+				xmlhttp.send(null);  
+			}
+			else
+			{ 
+				alert("Login Failed"); 
+				return false; 
+			}
+		}
+	}
+	
+	function setlanguange(lang)
+	{
+		<?php
+		$yearcookie = Date ('Y')+1;
+		?>
+		if(lang=="eng")
+		{
+			alert ("Set English Language");
+			
+			document.cookie="bahasa=eng; expires=31 Dec <?php echo $yearcookie ?> 12:00:00 GMT";
+			location.reload(); 
+			
+		}
+		else if(lang=="ind")
+		{
+			alert ("Pilih Bahasa Indonesia");
+			document.cookie="bahasa=idn; expires=31 Dec  <?php echo $yearcookie ?> 12:00:00 GMT";
+			location.reload(); 
+		}
+		
+		
+	}
+
+	//var message="Function right click is Disabled!";
+	function clickIE4(){
+		if(event.button==2){
+		  //alert(message);
+		  return false;
+		}
+	}
+	function clickNS4(e){
+		if(document.layers||document.getElementById&&!document.all){
+		  if(e.which==2||e.which==3){
+			//alert(message);
+			return false;
+		  }
+		}
+	}
+	if(document.layers){
+		document.captureEvents(Event.MOUSEDOWN);
+		document.onmousedown=clickNS4;
+	}else if(document.all&&!document.getElementById){
+		document.onmousedown=clickIE4;
+	}
+	document.oncontextmenu=new Function("return false");
+	</script>
+</head>
+<br><br>
+<style type="text/css">
+.proses {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('../dist/img/ellipsis.gif') 50% 50% no-repeat rgb(249,249,249);
+    opacity: .9;
+}
+</style>
+<div id="proses" class="proses" style="display: none"></div>
+<body class="login-page" style="background-image:url(../img/bg.jpg); background-size:100%;">
+<div class="login-box">
+  <div class="login-box-body" style="opacity:0.95;">
+  <div class="login-logo">
+	<!--<img src="../img/logokpn.png" width="80%">-->
+	<h2>Administrator<br>Performance Appraisal</h2>
+  </div>
+	<p class="login-box-msg">
+		<img src="../img/english.png" style="cursor:pointer;" onClick="setlanguange('eng')"> | 
+		<img src="../img/indo.png" style="cursor:pointer;" onClick="setlanguange('ind')"> 
+	</p>
+	  <div class="form-group has-feedback">
+		<input type="text" class="form-control" id="username" name="username" placeholder="User ID" autofocus>
+		<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+	  </div>
+	  <div class="form-group has-feedback">
+		<input type="password" class="form-control" id="password" name="password"  placeholder="Password" onKeyPress="entercode(event)"/>
+		<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+	  </div>
+	  <div class="row" >
+		
+		<div class="col-xs-12">
+		  <button class="btn btn-danger btn-block btn-flat" onClick="cekvalid()">Sign In</button>
+		</div>
+	  </div>
+  </div>
+</div>
+<script src="../plugins/jQuery/jQuery-2.1.3.min.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="../plugins/iCheck/icheck.min.js" type="text/javascript"></script>
+</body>

@@ -1,0 +1,34 @@
+<?php
+require_once("dbcontroller.php");
+$db_handle = new DBController();
+session_start();
+if(session_is_registered('idmaster_pa'))
+{
+	$user_pa=unserialize($_SESSION[idmaster_pa]);
+	$idmaster=$user_pa[mas];
+}
+
+$qcekgrademaster 	= mysql_query("select k.Kode_Golongan from user u left join $karyawan k on u.username = k.NIK
+where u.id =$idmaster");
+$rcekgrademaster	= mysql_fetch_array($qcekgrademaster);
+
+if(!empty($_POST["keyword"])) {
+if ($idmaster==1||$idmaster==2)
+{
+	$query ="SELECT * FROM $karyawan WHERE Nama_Lengkap like '%" . $_POST["keyword"] . "%' ORDER BY LENGTH(Nama_Lengkap) ASC LIMIT 0,15";
+}
+else
+{
+	$query ="SELECT * FROM $karyawan WHERE Nama_Lengkap like '%" . $_POST["keyword"] . "%' and Kode_Golongan <= '$rcekgrademaster[Kode_Golongan]' ORDER BY LENGTH(Nama_Lengkap) LIMIT 0,15";
+}	
+$result = $db_handle->runQuery($query);
+if(!empty($result)) {
+?>
+<ul id="country-list">
+<?php
+foreach($result as $country) {
+?>
+<li onClick="selectCountry('<?php echo $country["Nama_Lengkap"]. " (".$country["NIK"].")"; ?>');"><?php echo $country["Nama_Lengkap"]. " (".$country["NIK"].")"; ?></li>
+<?php } ?>
+</ul>
+<?php } } ?>
