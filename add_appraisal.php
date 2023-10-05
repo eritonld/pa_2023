@@ -159,7 +159,7 @@ function cekvalid()
 				{	
 					if(fortable=='nonstaff'){
 						alert("nonstaff");
-						window.location="home.php?link=formpa&nik="+varnik+"&id_atasan1="+id_atasan1+"&email_atasan1="+email_atasan1+"&email_atasan2="+email_atasan2+"&email_atasan3="+email_atasan3;
+						window.location="home.php?link=formpa&nik="+varnik+"&id_atasan1="+id_atasan1+"&email_atasan1="+email_atasan1+"&id_atasan2="+id_atasan2+"&email_atasan2="+email_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan3="+email_atasan3;
 					}
 				}
 			}
