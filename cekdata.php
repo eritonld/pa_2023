@@ -48,11 +48,11 @@ $data=$_GET['dataunit'];
 <select id="nik" name="nik" class="form-control" onchange="statusbawahan(this.value)" required>
 	<option value="" > -- <?php echo "$pilihnama"; ?> -- </option>
 	<?php 
-	$cekkar = mysqli_query ($koneksi,"SELECT NIK, Nama_Lengkap, Kode_StatusKerja FROM $karyawan where Kode_StatusKerja<>'SKH05' and Mulai_Bekerja <= '$cutoff' and Kode_OU='$data' order by Nama_Lengkap asc");
+	$cekkar = mysqli_query ($koneksi,"SELECT id,NIK, Nama_Lengkap, Kode_StatusKerja FROM $karyawan where Kode_StatusKerja<>'SKH05' and Mulai_Bekerja <= '$cutoff' and Kode_OU='$data' order by Nama_Lengkap asc");
 	while ($scekkar	= mysqli_fetch_array ($cekkar))
 	{
 	?>
-		<option value="<?php echo $scekkar['NIK']; ?>"><?php echo "$scekkar[Nama_Lengkap] - $scekkar[NIK]"; ?></option>
+		<option value="<?php echo $scekkar['id']; ?>"><?php echo "$scekkar[Nama_Lengkap] - $scekkar[NIK]"; ?></option>
 	<?php
 	}
 	?>

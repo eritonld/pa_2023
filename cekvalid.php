@@ -2,23 +2,14 @@
 include("conf/conf.php");
 include("tabel_setting.php");
 $nik 			= $_GET['nik'];
-$superior		= $_GET['superior'];
-$headsuperior	= $_GET['headsuperior'];
+$id_atasan1			= $_GET['id_atasan1'];
+$email_atasan1		= $_GET['email_atasan1'];
+$id_atasan2			= $_GET['id_atasan2'];
+$email_atasan2		= $_GET['email_atasan2'];
+$id_atasan3			= $_GET['id_atasan3'];
+$email_atasan3		= $_GET['email_atasan3'];
 
-// $var1 	= explode("(", $nik);
-// $varnik = trim(str_replace(")","",$var1[1]));
-
-// $var2 			= explode("(", $superior);
-// $varsuperior 	= trim(str_replace(")","",$var2[1]));
-
-// $var3 				= explode("(", $headsuperior);
-// $varheadsuperior 	= trim(str_replace(")","",$var3[1]));
-
-$varnik 		 = $nik;
-$varsuperior 	 = $superior;
-$varheadsuperior = $headsuperior;
-
-$qcekkaryawan = mysqli_query($koneksi,"Select NIK from $karyawan where NIK = '$varnik'");
+$qcekkaryawan = mysqli_query($koneksi,"Select NIK from $karyawan where NIK = '$nik'");
 
 $jcekkaryawan = mysqli_num_rows($qcekkaryawan);
 
@@ -28,8 +19,8 @@ if ($jcekkaryawan  <> 1)
 }
 else
 {
-	$qcektrans = mysqli_query($koneksi,"Select NIK, (Select pic from user_pa where id = input_by) as namainput  from $transaksi_pa where nik = '$varnik'");
-	//echo "Select NIK, (Select pic from user where id = input_by) as namainput  from $transaksi_pa where nik = '$varnik'";
+	$qcektrans = mysqli_query($koneksi,"Select NIK, (Select pic from user_pa where id = input_by) as namainput  from $transaksi_pa where nik = '$nik'");
+
 	$rcektrans = mysqli_fetch_array($qcektrans);
 	$jcektrans = mysqli_num_rows($qcektrans);	
 	
@@ -43,7 +34,7 @@ else
 	}
 	
 }
-echo $cekvalid."|".$varnik."|".$varsuperior."|".$varheadsuperior."|".$rcektrans['namainput'];
+echo $cekvalid."|".$nik."|".$id_atasan1."|".$email_atasan1."|".$id_atasan2."|".$email_atasan2."|".$id_atasan3."|".$email_atasan3."|".$rcektrans['namainput'];
 
 
 
