@@ -1,11 +1,6 @@
 <?php
 include("conf/conf.php");
 include("tabel_setting.php");
-// if($rcekkar['Kode_Golongan']=='GL022'||$rcekkar['Kode_Golongan']=='GL023'||$rcekkar['Kode_Golongan']=='GL025'||$rcekkar['Kode_Golongan']=='GL026'||$rcekkar['Kode_Golongan']=='GL028'||$rcekkar['Kode_Golongan']=='GL029'||$rcekkar['Kode_Golongan']=='GL031'){
-	// $bahasa='eng';
-// }else{
-	// $bahasa=$_COOKIE['bahasa'];
-// }
 
 if(isset($_COOKIE['bahasa'])){
 	$bahasa=$_COOKIE['bahasa'];
@@ -13,7 +8,7 @@ if(isset($_COOKIE['bahasa'])){
 	$bahasa='ind';
 }
 
-$nik = isset($_GET['nik']) ? $_GET['nik'] : '';
+$id = isset($_GET['id']) ? $_GET['id'] : '';
 $nama_atasan1 = isset($_GET['superior']) ? $_GET['superior'] : '';
 $nama_atasan2 = isset($_GET['headsuperior']) ? $_GET['headsuperior'] : '';
 $email_atasan1 = isset($_GET['superioremail']) ? $_GET['superioremail'] : '';
@@ -21,7 +16,7 @@ $email_atasan2 = isset($_GET['headsuperioremail']) ? $_GET['headsuperioremail'] 
 $statbawah = isset($_GET['statbawah']) ? $_GET['statbawah'] : '';
 $statmember = isset($_GET['statmember']) ? $_GET['statmember'] : '';
 
-if($nik=='')
+if($id=='')
 {?>
 	<script language="JavaScript">
 		alert('Dilarang Refresh/Masukan NIK');
@@ -30,16 +25,34 @@ if($nik=='')
 <?php	
 exit;
 }
-$karyawanx=mysqli_query($koneksi,"select k.NIK,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen,
-dg.Nama_Golongan,dg.fortable,k.Nama_Jabatan,du.Nama_OU from $karyawan as k
-left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan
-left join daftardepartemen as dep on k.Kode_Departemen=dep.Kode_Departemen
-left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan
-left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan
-left join daftarou as du on k.Kode_OU=du.Kode_OU
-where k.NIK='$nik'");
+try {
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3
+            FROM $karyawan AS k
+            LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
+            LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.Kode_Departemen
+            LEFT JOIN daftargolongan AS dg ON k.Kode_Golongan = dg.Kode_Golongan
+            LEFT JOIN daftarjabatan AS dj ON k.Kode_Jabatan = dj.Kode_Jabatan
+            LEFT JOIN daftarou AS du ON k.Kode_OU = du.Kode_OU
+			LEFT JOIN atasan AS a ON a.idkar= k.id
+			LEFT JOIN $karyawan AS a1 ON a1.id= a.id_atasan1
+			LEFT JOIN $karyawan AS a2 ON a2.id= a.id_atasan2
+			LEFT JOIN $karyawan AS a3 ON a3.id= a.id_atasan3
+            WHERE k.id = :id";
 
-$ckaryawan=mysqli_fetch_array($karyawanx);
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $ckaryawan = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($ckaryawan) {
+        // Process the data here
+    } else {
+        echo "No data found for the provided NIK.";
+    }
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
 
 if($ckaryawan['fortable']=='nonstaff')
 {
@@ -93,41 +106,66 @@ else if($ckaryawan['fortable']=='managerial')
 if($bahasa=='eng')
 {
 	$tabel_prosedure="prosedure_english";
+	$a0='Employee Detail';
 	$a1='Performance Appraisal';
 	$a2='Employee Name';
-	$a3='Company / Unit';
-	$a4='Employee No';
-	$a5='Division/Department';
+	$a3='Company / Location';
+	$a4='Employee ID';
+	$a5='Division / Department';
 	$a6='Designation';
-	$a7='Section/SubSection';
-	$a8='Work Begin';
+	$a7='Section / SubSection';
+	$a8='Join Date';
 	$a9='Period of Assessment';
 	$a10='Grade';
 	$a11='SP/period';
 	$a12='Rating';
 	$a13='On Rating';
+	$title_a='Work Results';
+	$title_aa='Work Objectives';
+	$add_btn_name='Objective';
+	$alertRow='Sorry, you has reached maximum row.';
 }
 else
 {	
 	$tabel_prosedure="prosedure";
+	$a0='Detail Karyawan';
 	$a1='Penilaian Kinerja Karyawan';
 	$a2='Nama Karyawan';
-	$a3='Nama PT / Unit';
-	$a4='Nomor Induk';
-	$a5='Divisi/Departemen';
+	$a3='Nama PT / Lokasi';
+	$a4='NIK';
+	$a5='Divisi / Departemen';
 	$a6='Jabatan';
-	$a7='Seksi/SubSeksi';
-	$a8='Mulai bekerja';
+	$a7='Seksi / SubSeksi';
+	$a8='TMK';
 	$a9='Periode Penilaian';
 	$a10='Golongan';
 	$a11='SP/Periode';
 	$a12='Bobot';
 	$a13='Pembobotan';
+	$title_a='Hasil Kerja';
+	$title_aa='Objektif Kerja';
+	$add_btn_name='Objektif';
+	$alertRow='Maaf, kolom objektif sudah maksimal.';
 }
 
 
-$getsp=mysqli_query($koneksi,"select statussp,periode from $tabel_sp where nik='$nik'");
-$cgetsp=mysqli_fetch_array($getsp);
+try {
+    $sql = "SELECT statussp, periode FROM sp_2022 WHERE `id` = :id";
+    
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $cgetsp = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($cgetsp) {
+        // Process the data here
+    } else {
+        // echo "No data found for the provided NIK.";
+    }
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
 
 $statussp = isset($cgetsp['statussp']) ? $cgetsp['statussp'] : '';
 $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
@@ -144,546 +182,263 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
     opacity: .9;
 }
 </style>
-<script type="text/javascript">
-function cmdcekdatakosong()
-{
-	var namatocek1=document.forminputeos.namatocek.value;
-	//alert(namatocek1);
-	var arraynama = namatocek1.split('|');
-	var pnj = arraynama.length;
-	
-	var konf="Yakin dengan jawaban anda?";
-	var soal1="Soal no";
-	var soal2="belum dipilih!!!";
-	
-	if(confirm(konf))
-	{			
-		document.getElementById('proses').style.display = 'inline';
-		for (a = 1; a<pnj; a++)
-		{
-			pilih = ""
-			var r1 = arraynama[a];		
-			var len = forminputeos.elements[r1].length;
-				
-			for (i = 0; i <len; i++) 
-			{
-				var subcek = forminputeos.elements[r1];
-				if (subcek[i].checked) 
-				{
-					pilih = subcek[i].value;
-				}
-			}
-			
-			if (pilih == "") 
-			{
-				alert(soal1+' '+arraynama[a]+' '+soal2);			
-				return false;
-			}			
-		}
-		
-		if(document.getElementById('totalall').value=='')
-		{
-			alert('Error Script, Total Nilai tidak terisi');			
-			return false;
-		}
-		else if(document.getElementById('totalall').value=='NAN')
-		{
-			alert('Error Script, Total Nilai tidak terisi');			
-			return false;
-		}
-		else if(document.getElementById('totalall').value=='NaN')
-		{
-			alert('Error Script, Total Nilai tidak terisi');			
-			return false;
-		}
-		
-		return true;
-	}
-	return false;
-}
-function cmdnilaikriteria(nilai)
-{
-	if(nilai>=91)
-	{
-		var grade="A";
-		var kesimpulan="Selalu melampaui harapan";
-	}
-	else if(nilai>=76)
-	{
-		var grade="B";
-		var kesimpulan="Selalu memenuhi dan kadang-kadang melampaui harapan";
-	}
-	else if(nilai>=60)
-	{
-		var grade="C";
-		var kesimpulan="Memenuhi harapan";
-	}
-	else if(nilai>=40)
-	{
-		var grade="D";
-		var kesimpulan="Tidak selalu memenuhi harapan";
-	}
-	else
-	{
-		var grade="E";
-		var kesimpulan="Tidak memenuhi harapan";
-	}
-	document.getElementById('nilaikriteria').value=grade;
-}
-function cmdpilih(nilai,id,loop,ftable,bobot)
-{
-	//alert(nilai+''+id);
-	var idt='total'+id;
-	//var idt_tampil='totaltampil'+id;
-	var total=document.getElementById(idt).value;
-	var ctk=0;
-	//var pembagi=0;
-	if(ftable=='firstline')
-	{
-		if(id=='A')
-		{
-			for(c=1;c<=loop;c++)
-			{
-				if(c<4)
-				{
-					//alert('a');
-					var seld='nilaipencapaian'+id+c;
-					if(document.getElementById(seld).disabled == false)
-					{
-						var id_bobotsatuan='bobotsatuan'+id+c;
-						bobotsatuan=document.getElementById(id_bobotsatuan).value;
-						ctk=ctk+(((document.getElementById(seld).value*1)*(bobotsatuan*1))/100);
-					}
-				}
-				else
-				{
-					pilih = ""
-					var r1 = id.concat(c);
-					var len = forminputeos.elements[r1].length;
-						
-					for (i = 0; i <len; i++) 
-					{
-						var subcek = forminputeos.elements[r1];
-						if (subcek[i].checked) 
-						{
-							pilih = subcek[i].value;				
-						}
-					}
-					if(pilih>0)
-					{
-						var id_bobotsatuan='bobotsatuan'+r1;
-						bobotsatuan=document.getElementById(id_bobotsatuan).value;
-						ctk=ctk+(((pilih*1)*(bobotsatuan*1))/100);
-					}
-				}
-			}
-		}
-		else
-		{
-			for(c=1;c<=loop;c++)
-			{	
-				pilih = ""
-				var r1 = id.concat(c);
-				var len = forminputeos.elements[r1].length;
-					
-				for (i = 0; i <len; i++) 
-				{
-					var subcek = forminputeos.elements[r1];
-					if (subcek[i].checked) 
-					{
-						pilih = subcek[i].value;				
-					}
-				}
-				if(pilih>0)
-				{
-					var id_bobotsatuan='bobotsatuan'+r1;
-					bobotsatuan=document.getElementById(id_bobotsatuan).value;
-					ctk=ctk+(((pilih*1)*(bobotsatuan*1))/100);
-				}
-				//pembagi=pembagi+50;
-			}
-		}
-	}
-	else
-	{
-		for(c=1;c<=loop;c++)
-		{	
-			pilih = ""
-			var r1 = id.concat(c);
-			var len = forminputeos.elements[r1].length;
-				
-			for (i = 0; i <len; i++) 
-			{
-				var subcek = forminputeos.elements[r1];
-				if (subcek[i].checked) 
-				{
-					pilih = subcek[i].value;				
-				}
-			}
-			if(pilih>0)
-			{
-				var id_bobotsatuan='bobotsatuan'+r1;
-				bobotsatuan=document.getElementById(id_bobotsatuan).value;
-				ctk=ctk+(((pilih*1)*(bobotsatuan*1))/100);
-			}
-			//pembagi=pembagi+50;
-		}
-	}	
-	var pembobotan='pembobotan'+id;
-	
-	document.getElementById(idt).value=(((ctk*1)/50)*100).toFixed(2);
-	document.getElementById(pembobotan).value=(((((ctk*1)/50)*100).toFixed(2)*bobot)/100).toFixed(2);
-	
-	var headergroup=document.getElementById('headergroup').value.split(',');
-	pnj=headergroup.length;
-	var totalcetak=0;
-	for(i=0;i<pnj;i++)
-	{
-		var pembobotan='pembobotan'+headergroup[i];
-		totalcetak=totalcetak+(document.getElementById(pembobotan).value*1);
-	}
-	document.getElementById('totalall').value=totalcetak;
-	cmdnilaikriteria(totalcetak.toFixed(2));
-}
-</script>
-<script type="text/javascript" src="tiny_mce/tiny_mce.js"></script>
-<script type="text/javascript">
-	
-	tinyMCE.init({
-		// General options
-		mode : "textareas",
-		theme : "advanced",
-		plugins : "pagebreak",
+<script src="plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
 
-		// Theme options
-		theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",		
-		theme_advanced_toolbar_location : "top",
-		theme_advanced_toolbar_align : "left",
-		theme_advanced_statusbar_location : "bottom",
-		theme_advanced_resizing : true,
-		theme_advanced_resize_horizontal : false,
-	});
+<!-- +"&id_atasan1="+id_atasan1+"&email_atasan1="+email_atasan1+"&id_atasan2="+id_atasan2+"&email_atasan2="+email_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan3="+email_atasan3 -->
 
-	function convLinkVC(strUrl, node, on_save) {
-            strUrl=strUrl.replace("../","");
-            return strUrl;
-       } 
-	
-	function ajaxLoad() {
-	var ed = tinyMCE.get('resume');
-
-	// Do you ajax call here, window.setTimeout fakes ajax call
-	ed.setProgressState(1); // Show progress
-	window.setTimeout(function() {
-		ed.setProgressState(0); // Hide progress
-		ed.setContent('HTML content that got passed from server.');
-	}, 3000);
-}
-
-</script>
 <div class="row">
 <div id="proses" class="proses" style="display: none"></div>
-<section class="col-lg-12 connectedSortable">
-  <div class="nav-tabs-custom">
+<section class="col-lg-12">
 	<div class="box box-danger">
         <div class="box-header with-border">
-          <h3 class="box-title"><?php echo"<b>$a1</b>";?></h3>
+          <h3 class="box-title"><?="<b>$a0</b>";?></h3>
         </div>
         <div class="box-body">
-<form name="forminputeos" method="post" action="savepa.php" onsubmit="return cmdcekdatakosong()">
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th><?php echo"$a2";?></th>
-            <td style="width:35%;"><?php echo"$ckaryawan[Nama_Lengkap]";?></td>
-            <th><?php echo"$a3";?></th>
-            <td  style="width:35%;"><?php echo"$ckaryawan[Nama_Perusahaan] / $ckaryawan[Nama_OU]";?></td>  
-        </tr>
-        <tr>
-            <th><?php echo"$a4";?></th>
-            <td><?php echo"$ckaryawan[NIK]";?></td>
-            <th><?php echo"$a5";?></th>
-            <td><?php echo"$ckaryawan[Nama_Departemen]";?></td>  
-        </tr>
-        <tr>
-            <th><?php echo"$a6";?></th>
-            <td><?php echo"$ckaryawan[Nama_Jabatan]";?></td>
-            <th><?php echo"$a7";?></th>
-            <td><?php echo"-";?></td>  
-        </tr>
-        <tr>
-            <th><?php echo"$a8";?></th>
-            <td><?php echo"$ckaryawan[Mulai_Bekerja]";?></td>
-            <th><?php echo"$a9";?></th>
-            <td><?php 
-			$yearnow	= Date('Y');
-			echo"$yearnow";?></td>  
-        </tr>
-        <tr>
-            <th><?php echo"$a10";?></th>
-            <td><?php echo"$ckaryawan[Nama_Golongan]";?></td>
-            <th><?php echo"$a11";?></th>
-            <td><?php echo"$statussp / $periode";?></td>  
-        </tr>
-        <input type="hidden" name="nik" value="<?php echo"$ckaryawan[NIK]";?>"> 
-		<input type="hidden" name="atasan1" value="<?php echo $nama_atasan1;?>">
-        <input type="hidden" name="atasan2" value="<?php echo $nama_atasan2;?>">   
-		<input type="hidden" name="emailatasan1" value="<?php echo $email_atasan1;?>">
-		<input type="hidden" name="emailatasan2" value="<?php echo $email_atasan2;?>">
-        
-        <?php
-		if($fortable=='managerial')
-		{
-			if($bahasa=='eng')
+			<div class="container-fluid">
+				<div class="row" style="margin-top: 20px;">
+					<div class="col-md-2 text-bold"><?="$a2";?></div>
+					<div class="col-md-4">: <?="$ckaryawan[Nama_Lengkap]";?></div>
+					<div class="col-md-2 text-bold"><?="$a3";?></div>
+					<div class="col-md-4">: <?="$ckaryawan[Nama_Perusahaan] / $ckaryawan[Nama_OU]";?></div>
+				</div>
+				<div class="row" style="margin-top: 10px;">
+					<div class="col-md-2 text-bold"><?="$a4";?></div>
+					<div class="col-md-4">: <?="$ckaryawan[NIK]";?></div>
+					<div class="col-md-2 text-bold"><?="$a5";?></div>
+					<div class="col-md-4">: <?="$ckaryawan[Nama_Departemen]";?></div>
+				</div>
+				<div class="row" style="margin-top: 10px;">
+					<div class="col-md-2 text-bold"><?="$a6";?></div>
+					<div class="col-md-4">: <?="$ckaryawan[Nama_Jabatan]";?></div>
+					<div class="col-md-2 text-bold"><?="$a7";?></div>
+					<div class="col-md-4">: <?="-";?></div>
+				</div>
+				<div class="row" style="margin-top: 10px;">
+					<div class="col-md-2 text-bold"><?="$a8";?></div>
+					<div class="col-md-4">: <?="$ckaryawan[Mulai_Bekerja]";?></div>
+					<div class="col-md-2 text-bold"><?="$a9";?></div>
+					<div class="col-md-4">: <?= Date('Y');?></div>
+				</div>
+				<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
+					<div class="col-md-2 text-bold"><?="$a10";?></div>
+					<div class="col-md-4">: <?="$ckaryawan[Nama_Golongan]";?></div>
+					<div class="col-md-2 text-bold"><?="$a11";?></div>
+					<div class="col-md-4">: <?="$statussp / $periode";?></div>
+				</div>				
+			</div>
+			<?php
+			if($fortable=='managerial')
 			{
-				$a14='SECTION II SELF-EVALUATION';
-				$a15='Describe your primary duties and additional work (if any) undertaken';
-				$a16='Provide a self-assessment of your performance in the past year and suggest areas of improvement';
-			}
-			else
-			{
-				$a14='BAGIAN II PENILAIAN DIRI';
-				$a15='Tuliskan tugas utama Anda dan tugas tambahan (jika ada)';
-				$a16='Berikan penilaian terhadap diri Anda atas kinerja pada tahun lalu dan usulan area mana yang perlu diperbaiki.';
-				
-			}
-		?>
-        <tr>
-            <th colspan="4" style="border:none;"><?php echo"$a14";?></th> 
-        </tr>
-         <tr>
-            <th colspan="4" style="border:none;">1. <?php echo"$a15";?><br />
-            <textarea name="tugas" rows="7" style="background:#ffffaa; width:70%;" class="textarea form-control"></textarea>
-            </th> 
-        </tr>
-         <tr>
-            <th colspan="4" style="border:none;">2. <?php echo"$a16";?><br />
-            <textarea name="penilaian_tugas" rows="7" style="background:#ffffaa; width:70%;" class="textarea form-control"></textarea></th> 
-        </tr>
-        <?php
-		}?>
-    </thead>
-</table><br />
-<table class="table table-bordered" style="color:#000000; font-family:Arial, Helvetica, sans-serif;">
-<?php
-$urut=1;
-$headergroup="";
-$pembagitotal=0;
-$prosedure=mysqli_query($koneksi,"select komposisi_group,nama_group,jml_loop,fortable,bobot from $tabel_prosedure where fortable='$fortable' order by id");
-while($cprosedure=mysqli_fetch_array($prosedure))
-{
-	//$bobot=$cprosedure[bobot];
-?>
-	
-      <thead>
-      <tr style="background:#dd4b39; color:#ffffff;">
-        <th width="2%"><?php echo"$cprosedure[komposisi_group]";?></th>
-        <?php
-		if($fortable=='firstline' && $urut=='1')
-		{
-			if($bahasa=='eng')
-			{				
-				$a17='Objective and Indicator';
-				$a18='Achievement';
-				$a19='Evaluation & Feedback';
-			}
-			else
-			{
-				$a17='Sasaran & Ukuran Keberhasilan';
-				$a18='Pencapaian';
-				$a19='Evaluasi & Feedback';
-			}
-		?>
-       		<th colspan="5"><?php echo"$cprosedure[nama_group]";?></th>
-            </tr>
-            <tr>
-            <th>&nbsp;</th>
-            <th width="28%"><?php echo"$a17";?></th>
-            <th width="43%"><?php echo"$a18";?></th>
-            <th colspan="3" style="text-align:center;"><?php echo"$a19";?></th>
-            </tr>
-        <?php
-		}
-		else
-		{?>
-        <th colspan="4"><?php echo"$cprosedure[nama_group]";?></th>  
-        <th width="13%" style="text-align:center;"><?php echo"$a12";?></th>  
-        </tr>
-        <?php
-		}?>      
-      </thead>
-      <tbody>
-      	<?php
-		$pembagisub=0;
-		$namatocek="";
-		$namatovalidasi="";
-		for($i=1;$i<=$cprosedure['jml_loop'];$i++)
-		{
-			$slc=$cprosedure['komposisi_group'].$i;
-			$master_soal=mysqli_query($koneksi,"select $slc,komentar from master_soal_$fortable_select where id='1'");
-			$cmaster_soal=mysqli_fetch_array($master_soal);
-			
-			$bobot_data=mysqli_query($koneksi,"select $slc from master_soal_$fortable_select where id='2'");
-			$cbobot=mysqli_fetch_array($bobot_data);
-			
-			$bobot=$cbobot[$slc]/($cprosedure['bobot']/100);
-			
-			$data=explode('|',$cmaster_soal[$slc]);
-			
-			if($fortable<>'firstline')
-			{
-		?>
-			<tr style="background:#CCCCCC;">
-            <th><?php echo"$i";?></th>
-            <th colspan="4"><?php echo"$data[0]";?></th>
-            <th width="13%" style="text-align:right;"><?php echo"$cbobot[$slc]%";?></th>
-            </tr>
-            <?php
-			}
-			if($fortable=='firstline' && ($slc=='A1' || $slc=='A2' || $slc=='A3'))
-			{?>
-            	<tr style="background:#CCCCCC;">
-            <th><?php echo"$i";?></th>
-            <th colspan="4"><?php echo"$data[0]";?></th>
-            <th width="13%" style="text-align:right;"><?php echo"$cbobot[$slc]%";?></th>
-            </tr>
-                <tr>
-                <td></td>
-                <td style="width:30%;"><textarea  style="background:#ffffaa;" class="form-control" name="sasaran<?php echo"$slc";?>" id="sasaran<?php echo"$slc";?>" cols="30%" rows="5"></textarea></td>
-                <td style="width:30%;"><textarea style="background:#ffffaa;" class="form-control" name="pencapaian<?php echo"$slc";?>" id="pencapaian<?php echo"$slc";?>" cols="30%" rows="5"></textarea></td>
-                <td colspan="3" style="text-align:right;width:10%;">
-                <textarea style="background:#ffffaa;" class="form-control" name="feedback<?php echo"$slc";?>" id="feedback<?php echo"$slc";?>" cols="30%" rows="5"></textarea>
-                
-                <select name="nilaipencapaian<?php echo"$slc";?>" id="nilaipencapaian<?php echo"$slc";?>" onchange="cmdpilih(this.value,'<?php echo"$cprosedure[komposisi_group]";?>','<?php echo"$cprosedure[jml_loop]";?>','<?php echo"$fortable";?>','<?php echo"$cprosedure[bobot]";?>')">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-                </select>
-                <input type="hidden" name="bobotsatuan<?php echo"$slc";?>" id="bobotsatuan<?php echo"$slc";?>" value="<?php echo"$bobot";?>" />
-                </td>
-                </tr>
-                <?php if($slc=='A3')
-				{?>
-                </tbody>
-                </table>
-                <?php
-				}?>
-		<?php	
-			}
-			else
-			{
-				if($fortable=='firstline' && $slc=='A4')
-				{?>
-            	<table class="table-bordered table-condensed" style="color:#000000; font-family:Arial, Helvetica, sans-serif;">
-                <thead>
-                <tr style="background:#CCCCCC;">
-                    <th><?php echo"$i";?></th>
-                    <th colspan="4"><?php echo"$data[0]";?></th>
-                    <th width="8%" style="text-align:right;"><?php echo"$cbobot[$slc]%";?></th>
-                  </tr>
-                </thead>
-            	<tbody>
-               	<?php
-				}
-				else if($fortable=='firstline')
-				{?>
-					<tr style="background:#CCCCCC;">
-                    <th><?php echo"$i";?></th>
-                    <th colspan="4"><?php echo"$data[0]";?></th>
-                    <th width="8%" style="text-align:right;"><?php echo"$cbobot[$slc]%";?></th>
-                  </tr>
-                <?php
-				}
-				?>
-                  <tr>
-                    <th width="3%">&nbsp;</th>
-                    <th colspan="4"><?php echo"$data[1]";?></th>
-                    <th width="8%">&nbsp;</th>
-                  </tr>
-            <?php
-				$pembagisub=$pembagisub+50;
-				$pembagitotal=$pembagitotal+50;
-			}
-			
-			
-			$seltab="master_soal_".$fortable_select."_detail";
-			$master_soal_detail=mysqli_query($koneksi,"select id,soal,nilai from $seltab where idgroup='$slc'");
-			while($cmaster_soal_detail=mysqli_fetch_array($master_soal_detail))
-			{
-				$nama=$slc.'-'.$cmaster_soal_detail['id'];
-				if($namatovalidasi==$slc)
+				if($bahasa=='eng')
 				{
+					$a14='SECTION II SELF-EVALUATION';
+					$a15='Describe your primary duties and additional work (if any) undertaken';
+					$a16='Provide a self-assessment of your performance in the past year and suggest areas of improvement';
 				}
 				else
 				{
-					$namatocek=$namatocek.'|'.$slc;
-				}		
-				$nilai=($cmaster_soal_detail['nilai']*$bobot)/100;					
+					$a14='BAGIAN II PENILAIAN DIRI';
+					$a15='Tuliskan tugas utama Anda dan tugas tambahan (jika ada)';
+					$a16='Berikan penilaian terhadap diri Anda atas kinerja pada tahun lalu dan usulan area mana yang perlu diperbaiki.';
+					
+				}
 			?>
-				<tr>
-                <td>&nbsp;</th>
-            	<td width="6%" style="background:#ffffaa; text-align:center;"><label style="cursor:pointer;width:100%;"><input type="radio" name="<?php echo"$slc";?>" value="<?php echo"$cmaster_soal_detail[nilai]";?>" id="<?php echo"$nama";?>" 
-                onClick="cmdpilih(<?php echo"$nilai";?>,'<?php echo"$cprosedure[komposisi_group]";?>','<?php echo"$cprosedure[jml_loop]";?>','<?php echo"$fortable";?>','<?php echo"$cprosedure[bobot]";?>')"></label>
-                <input type="hidden" name="bobotsatuan<?php echo"$slc";?>" id="bobotsatuan<?php echo"$slc";?>" value="<?php echo"$bobot";?>" />
-                </td>
-            	<td colspan="3" ><?php echo"$cmaster_soal_detail[soal]";?></td>
-                <td style="text-align:right;"><?php echo"$cmaster_soal_detail[nilai]";?></td>
-            	</tr>
-            <?php
-				$namatovalidasi=$slc;				
-			}			
-		}
-		?>     
-        <tr>
-        	<td colspan="5" align="right">Sub-Total Score (<?php echo"$cprosedure[komposisi_group]";?>)</td>
-            <td style="text-align:right;"><input type="text" name="total<?php echo"$cprosedure[komposisi_group]";?>" id="total<?php echo"$cprosedure[komposisi_group]";?>" style="width:50px;background:#ffb2a9;text-align:right;">%</td>
-        </tr>
-        <tr>
-        	<td colspan="5" align="right"><?php echo"$a13";?>(<?php echo"$cprosedure[bobot]%";?>)</td>
-            <td style="text-align:right;"><input type="text" name="pembobotan<?php echo"$cprosedure[komposisi_group]";?>" id="pembobotan<?php echo"$cprosedure[komposisi_group]";?>" style="width:50px;background:#ffb2a9;text-align:right;">%
-            <input type="hidden" name="pembagisub<?php echo"$cprosedure[komposisi_group]";?>" id="pembagisub<?php echo"$cprosedure[komposisi_group]";?>" value="<?php echo"$pembagisub";?>" />
-            </td>
-        </tr>
-        <tr>
-        	<td colspan="6" align="right">&nbsp;</td>
-        </tr>   
-      </tbody>    
-
-<?php	
-if($urut=='1')
-	$headergroup=$cprosedure['komposisi_group'];
-else
-	$headergroup=$headergroup.','.$cprosedure['komposisi_group'];
-$urut++;
-}
-?>
-		<tr>
-        <td colspan="6"><?php echo"$cmaster_soal[komentar]";?><br><textarea style="background:#ffffaa; width:50%;" class="textarea form-control" name="komentar" rows="7"></textarea></td>
-        </tr>
-        <tr>
-        	<td colspan="5"><!--<div  style="float:right;">]x100%</div><div id="pembagitotalview" style="float:right;"><?php echo"$pembagitotal";?></div><div  style="float:right;">TOTAL SCORE [(<?php echo"$headergroup";?>)/</div>-->
-            <div  style="float:right;">TOTAL SCORE <?php echo"$a13";?> [(<?php echo"$headergroup";?>)]</div>
-            </td>
-            <td style="text-align:right;">
-            <input type="text" name="totalall" id="totalall" style="width:50px;background:#ffb2a9;text-align:right;"  readonly="readonly">%<br />
-            <input type="text" name="nilaikriteria" id="nilaikriteria" style="width:50px;background:#ffb2a9;text-align:right;"  readonly="readonly">&nbsp;&nbsp;&nbsp;
-            <input type="hidden" name="headergroup" id="headergroup" value="<?php echo"$headergroup";?>" />
-            <input type="hidden" name="pembagitotal" id="pembagitotal" value="<?php echo"$pembagitotal";?>" />
-            </td>
-        </tr>
-		<tr>
-        	<td><input type="hidden" name="namatocek" id="namatocek" value="<?php echo"$namatocek";?>" />
-            <input type="hidden" name="fortable" id="fortable" value="<?php echo"$fortable";?>" />
-            </td>
-            <td><button type="submit" name="btnsave" class="btn btn-success">Submit</button></td>
-            <td colspan="4"></td>
-        </tr>
-</table>
-</form>
+			<tr>
+				<th colspan="4" style="border:none;"><?="$a14";?></th> 
+			</tr>
+			<tr>
+				<th colspan="4" style="border:none;">1. <?="$a15";?><br />
+				<textarea name="tugas" rows="7" style="background:#ffffaa; width:70%;" class="textarea form-control"></textarea>
+				</th> 
+			</tr>
+			<tr>
+				<th colspan="4" style="border:none;">2. <?="$a16";?><br />
+				<textarea name="penilaian_tugas" rows="7" style="background:#ffffaa; width:70%;" class="textarea form-control"></textarea></th> 
+			</tr>
+			<?php
+			}?>
         </div>
     </div>
-  </div>
+	<form name="forminput" method="POST" action="apiController.php?code=submitNilaiAwal" onsubmit="return cekEmptyValue()">
+	<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
+	<input type="hidden" name="idpic" value="<?="$scekuser[id]";?>">
+	<input type="hidden" name="idkar" value="<?="$ckaryawan[idkar]";?>">
+	<input type="hidden" name="id_atasan1" value="<?="$ckaryawan[id_atasan1]";?>" readonly />
+	<input type="hidden" name="email_atasan1" value="<?="$ckaryawan[email_atasan1]";?>" readonly />
+	<div class="box box-danger">
+        <div class="box-header with-border">
+          <h3 class="box-title"><?="<b>$a1</b>";?></h3>
+        </div>
+        <div class="box-body">
+			<div class="container-fluid" id="container">
+				<div class="row" style="margin-top: 20px;">
+					<h1 class="col-md-2 text-bold h4">A. <?= $title_a; ?></h1>
+				</div>
+				<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
+					<h1 class="col-md-2 text-bold h5"><?= $title_aa; ?></h1>
+				</div>
+				<?php for ($i=1; $i <= 5; $i++) { 
+				?>
+				<div class="row" id="row-<?= $i; ?>" style="margin-bottom: 40px;">
+					<div class="form-horizontal">
+						<label for="value<?= $i; ?>" class="col-md-1 control-label"><?= $i.'.'; ?></label>
+						<div class="col-md-8">
+							<!-- <input type="test" class="form-control" id="value<?= $i; ?>" placeholder="..."> -->
+							<textarea class="form-control" name="value<?= $i; ?>" id="value<?= $i; ?>" style="resize: none; height: 100px;" placeholder="..."></textarea>
+						</div>
+						<div class="col-md-2">
+							<select class="form-control" name="score<?= $i; ?>" id="score<?= $i; ?>">
+								<option value="">- score -</option>
+								<option value="5">5</option>
+								<option value="4">4</option>
+								<option value="3">3</option>
+								<option value="2">2</option>
+								<option value="1">1</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<script>
+					// Add an event listener to the select element
+					document.getElementById('score<?= $i; ?>').addEventListener('change', function () {
+						calculateAverage();
+					});
+				</script>
+				<?php
+				} ?>
+			</div>
+			<div class="container-fluid" style="margin-bottom: 20px;">
+				<div class="row" style="margin-top: 10px; display: none;">
+					<div class="form-horizontal">
+						<div class="col-md-offset-1 col-md-8">
+						<button type="button" class="btn btn-success btn-sm" id="addRow" onclick="addRows(this)"><i class="fa fa-plus"></i></button>
+						</div>
+					</div>
+				</div>
+				<div class="row" style="margin-top: 10px;">
+					<div class="form-horizontal">
+						<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
+							<h1 class="h4">Average Score : </h1>
+						</div>
+						<div class="col-md-2" style="padding-left: 0;">
+							<input type="text" name="total_score" id="total_score" class="form-control text-center text-bold" style="background: #FFFFCC;" value="-" readonly>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="box-footer">
+			<div class="container-fluid">
+				<div class="row text-center">
+					<button type="submit" class="btn btn-primary text-bold" style="width: 20%; margin-block: 10px;">SUBMIT</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+
 </section>
 </div>
+<script>
+        function cekEmptyValue() {
+            // Loop through the textareas
+			var emptyFieldFound = false;
+			var textValue = document.getElementById('value1').value;
+			if (textValue.trim() === '') {
+				alert('Please fill in the field.');
+				document.getElementById('value1').focus();
+				return false; // Prevent form submission
+			}
+            for (var i = 1; i <= 5; i++) {
+                var textareaValue = document.getElementById('value' + i).value;
+                var scoreValue = document.getElementById('score' + i).value;
+                if (textareaValue.trim() != '' && scoreValue === '' || textareaValue.trim() === '' && scoreValue != '') {
+					if(scoreValue === ''){
+						alert('Please select the score.');
+						document.getElementById('score' + i).focus();
+					}
+					if(textareaValue.trim() === ''){
+						alert('Please fill in the field.');
+						document.getElementById('value' + i).focus();
+					}
+					emptyFieldFound = true;
+                    return false; // Prevent form submission
+                }
+            }
+            return true; // Allow form submission
+        }
+    </script>
+<script>
+  
+  var currentRow = <?= $i; ?>; // Initialize with the last value of $i
+  var alertRow = '<?= $bahasa=='eng' ? 'Sorry, you has reached maximum row.' : 'Maaf, kolom objektif sudah maksimal.'; ?>';
+
+  // Function to show an alert
+  function addRow() {
+	var newRow = `
+	<div class="row" id="row-${currentRow}" style="margin-top: 10px;">
+	  <div class="form-horizontal">
+		<label for="value${currentRow}" class="col-md-1 control-label">${currentRow}.</label>
+		<div class="col-md-8">
+		  <input type="text" class="form-control" id="value${currentRow}" placeholder="...">
+		</div>
+		<div class="col-md-2">
+		  <select class="form-control" name="score${currentRow}" id="score${currentRow}" required>
+			<option value="">- pilih -</option>
+			<option value="5">5</option>
+			<option value="4">4</option>
+			<option value="3">3</option>
+			<option value="2">2</option>
+			<option value="1">1</option>
+		  </select>
+		</div>
+		<div class="col-md-1">
+          <button type="button" id="button1" onclick="deleteRow(this)" class="btn btn-danger btn-sm btn-circle" ><i class="fa fa-times"></i></button>
+        </div>
+	  </div>
+	</div>
+  `;
+	if(currentRow>10){
+		alert(alertRow);
+		return;
+	}
+	$("#container").append(newRow); // Append the new row to the container
+    currentRow++; // Increment the current row number
+    }
+	// Get the button element by its ID
+	var button = document.getElementById("addRow");
+	
+	// Add a click event listener to the button
+	button.addEventListener("click", addRow);
+
+
+  function deleteRow(row) {
+	let closestRow = $(row).closest('.row')
+	let rowId = closestRow.attr('id')
+	var rowParts = rowId.split('-');
+	console.log(rowParts[1])
+	
+	closestRow.remove()
+}
+</script>
+<script>
+    function calculateAverage() {
+        var total = 0;
+        var count = 0;
+
+        // Loop through the select elements and calculate the total
+        for (var i = 1; i <= 5; i++) {
+            var score = document.getElementById('score' + i).value;
+            if (score !== "") {
+                total += parseInt(score);
+                count++;
+            }
+        }
+
+        // Calculate the average
+        var average = count === 0 ? 0 : total / count;
+
+        // Update the input element with the result
+        document.getElementById('total_score').value = average.toFixed(2); // Displaying the average with 2 decimal places
+    }
+</script>

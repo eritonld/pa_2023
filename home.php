@@ -18,14 +18,20 @@ if ($idmaster_pa=="")
 {
 	?>
 	<script>
-		alert('Login First');
-		window.location="http://172.30.1.38:8080/pa/";
+		// alert('Login First');
+		// window.location="http://localhost:8080/hcis-pa-2023/";
 	</script>
 	<?php
 }
 
-$cekuser=mysqli_query($koneksi,"select * from user_pa where id='$idmaster_pa'");
-$scekuser=mysqli_fetch_array($cekuser);
+try {
+  $stmt = $koneksi->prepare("SELECT * FROM user_pa WHERE id = :id");
+  $stmt->bindParam(':id', $idmaster_pa, PDO::PARAM_INT);
+  $stmt->execute();
+  $scekuser = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+  echo "Error: " . $e->getMessage();
+}
 
 $link = $_GET['link'];
 
@@ -96,7 +102,8 @@ else
     <link href="plugins/morris/morris.css" rel="stylesheet" type="text/css" />
 	
 	<link rel="stylesheet" href="plugins/select2/multiple-select.css"/>
-	
+	<script src="plugins/jQuery/jQuery-2.1.3.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 	<!--
 	
 	-->
@@ -243,7 +250,6 @@ else
         </footer>
     </div>
 
-    <script src="plugins/jQuery/jQuery-2.1.3.min.js"></script>
     <script src="bootstrap/js/jquery-ui.min.js" type="text/javascript"></script>
 	<script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script>
