@@ -47,65 +47,130 @@ $data=$_GET['dataunit'];
 ?>
 <select id="nik" name="nik" class="form-control" onchange="statusbawahan(this.value)" required>
 	<option value="" > -- <?php echo "$pilihnama"; ?> -- </option>
-	<?php 
-	$cekkar = mysqli_query ($koneksi,"SELECT NIK, Nama_Lengkap, Kode_StatusKerja FROM $karyawan where Kode_StatusKerja<>'SKH05' and Mulai_Bekerja <= '$cutoff' and Kode_OU='$data' order by Nama_Lengkap asc");
-	while ($scekkar	= mysqli_fetch_array ($cekkar))
-	{
-	?>
-		<option value="<?php echo $scekkar['NIK']; ?>"><?php echo "$scekkar[Nama_Lengkap] - $scekkar[NIK]"; ?></option>
 	<?php
+	// Assuming you have already established a PDO database connection ($koneksi)
+
+	$cekkar = $koneksi->prepare("SELECT NIK, Nama_Lengkap FROM $karyawan WHERE Kode_StatusKerja <> 'SKH05' AND Mulai_Bekerja <= :cutoff AND Kode_OU = :data ORDER BY Nama_Lengkap ASC");
+	$cekkar->bindParam(':cutoff', $cutoff, PDO::PARAM_STR);
+	$cekkar->bindParam(':data', $data, PDO::PARAM_STR);
+	$cekkar->execute();
+
+	while ($scekkar = $cekkar->fetch(PDO::FETCH_ASSOC)) {
+		$nik = htmlspecialchars($scekkar['NIK'], ENT_QUOTES, 'UTF-8'); // Sanitize NIK if needed
+		$namaLengkap = htmlspecialchars($scekkar['Nama_Lengkap'], ENT_QUOTES, 'UTF-8'); // Sanitize Name if needed
+		echo "<option value=\"$nik\">$namaLengkap - $nik</option>";
 	}
 	?>
+
 </select>
 <?php
 }else if($_GET['asal']=="unit2"){ //pilih unit atasan 1 karyawan
 $data=$_GET['dataunit'];
 $nik=$_GET['nik'];
-$cekgol = mysqli_query ($koneksi,"SELECT Kode_Golongan FROM $karyawan where Kode_StatusKerja<>'SKH05' and Kode_OU='$data' and nik='$nik'");
-$scekgol = mysqli_fetch_array($cekgol);
+try {
+    $sql = "SELECT Kode_Golongan FROM $karyawan WHERE Kode_StatusKerja <> 'SKH05' AND Kode_OU = :data AND nik = :nik";
+    
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bindParam(':data', $data, PDO::PARAM_STR);
+    $stmt->bindParam(':nik', $nik, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $scekgol = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($scekgol) {
+        // Process the data here
+    } else {
+        echo "No data found for the provided criteria.";
+    }
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
 ?>
 <select id="superior" name="superior" class="form-control" onchange="isi_emailatasan(this.value,'emailsuperior')" required>
 	<option value="" > -- <?php echo "$pilihatasan"; ?> -- </option>
-	<?php 
-	$cekkar = mysqli_query ($koneksi,"SELECT NIK, Nama_Lengkap, Kode_StatusKerja FROM $karyawan where Kode_StatusKerja<>'SKH05' and Kode_OU='$data' and Kode_Golongan>='$scekgol[Kode_Golongan]' order by Nama_Lengkap asc");
-	while ($scekkar	= mysqli_fetch_array ($cekkar))
-	{
-	?>
-		<option value="<?php echo $scekkar['NIK']; ?>"><?php echo "$scekkar[Nama_Lengkap] - $scekkar[NIK]"; ?></option>
 	<?php
+	// Assuming you have already established a PDO database connection ($koneksi)
+
+	$cekkar = $koneksi->prepare("SELECT NIK, Nama_Lengkap FROM $karyawan WHERE Kode_StatusKerja <> 'SKH05' AND Kode_OU = :data AND Kode_Golongan >= :scekgol ORDER BY Nama_Lengkap ASC");
+	$cekkar->bindParam(':data', $data, PDO::PARAM_STR);
+	$cekkar->bindParam(':scekgol', $scekgol['Kode_Golongan'], PDO::PARAM_STR); // Assuming $scekgol is an associative array
+	$cekkar->execute();
+
+	while ($scekkar = $cekkar->fetch(PDO::FETCH_ASSOC)) {
+		$nik = htmlspecialchars($scekkar['NIK'], ENT_QUOTES, 'UTF-8'); // Sanitize NIK if needed
+		$namaLengkap = htmlspecialchars($scekkar['Nama_Lengkap'], ENT_QUOTES, 'UTF-8'); // Sanitize Name if needed
+		echo "<option value=\"$nik\">$namaLengkap - $nik</option>";
 	}
 	?>
+
 </select>
 <?php
 }else if($_GET['asal']=="unit3"){ //pilih unit atasan 2 karyawan
 $data=$_GET['dataunit'];
 $nik=$_GET['nik'];
-$cekgol = mysqli_query ($koneksi,"SELECT Kode_Golongan FROM $karyawan where Kode_StatusKerja<>'SKH05' and Kode_OU='$data' and nik='$nik'");
-$scekgol = mysqli_fetch_array($cekgol);
+try {
+    $sql = "SELECT Kode_Golongan FROM $karyawan WHERE Kode_StatusKerja <> 'SKH05' AND Kode_OU = :data AND nik = :nik";
+    
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bindParam(':data', $data, PDO::PARAM_STR);
+    $stmt->bindParam(':nik', $nik, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $scekgol = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($scekgol) {
+        // Process the data here
+    } else {
+        echo "No data found for the provided criteria.";
+    }
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
 ?>
 <select id="headsuperior" name="headsuperior" class="form-control" onchange="isi_emailatasan(this.value,'heademailsuperior')" required>
 	<option value="" > -- <?php echo "$pilihatasan"; ?> -- </option>
 	<?php 
-	$cekkar = mysqli_query ($koneksi,"SELECT NIK, Nama_Lengkap, Kode_StatusKerja FROM $karyawan where Kode_StatusKerja<>'SKH05' and Kode_OU='$data' and Kode_Golongan>='$scekgol[Kode_Golongan]' order by Nama_Lengkap asc");
-	while ($scekkar	= mysqli_fetch_array ($cekkar))
-	{
-	?>
-		<option value="<?php echo $scekkar['NIK']; ?>"><?php echo "$scekkar[Nama_Lengkap] - $scekkar[NIK]"; ?></option>
-	<?php
+	try {
+		$sql = "SELECT NIK, Nama_Lengkap FROM $karyawan WHERE Kode_StatusKerja <> 'SKH05' AND Kode_OU = :data AND Kode_Golongan >= :scekgol ORDER BY Nama_Lengkap ASC";
+		
+		$stmt = $koneksi->prepare($sql);
+		$stmt->bindParam(':data', $data, PDO::PARAM_STR);
+		$stmt->bindParam(':scekgol', $scekgol['Kode_Golongan'], PDO::PARAM_STR); // Assuming $scekgol is an associative array
+		$stmt->execute();
+	
+		while ($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$nik = htmlspecialchars($scekkar['NIK'], ENT_QUOTES, 'UTF-8'); // Sanitize NIK if needed
+			$namaLengkap = htmlspecialchars($scekkar['Nama_Lengkap'], ENT_QUOTES, 'UTF-8'); // Sanitize Name if needed
+			echo "<option value=\"$nik\">$namaLengkap - $nik</option>";
+		}
+	} catch (PDOException $e) {
+		echo "Error: " . $e->getMessage();
 	}
 	?>
 </select>
 <?php
 }else if($_GET['asal']=="otomatis"){ //lempar data atasan 1 dan 2
 	$nik = $_GET['nikpa'];
-	$cekatasan = mysqli_query($koneksi,"select nik_atasan1,nik_atasan2 from atasan where nik='$nik'");
-	$scekatasan = mysqli_fetch_array($cekatasan);
+	try {
+		// Fetch data for nik_atasan1
+		$sql1 = "SELECT NIK, Nama_Lengkap, Kode_OU, Email FROM $karyawan WHERE NIK IN (SELECT nik_atasan1 FROM atasan WHERE nik = :nik)";
+		$stmt1 = $koneksi->prepare($sql1);
+		$stmt1->bindParam(':nik', $nik, PDO::PARAM_STR);
+		$stmt1->execute();
+		$scekatasan1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 	
-	$cekatasan1 = mysqli_query($koneksi,"SELECT NIK,Nama_Lengkap, Kode_OU, Email FROM $karyawan where NIK='$scekatasan[nik_atasan1]'");
-	$scekatasan1 = mysqli_fetch_array($cekatasan1);
+		// Fetch data for nik_atasan2
+		$sql2 = "SELECT NIK, Nama_Lengkap, Kode_OU, Email FROM $karyawan WHERE NIK IN (SELECT nik_atasan2 FROM atasan WHERE nik = :nik)";
+		$stmt2 = $koneksi->prepare($sql2);
+		$stmt2->bindParam(':nik', $nik, PDO::PARAM_STR);
+		$stmt2->execute();
+		$scekatasan2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 	
-	$cekatasan2 = mysqli_query($koneksi,"SELECT NIK,Nama_Lengkap, Kode_OU, Email FROM $karyawan where NIK='$scekatasan[nik_atasan2]'");
-	$scekatasan2 = mysqli_fetch_array($cekatasan2);
+		// Process the data here, e.g., display or use the fetched data
+	
+	} catch (PDOException $e) {
+		echo "Error: " . $e->getMessage();
+	}
 	
 	$data = array(
 				'unitsuperior'    	=>  $scekatasan1['Kode_OU'],
@@ -118,18 +183,38 @@ $scekgol = mysqli_fetch_array($cekgol);
 }else if($_GET['asal']=="emailsuperior"){ //lempar data email superior
 	$nik = $_GET['nikpa'];
 	
-	$cek_superior = mysqli_query($koneksi,"SELECT NIK,Nama_Lengkap, Kode_OU, Email FROM $karyawan where NIK='$nik'");
-	$scek_superior = mysqli_fetch_array($cek_superior);
-	echo $scek_superior['Email'];
+	try {
+		// Fetch data for the specified NIK
+		$sql = "SELECT NIK, Nama_Lengkap, Kode_OU, Email FROM $karyawan WHERE NIK = :nik";
+		$stmt = $koneksi->prepare($sql);
+		$stmt->bindParam(':nik', $nik, PDO::PARAM_STR);
+		$stmt->execute();
+		$scek_superior = $stmt->fetch(PDO::FETCH_ASSOC);
+	
+		// Process the data here, e.g., display or use the fetched data
+	
+	} catch (PDOException $e) {
+		echo "Error: " . $e->getMessage();
+	}
 	// $data = array(
 				// 'superioremail'  	=>  $scek_superior['Email'],);
 	 // echo json_encode($data);
 }else if($_GET['asal']=="heademailsuperior"){ //lempar data email head superior
 	$nik = $_GET['nikpa'];
 	
-	$cekatasan1 = mysqli_query($koneksi,"SELECT NIK,Nama_Lengkap, Kode_OU, Email FROM $karyawan where NIK='$nik'");
-	$scekatasan1 = mysqli_fetch_array($cekatasan1);
-	echo $scekatasan1['Email'];
+	try {
+		// Fetch data for the specified NIK
+		$sql = "SELECT NIK, Nama_Lengkap, Kode_OU, Email FROM $karyawan WHERE NIK = :nik";
+		$stmt = $koneksi->prepare($sql);
+		$stmt->bindParam(':nik', $nik, PDO::PARAM_STR);
+		$stmt->execute();
+		$scekatasan1 = $stmt->fetch(PDO::FETCH_ASSOC);
+	
+		// Process the data here, e.g., display or use the fetched data
+	
+	} catch (PDOException $e) {
+		echo "Error: " . $e->getMessage();
+	}
 	// $data = array(
 				// 'headsuperioremail'  	=>  $scekatasan1['Email'],);
 	 // echo json_encode($data);

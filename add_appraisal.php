@@ -54,25 +54,26 @@ function cmdtampildata(data,asal,nik1)
 	xmlhttp.send(null);				
 }
 
-function statusbawahan(nik) {
+function statusbawahan(id) {
 //alert(nik);
-xmlhttp.open("get", "cekstatus.php?nik="+nik, true);
+xmlhttp.open("get", "cekstatus.php?id="+id, true);
 
 	xmlhttp.onreadystatechange = function()
 	{
 		if((xmlhttp.readyState==4)&&(xmlhttp.status==200))
 		{
-			//alert(xmlhttp.responseText);
-			document.getElementById('fortable').value=xmlhttp.responseText;
+			// alert(xmlhttp.responseText);
+			// document.getElementById('fortable').value=xmlhttp.responseText;
+			document.getElementById('detail_superior').innerHTML=xmlhttp.responseText;
 			
-			if(xmlhttp.responseText == 'staff'){
-				document.getElementById('bawahan').style.display = "";
-			}else if(xmlhttp.responseText == 'Member'){
-				document.getElementById('member').style.display = "";
-			}else{
-				document.getElementById('bawahan').style.display = "none";
-				document.getElementById('member').style.display = "none";
-			}
+			// if(xmlhttp.responseText == 'staff'){
+				// document.getElementById('bawahan').style.display = "";
+			// }else if(xmlhttp.responseText == 'Member'){
+				// document.getElementById('member').style.display = "";
+			// }else{
+				// document.getElementById('bawahan').style.display = "none";
+				// document.getElementById('member').style.display = "none";
+			// }
 			
 		}
 		return false;
@@ -100,58 +101,40 @@ function isi_emailatasan(superior,asal){
 }
 function cekvalid()
 {
-	if(document.getElementById('nik').value=='')
+	// alert("cek cek");
+	
+	if(document.getElementById('fortable').value=='')
 	{
-		alert('Karyawan yang dinilai kosong');
+		alert('fortable');
 		return false
 	}
-	else if(document.getElementById('superior').value=='')
+	else if(document.getElementById('email_atasan1').value=='')
 	{
-		alert('Atasan 1 Kosong');
+		alert('Email Atasan 1 Kosong');
 		return false
 	}
-	else if (document.getElementById('superioremail').value=='')
-	{
-		alert("Email Atasan 1 Kosong");
-		return false
-	}
-	else if(document.getElementById('headsuperior').value=='')
-	{
-		alert('Atasan 2 Kosong');
-		return false
-	}	
-	else if(document.getElementById('headsuperioremail').value=='')
+	else if (document.getElementById('email_atasan2').value=='')
 	{
 		alert("Email Atasan 2 Kosong");
 		return false
 	}
+	else if(document.getElementById('email_atasan3').value=='')
+	{
+		alert('Email Atasan 3 Kosong');
+		return false
+	}	
 	else
 	{	
-		if(document.getElementById('fortable').value=='staff')
-		{
-			if(document.getElementById('statbawah').value=='')
-			{
-				alert('Empty Status');
-				return false
-			}
-		}else if(document.getElementById('fortable').value=='Member')
-		{
-			if(document.getElementById('statmember').value=='')
-			{
-				alert('Empty Status');
-				return false
-			}
-		}
-	
-		var nik 					= document.getElementById('nik').value;		
-		var superiorsend 			= document.getElementById('superior').value;
-		var superioremailsend 		= document.getElementById('superioremail').value;
-		var headsuperiorsend 		= document.getElementById('headsuperior').value;
-		var headsuperioremailsend 	= document.getElementById('headsuperioremail').value;
-		var statbawah 				= document.getElementById('statbawah').value;
-		var statmember				= document.getElementById('statmember').value;
+		var id 						= document.getElementById('id').value;		
+		var fortable 				= document.getElementById('fortable').value;
+		var email_atasan1 			= document.getElementById('email_atasan1').value;
+		var id_atasan1 				= document.getElementById('id_atasan1').value;
+		var email_atasan2 			= document.getElementById('email_atasan2').value;
+		var id_atasan2 				= document.getElementById('id_atasan2').value;
+		var email_atasan3 			= document.getElementById('email_atasan3').value;
+		var id_atasan3 				= document.getElementById('id_atasan3').value;
 		
-		xmlhttp.open("GET", "cekvalid.php?nik="+nik+"&superior="+superiorsend+"&headsuperior="+headsuperiorsend, true);
+		xmlhttp.open("GET", "cekvalid.php?id="+id+"&id_atasan1="+id_atasan1+"&id_atasan2="+id_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan1="+email_atasan1+"&email_atasan2="+email_atasan2+"&email_atasan3="+email_atasan3, true);
 		
 		xmlhttp.onreadystatechange = function() 
 		{
@@ -160,23 +143,23 @@ function cekvalid()
 				// alert(xmlhttp.responseText);
 				var cekvalid			= xmlhttp.responseText.split('|');
 				var lanjut	 			= cekvalid[0];
-				var varnik				= cekvalid[1];
-				var varsuperior			= cekvalid[2];				
-				var varheadsuperior		= cekvalid[3];
-				var namainput			= cekvalid[4];
+				var varid				= cekvalid[1];
+				var namainput			= cekvalid[8];
 				
 				if(lanjut == 0)
 				{
-					alert("invalid NIK !!");
+					alert("invalid Employee !!");
 				}
 				else if(lanjut == 2)
 				{
 					alert("Data Already Available, PA was Assessed by "+namainput);
 				}
 				else
-				{
-					//alert("Berhasil");	
-					window.location="home.php?link=formpa&nik="+varnik+"&superior="+varsuperior+"&headsuperior="+varheadsuperior+"&superioremail="+superioremailsend+"&headsuperioremail="+headsuperioremailsend+"&statbawah="+statbawah+"&statmember="+statmember;
+				{	
+					if(fortable=='nonstaff' || fortable=='staff'){
+						alert("nonstaff");
+						window.location="home.php?link=formpa&id="+varid;
+					}
 				}
 			}
         return false;
@@ -186,6 +169,7 @@ function cekvalid()
 	return true;
 }  
 </script>
+
 <div class="row">
 <section class="col-lg-12 connectedSortable">
   <div class="nav-tabs-custom">
@@ -194,129 +178,49 @@ function cekvalid()
           <h3 class="box-title">Search Employee</h3>
         </div>
         <div class="box-body">			
-			<!-- -->
+			<!-- <input type="text" name="fortable" id="fortable" /> -->
 			<div class="form-group">
-			<input type="hidden" name="fortable" id="fortable" />
+			
 			  <table>
-			  <tr><td style="width:15%"><label><?php echo "$unitlokasi"; ?></label></td><td style="width:1%"></td><td style="width:24%"><label><?php echo "$karyawandinilai"; ?></label></td><td style="width:60%"></td></tr>
-			  <tr><td>
-				<select id="unit" name="unit" class="form-control" onchange="cmdtampildata(this.value,'unit1','unit')" required>
-					<option value="" > -- <?php echo "$pilihunit"; ?> -- </option>
-				  <?php 
-				  $cekunit = mysqli_query ($koneksi, "SELECT Kode_OU, Nama_OU FROM `daftarou` where aktif='T' ORDER BY Nama_OU asc");
-				  while ($scekunit	= mysqli_fetch_array ($cekunit))
-				  {
-				  ?>
-					<option value="<?php echo $scekunit['Kode_OU']; ?>"><?php echo "$scekunit[Nama_OU]"; ?></option>
-				  <?php
-				  }
-				  ?>
+			  <tr>
+				<td style="width:20%"><label><?php echo "$karyawandinilai"; ?></label></td>
+				<td style="width:1%"></td>
+				<td style="width:24%"><label><?php echo " "; ?></label></td>
+				<td style="width:55%"></td>
+			</tr>
+			  <tr>
+			  <td>
+				<?php 
+				
+				?>
+				<select id="id" name="id" class="form-control" onchange="statusbawahan(this.value)" required>
+					<option value="" > -- <?php echo "$pilihnama"; ?> -- </option>
+					<?php 
+					try {
+						$stmt = $koneksi->prepare("SELECT ats.idkar, k.nik_baru, k.Nama_Lengkap FROM atasan as ats 
+						LEFT JOIN karyawan_2023 as k ON k.id = ats.idkar
+						WHERE ats.idkar = :idmaster_pa OR ats.id_atasan1 = :idmaster_pa
+						ORDER BY k.Nama_Lengkap ASC");
+						$stmt->bindParam(':idmaster_pa', $idmaster_pa, PDO::PARAM_INT);
+						$stmt->execute();
+					
+						while ($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)) {
+							echo '<option value="' . $scekkar['idkar'] . '">' . $scekkar['Nama_Lengkap'] . ' (' . $scekkar['nik_baru'] . ')</option>';
+						}
+					} catch (PDOException $e) {
+						echo "Error: " . $e->getMessage();
+					}
+					  ?>
 				</select>
 				</td>
 				<td></td>
 			    <td>
-				<select id="nik" name="nik" class="form-control" onchange="statusbawahan(this.value)" required>
-					<option value="" > -- <?php echo "$pilihnama"; ?> -- </option>
-				</select></td>
+				</td>
 			    <td></td>
 			  </tr>
 			  </table>
 			</div>
-			<div class="form-group">
-			  <table>
-			  <tr>
-			   <td style="width:15%"><label><?php echo "$unitlokasi"; ?></label></td><td style="width:1%"></td>
-			   <td style="width:24%"><label><?php echo "$atasan1"; ?></label></td><td style="width:1%"></td>
-			   <td style="width:59%"><label>Email</label></td>
-			  </tr>
-			  <tr>
-			  <td>
-				<select id="unitsuperior" name="unitsuperior" class="form-control" onchange="cmdtampildata(this.value,'unit2','nik')" required>
-					<option value="" > -- <?php echo "$pilihunit"; ?> -- </option>
-				  <?php 
-				  $cekunit = mysqli_query ($koneksi, "SELECT Kode_OU, Nama_OU FROM `daftarou` where aktif='T' ORDER BY Nama_OU asc");
-				  while ($scekunit	= mysqli_fetch_array ($cekunit))
-				  {
-				  ?>
-					<option value="<?php echo $scekunit['Kode_OU']; ?>"><?php echo "$scekunit[Nama_OU]"; ?></option>
-				  <?php
-				  }
-				  ?>
-				</select>
-			  </td><td style="width:1%"></td>
-			  <td>
-				<select id="superior" name="superior" class="form-control" onchange="isi_emailatasan(this.value,'emailsuperior')" required>
-					<option value="" > -- <?php echo "$pilihatasan"; ?> -- </option>
-				</select>
-			  </td><td style="width:1%"></td>
-			  <td>
-				<input type="text" class="form-control" id ="superioremail" name="superioremail" style="width:50%" placeholder="Superior's Email" >
-			  </td>
-			  </tr></table>
-			</div>
-			<div class="form-group">
-			  <table>
-			  <tr>
-			   <td style="width:15%"><label><?php echo "$unitlokasi"; ?></label></td><td style="width:1%"></td>
-			   <td style="width:24%"><label><?php echo "$atasan2"; ?></label></td><td style="width:1%"></td>
-			   <td style="width:59%"><label>Email</label></td>
-			  </tr>
-			  <tr>
-			  <td>
-				<select id="unithsuperior" name="unithsuperior" class="form-control" onchange="cmdtampildata(this.value,'unit3','nik')" required>
-					<option value="" > -- <?php echo "$pilihunit"; ?> -- </option>
-				  <?php 
-				  $cekunit = mysqli_query ($koneksi, "SELECT Kode_OU, Nama_OU FROM `daftarou` where aktif='T' ORDER BY Nama_OU asc");
-				  while ($scekunit	= mysqli_fetch_array ($cekunit))
-				  {
-				  ?>
-					<option value="<?php echo $scekunit['Kode_OU']; ?>"><?php echo "$scekunit[Nama_OU]"; ?></option>
-				  <?php
-				  }
-				  ?>
-				</select>
-			  </td><td style="width:1%"></td>
-			  <td>
-				<select id="headsuperior" name="headsuperior" class="form-control" onchange="isi_emailatasan(this.value,'heademailsuperior')" required>
-					<option value="" > -- <?php echo "$pilihatasan"; ?> -- </option>
-				</select>
-			  </td><td style="width:1%"></td>
-			  <td>
-				<input type="text" class="form-control" id ="headsuperioremail" name="headsuperioremail" style="width:50%" placeholder="Head Superior's Email" >
-			  </td>
-			  </tr></table>
-			</div>
-			
-			<div class="form-group" id="bawahan" style="display:none;">
-			  <table style="width:20%">
-			  <tr>
-			   <td><label><?php echo $anggota; ?></label></td>
-			  </tr>
-			  <tr>
-			  <td>
-				<select id="statbawah" name="statbawah" class="form-control">
-					<option value=""> -- <?php echo $pilih; ?> -- </option>
-					<option value="Y"> <?php echo $ya; ?> </option>
-					<option value="N"> <?php echo $tidak; ?> </option>
-				</select>
-			  </td>
-			  </tr></table>
-			</div>
-			
-			<div class="form-group" id="member" style="display:none;">
-			  <table style="width:20%">
-			  <tr>
-			   <td><label><?php echo $staffno; ?></label></td>
-			  </tr>
-			  <tr>
-			  <td>
-				<select id="statmember" name="statmember" class="form-control">
-					<option value=""> -- <?php echo $pilih; ?> -- </option>
-					<option value="Y"> Staff </option>
-					<option value="N"> Non Staff </option>
-				</select>
-			  </td>
-			  </tr></table>
+			<div class="form-group" id="detail_superior" name="detail_superior">
 			</div>
 			
 			<div class="box-footer">

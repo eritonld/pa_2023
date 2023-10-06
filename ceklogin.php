@@ -1,37 +1,41 @@
 <?php
 include("conf/conf.php");
 
-$username	= mysqli_real_escape_string($koneksi, $_POST['username']);
-$password	= mysqli_real_escape_string($koneksi, $_POST['password']);
+// Validate and sanitize user input
+$username = $_POST['username'];
+$password = $_POST['password'];
 
-$pengacak="HJBDSUYGQ783242BHJSSDFSD";
+$pengacak = "HJBDSUYGQ783242BHJSSDFSD";
 
-$q_cek 	= mysqli_query ($koneksi,"Select * from user_pa where username = '$username' or nik_baru = '$username'");
-$r_cek	= mysqli_fetch_array ($q_cek);
+try {
+    // Establish a PDO database connection
 
-if(isset($r_cek['password'])){
-	if (md5($pengacak . md5($password) . $pengacak) == $r_cek['password'] && $r_cek['active']=='Y')
-	{	
-		session_start();
-		$_SESSION['idmaster_pa'] = $r_cek['id'];
-		
-		$datetime			= Date('Y-m-d H:i:s');
-		$update = mysqli_query($koneksi,"update user_pa set lastip = '".$_SERVER['REMOTE_ADDR']."',lastlogin='$datetime' where id =$r_cek[id] ");
-		
-		
-		if ($update){
-			echo "1";
-		}
-		else
-		{
-			echo "0";
-		}
-	}
-	else
-	{
-		echo "0";
-	}
-}else{
-	echo "0";
+    // Prepare a SQL statement to retrieve user data
+    $stmt = $koneksi->prepare("SELECT id, password, active FROM user_pa WHERE username = :username OR nik_baru = :username");
+    $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row && md5($pengacak . md5($password) . $pengacak) == $row['password'] && $row['active'] == 'Y') {
+        session_start();
+        $_SESSION['idmaster_pa'] = $row['id'];
+
+        $datetime = date('Y-m-d H:i:s');
+        $updateStmt = $koneksi->prepare("UPDATE user_pa SET lastip = :ip, lastlogin = :datetime WHERE id = :id");
+        $updateStmt->bindParam(':ip', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
+        $updateStmt->bindParam(':datetime', $datetime, PDO::PARAM_STR);
+        $updateStmt->bindParam(':id', $row['id'], PDO::PARAM_INT);
+
+        if ($updateStmt->execute()) {
+            echo "1";
+        } else {
+            echo "01";
+        }
+    } else {
+        echo "**";
+    }
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
 }
+
 ?>
