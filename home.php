@@ -19,7 +19,7 @@ if ($idmaster_pa=="")
 	?>
 	<script>
 		alert('Login First');
-		window.location="http://172.30.1.38:8080/pa/";
+		window.location="http://localhost/pa_2023/";
 	</script>
 	<?php
 }

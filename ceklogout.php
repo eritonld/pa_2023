@@ -6,5 +6,5 @@ unset($_SESSION['idmaster_pa']);
 
 ?>
 <script>
-	window.location="";
+	window.location="http://localhost/pa_2023/";
 </script>
