@@ -102,7 +102,7 @@ else
     <link href="plugins/morris/morris.css" rel="stylesheet" type="text/css" />
 	
 	<link rel="stylesheet" href="plugins/select2/multiple-select.css"/>
-	<script src="plugins/jQuery/jQuery-2.1.3.min.js"></script>
+	<script src="plugins/jQuery/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 	<!--
 	

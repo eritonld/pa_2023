@@ -53,6 +53,19 @@ try {
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
+try {
+    $queryCulture = "SELECT * FROM question_pa WHERE `group` = 'culture' ORDER BY `id` ASC";
+
+    $stmtCulture = $koneksi->prepare($queryCulture);
+    $stmtCulture->execute();
+
+    $cultureValue = $stmtCulture->fetchAll(PDO::FETCH_ASSOC);
+
+	$totalRows = $stmtCulture->rowCount();
+
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
 
 if($ckaryawan['fortable']=='nonstaff')
 {
@@ -124,6 +137,8 @@ if($bahasa=='eng')
 	$title_aa='Work Objectives';
 	$add_btn_name='Objective';
 	$alertRow='Sorry, you has reached maximum row.';
+	$title_comment='Direct Manager Comment';
+	$comment_placeholder='input your comment';
 }
 else
 {	
@@ -146,6 +161,8 @@ else
 	$title_aa='Objektif Kerja';
 	$add_btn_name='Objektif';
 	$alertRow='Maaf, kolom objektif sudah maksimal.';
+	$title_comment='Komentar Atasan Langsung';
+	$comment_placeholder='masukkan komentar anda';
 }
 
 
@@ -181,8 +198,14 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
     background: url('dist/img/ellipsis.gif') 50% 50% no-repeat rgb(249,249,249);
     opacity: .9;
 }
+.culture::first-letter {
+  font-size: 150%;
+  color: #BF2B26;
+}
 </style>
+<link href="dist/css/stepper.css" rel="stylesheet" type="text/css" />
 <script src="plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
+<script src="dist/js/stepper.js"></script>
 
 <!-- +"&id_atasan1="+id_atasan1+"&email_atasan1="+email_atasan1+"&id_atasan2="+id_atasan2+"&email_atasan2="+email_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan3="+email_atasan3 -->
 
@@ -270,72 +293,197 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
           <h3 class="box-title"><?="<b>$a1</b>";?></h3>
         </div>
         <div class="box-body">
-			<div class="container-fluid" id="container">
-				<div class="row" style="margin-top: 20px;">
-					<h1 class="col-md-2 text-bold h4">A. <?= $title_a; ?></h1>
-				</div>
-				<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
-					<h1 class="col-md-2 text-bold h5"><?= $title_aa; ?></h1>
-				</div>
-				<?php for ($i=1; $i <= 5; $i++) { 
-				?>
-				<div class="row" id="row-<?= $i; ?>" style="margin-bottom: 40px;">
-					<div class="form-horizontal">
-						<label for="value<?= $i; ?>" class="col-md-1 control-label"><?= $i.'.'; ?></label>
-						<div class="col-md-8">
-							<!-- <input type="test" class="form-control" id="value<?= $i; ?>" placeholder="..."> -->
-							<textarea class="form-control" name="value<?= $i; ?>" id="value<?= $i; ?>" style="resize: none; height: 100px;" placeholder="..."></textarea>
+			<!-- start stepper -->
+<section class="signup-step-container">
+  <div class="container-fluid">
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-10">
+        <div class="wizard">
+          <div class="wizard-inner">
+            <div class="connecting-line"></div>
+            <ul class="nav nav-tabs" role="tablist">
+              <li role="presentation" style="margin-left: 0;" class="active">
+                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" aria-expanded="true"><span class="round-tab">1 </span> <i>Self Review</i></a>
+              </li>
+              <li role="presentation" class="disabled">
+                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" aria-expanded="false"><span class="round-tab">2</span> <i>Culture</i></a>
+              </li>
+              <li role="presentation" style="margin-right: 0;" class="disabled">
+                <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab"><span class="round-tab">3</span> <i>Leadership</i></a>
+              </li>
+            </ul>
+          </div>
+            <div class="tab-content" id="main_form">
+				<!-- Self Review Start -->
+              <div class="tab-pane active" role="tabpanel" id="step1">
+                <h4 class="text-center">Self Review</h4>
+                <div class="row">
+					<div class="container-fluid" id="container">
+						<div class="row" style="margin-top: 20px;">
+							<h1 class="col-md-3 text-bold h4">A. <?= $title_a; ?></h1>
 						</div>
-						<div class="col-md-2">
-							<select class="form-control" name="score<?= $i; ?>" id="score<?= $i; ?>">
-								<option value="">- score -</option>
-								<option value="5">5</option>
-								<option value="4">4</option>
-								<option value="3">3</option>
-								<option value="2">2</option>
-								<option value="1">1</option>
-							</select>
+						<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
+							<h1 class="col-md-3 text-bold h5"><?= $title_aa; ?></h1>
+						</div>
+						<?php for ($i=1; $i <= 5; $i++) { 
+						?>
+						<div class="row" id="row-<?= $i; ?>" style="margin-bottom: 40px;">
+							<div class="form-horizontal">
+								<label for="value<?= $i; ?>" class="col-md-1 control-label"><?= $i.'.'; ?></label>
+								<div class="col-md-9">
+									<!-- <input type="test" class="form-control" id="value<?= $i; ?>" placeholder="..."> -->
+									<textarea class="form-control" name="value<?= $i; ?>" id="value<?= $i; ?>" style="resize: none; height: 100px;" placeholder="..."></textarea>
+								</div>
+								<div class="col-md-2">
+									<select class="form-control" name="score<?= $i; ?>" id="score<?= $i; ?>">
+										<option value="">- score -</option>
+										<option value="5">5</option>
+										<option value="4">4</option>
+										<option value="3">3</option>
+										<option value="2">2</option>
+										<option value="1">1</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<script>
+							// Add an event listener to the select element
+							document.getElementById('score<?= $i; ?>').addEventListener('change', function () {
+								calculateAverage();
+							});
+						</script>
+						<?php
+						} ?>
+					</div>
+					<div class="container-fluid" style="margin-bottom: 20px;">
+						<div class="row" style="margin-top: 10px; display: none;">
+							<div class="form-horizontal">
+								<div class="col-md-offset-1 col-md-8">
+								<button type="button" class="btn btn-success btn-sm" id="addRow" onclick="addRows(this)"><i class="fa fa-plus"></i></button>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 10px;">
+							<div class="form-horizontal">
+								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
+									<h1 class="h4 text-bold">Average Score :</h1>
+								</div>
+								<div class="col-md-2" style="padding-left: 0;">
+									<input type="text" name="total_score" id="total_score" class="form-control text-center text-bold" style="background: #FFFFCC;" value="-" readonly>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']==$ckaryawan['idkar'] ? '' : 'none';?>">
+							<div class="form-horizontal">
+								<div class="col-md-offset-1 col-md-6" style="padding-right: 0;">
+									<h1 class="h5 text-bold"><?= $title_comment; ?> : </h1>
+									<textarea class="form-control" name="comment_a1" id="comment_a1" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."></textarea>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-				<script>
-					// Add an event listener to the select element
-					document.getElementById('score<?= $i; ?>').addEventListener('change', function () {
-						calculateAverage();
-					});
-				</script>
-				<?php
-				} ?>
-			</div>
-			<div class="container-fluid" style="margin-bottom: 20px;">
-				<div class="row" style="margin-top: 10px; display: none;">
-					<div class="form-horizontal">
-						<div class="col-md-offset-1 col-md-8">
-						<button type="button" class="btn btn-success btn-sm" id="addRow" onclick="addRows(this)"><i class="fa fa-plus"></i></button>
-						</div>
+                </div>
+                <ul class="list-inline pull-right">
+                  <li><button type="button" class="default-btn next-step">Continue to next step</button></li>
+                </ul>
+              </div>
+			<!-- Self Review End -->
+              <div class="tab-pane" role="tabpanel" id="step2">
+                <h4 class="text-center">SIGAP</h4>
+				<div class="row">
+					<div class="container-fluid" id="container">
+							<!-- // Process the data here -->
+							<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
+								<h1 class="col-md-3 text-bold h4 culture">SYNERGIZED TEAM</h1>
+							</div>
+						<?php
+						foreach ($cultureValue as $data) { 
+						?>
+							<div class="row" style="margin-bottom: 20px;">
+								<div class="col-md-9">
+									<span class="h4"><?= $data['item']; ?></span>
+								</div>
+								<div class="col-md-3">
+									<select class="form-control" name="scale_1a">
+										<option value="">- scale -</option>
+										<option value="1">Basic</option>
+										<option value="2">Comprehension</option>
+										<option value="3">Practitioner</option>
+										<option value="4">Advanced</option>
+										<option value="5">Expert</option>
+									</select>
+								</div>
+							</div>
+						<?php
+						}
+						?>
 					</div>
-				</div>
-				<div class="row" style="margin-top: 10px;">
-					<div class="form-horizontal">
-						<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
-							<h1 class="h4">Average Score : </h1>
-						</div>
-						<div class="col-md-2" style="padding-left: 0;">
-							<input type="text" name="total_score" id="total_score" class="form-control text-center text-bold" style="background: #FFFFCC;" value="-" readonly>
-						</div>
+                </div>
+                <ul class="list-inline pull-right">
+                  <li><button type="button" class="default-btn prev-step">Back</button></li>
+                  <li><button type="button" class="default-btn next-step">Continue</button></li>
+                </ul>
+              </div>
+              <div class="tab-pane" role="tabpanel" id="step3">
+			  <h4 class="text-center">Supervisor | Manager And Above</h4>
+				<div class="row">
+					<div class="container-fluid" id="container">
+							<!-- // Process the data here -->
+							<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+								<h1 class="col-md-3 text-bold h4">Komunikasi</h1>
+							</div>
+							<div class="row" style="margin-bottom: 20px;">
+								<div class="col-md-9">
+									<span class="h4">Berbicara dan berdiskusi secara efektif, mengajak dan menginspirasi orang lain.</span>
+								</div>
+								<div class="col-md-3">
+									<select class="form-control" name="scale_1b">
+										<option value="">- scale -</option>
+										<option value="1">Basic</option>
+										<option value="2">Comprehension</option>
+										<option value="3">Practitioner</option>
+										<option value="4">Advanced</option>
+										<option value="5">Expert</option>
+									</select>
+								</div>
+							</div>
+							<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+								<h1 class="col-md-3 text-bold h4">Perencanaan Kerja</h1>
+							</div>
+							<div class="row" style="margin-bottom: 20px;">
+								<div class="col-md-9">
+									<span class="h4">Merencanakan kerja, sumber daya dan mengelola sumber daya, mengutamakan pekerjaan dan mengantisipasi potensi masalah dengan tujuan penyelesaian tugas atau project dengan tepat waktu.Mempertimbangkan kemampuannya untuk mengelola beberapa tugas atau project secara simultan (bersamaan).</span>
+								</div>
+								<div class="col-md-3">
+									<select class="form-control" name="scale_2b">
+										<option value="">- scale -</option>
+										<option value="1">Basic</option>
+										<option value="2">Comprehension</option>
+										<option value="3">Practitioner</option>
+										<option value="4">Advanced</option>
+										<option value="5">Expert</option>
+									</select>
+								</div>
+							</div>
 					</div>
-				</div>
-			</div>
-		</div>
-		<div class="box-footer">
-			<div class="container-fluid">
-				<div class="row text-center">
-					<button type="submit" class="btn btn-primary text-bold" style="width: 20%; margin-block: 10px;">SUBMIT</button>
-				</div>
-			</div>
+                </div>
+                <ul class="list-inline pull-right">
+                  <li><button type="button" class="default-btn prev-step">Back</button></li>
+				  <li><button type="button" class="default-btn next-step">Finish</button></li>                
+				</ul>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end stepper -->
+
 		</div>
 	</div>
-	</form>
+</form>
 
 </section>
 </div>
