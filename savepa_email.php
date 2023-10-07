@@ -25,8 +25,8 @@ if($bahasa=='eng')
 	$a12='Rating';
 	$a13='On Rating';
 	$a14='Click link for detail';
-	$a15='Do not reply to this message as it is sent automatically by the system  <p>----- <br> HC System Development';
-	$a16='just entry data PA';
+	$a15='Do not reply this message, this message sent automatically by system  <p>----- <br> HC System Development';
+	$a16='has been created PA evaluation';
 }
 else
 {
@@ -46,7 +46,7 @@ else
 	$a13='Pembobotan';
 	$a14='Untuk detail klik link berikut';
 	$a15='Jangan balas pesan ini karena dikirim secara otomatis oleh system  <p>----- <br> HC System Development';
-	$a16='baru saja melakukan input data PA';	
+	$a16='telah melakukan penilaian PA';	
 }
 
 

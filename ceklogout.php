@@ -6,5 +6,5 @@ unset($_SESSION['idmaster_pa']);
 
 ?>
 <script>
-	window.location="";
+	window.location="http://localhost:8080/hcis-pa-2023/";
 </script>
