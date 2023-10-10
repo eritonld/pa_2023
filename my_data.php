@@ -95,7 +95,7 @@ include("tabel_setting.php");
                  
 					btnClass = 'primary';
 					btnTitle = 'Done';
-					return '<a id="edit" href="home.php?link=formpa_edit&id='+data.id+'" class="btn btn-sm btn-'+btnClass+'"><i class="fa fa-edit"></i></a>';
+					return '<a id="edit" href="home.php?link=formpa_edit&id='+data.idkar+'" class="btn btn-sm btn-'+btnClass+'"><i class="fa fa-edit"></i></a>';
                      
                 }
 			 },

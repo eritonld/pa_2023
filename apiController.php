@@ -1,5 +1,7 @@
 <?php
 include 'conf/conf.php'; // Include the database connection script
+session_start();
+
 include("tabel_setting.php");
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -19,7 +21,8 @@ if($code == 'getPenilaian') {
                 LEFT JOIN karyawan_2023 AS b ON b.id = a.idkar 
                 LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
                 LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU 
-                LEFT JOIN daftardepartemen AS e ON e.kode_departemen = b.Kode_Departemen";
+                LEFT JOIN daftardepartemen AS e ON e.kode_departemen = b.Kode_Departemen
+                WHERE a.created_by='$_SESSION[idmaster_pa]'";
     
         $result = $koneksi->query($sql);
     
@@ -63,6 +66,27 @@ if($code == 'getPenilaian') {
     $score5 = $_POST["score5"];
     $total_score = $_POST["total_score"];
     $periode = 2023;
+    $synergized1 = isset($_POST["synergized1"]) ? $_POST["synergized1"] : null;
+    $synergized2 = isset($_POST["synergized2"]) ? $_POST["synergized2"] : null;
+    $synergized3 = isset($_POST["synergized3"]) ? $_POST["synergized3"] : null;
+    $integrity1 = isset($_POST["integrity1"]) ? $_POST["integrity1"] : null;
+    $integrity2 = isset($_POST["integrity2"]) ? $_POST["integrity2"] : null;
+    $integrity3 = isset($_POST["integrity3"]) ? $_POST["integrity3"] : null;
+    $growth1 = isset($_POST["growth1"]) ? $_POST["growth1"] : null;
+    $growth2 = isset($_POST["growth2"]) ? $_POST["growth2"] : null;
+    $growth3 = isset($_POST["growth3"]) ? $_POST["growth3"] : null;
+    $adaptive1 = isset($_POST["adaptive1"]) ? $_POST["adaptive1"] : null;
+    $adaptive2 = isset($_POST["adaptive2"]) ? $_POST["adaptive2"] : null;
+    $adaptive3 = isset($_POST["adaptive3"]) ? $_POST["adaptive3"] : null;
+    $passion1 = isset($_POST["passion1"]) ? $_POST["passion1"] : null;
+    $passion2 = isset($_POST["passion2"]) ? $_POST["passion2"] : null;
+    $passion3 = isset($_POST["passion3"]) ? $_POST["passion3"] : null;
+    $leadership1 = isset($_POST["leadership1"]) ? $_POST["leadership1"] : null;
+    $leadership2 = isset($_POST["leadership2"]) ? $_POST["leadership2"] : null;
+    $leadership3 = isset($_POST["leadership3"]) ? $_POST["leadership3"] : null;
+    $leadership4 = isset($_POST["leadership4"]) ? $_POST["leadership4"] : null;
+    $leadership5 = isset($_POST["leadership5"]) ? $_POST["leadership5"] : null;
+    $leadership6 = isset($_POST["leadership6"]) ? $_POST["leadership6"] : null;
     
     $tabel_prosedure="prosedure";
     $a1='Penilaian Kinerja Karyawan';
@@ -107,13 +131,13 @@ if($code == 'getPenilaian') {
         if ($ckaryawan) {
             // Process the data here
             // Define the common SQL INSERT statement
-        $queryInsert = "INSERT INTO %s (`id`, idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, created_by, periode) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $queryInsert = "INSERT INTO %s (`id`, idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, created_by, periode) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        if ($idpic == $id_atasan1) {
-            $tableNames = ['transaksi_2023', 'transaksi_2023_awal', 'transaksi_2023_a1'];
-        } else {
+        if ($idpic == $idkar) {
             $tableNames = ['transaksi_2023', 'transaksi_2023_awal'];
+        } else {
+            $tableNames = ['transaksi_2023', 'transaksi_2023_awal', 'transaksi_2023_a1'];
         }
 
         // Initialize a variable to track any errors
@@ -142,8 +166,29 @@ if($code == 'getPenilaian') {
                 $stmtInsert->bindParam(11, $score4);
                 $stmtInsert->bindParam(12, $score5);
                 $stmtInsert->bindParam(13, $total_score);
-                $stmtInsert->bindParam(14, $idkar);
-                $stmtInsert->bindParam(15, $periode);
+                $stmtInsert->bindParam(14, $synergized1);
+                $stmtInsert->bindParam(15, $synergized2);
+                $stmtInsert->bindParam(16, $synergized3);
+                $stmtInsert->bindParam(17, $integrity1);
+                $stmtInsert->bindParam(18, $integrity2);
+                $stmtInsert->bindParam(19, $integrity3);
+                $stmtInsert->bindParam(20, $growth1);
+                $stmtInsert->bindParam(21, $growth2);
+                $stmtInsert->bindParam(22, $growth3);
+                $stmtInsert->bindParam(23, $adaptive1);
+                $stmtInsert->bindParam(24, $adaptive2);
+                $stmtInsert->bindParam(25, $adaptive3);
+                $stmtInsert->bindParam(26, $passion1);
+                $stmtInsert->bindParam(27, $passion2);
+                $stmtInsert->bindParam(28, $passion3);
+                $stmtInsert->bindParam(29, $leadership1);
+                $stmtInsert->bindParam(30, $leadership2);
+                $stmtInsert->bindParam(31, $leadership3);
+                $stmtInsert->bindParam(32, $leadership4);
+                $stmtInsert->bindParam(33, $leadership5);
+                $stmtInsert->bindParam(34, $leadership6);
+                $stmtInsert->bindParam(35, $idpic);
+                $stmtInsert->bindParam(36, $periode);
 
                 // Execute the INSERT statement for the current table
                 if (!$stmtInsert->execute()) {
@@ -251,14 +296,14 @@ if($code == 'getPenilaian') {
             ?>
             <script>
                 window.location='home.php?link=mydata';
-                console.log("Data created successfully!");
+                // console.log("Data created successfully!");
             </script>
             <?php
         } else {
             ?>
             <script>
                 window.location='home.php?link=mydata';
-                console.log("Error");
+                // console.log("Error");
             </script>
             <?php
         }
@@ -270,6 +315,7 @@ if($code == 'getPenilaian') {
 
 }else if($code == 'updateNilaiAwal') {
     $idkar = $_POST["idkar"];
+    $idpic = $_POST["idpic"];
     $value1 = $_POST["value1"];
     $value2 = $_POST["value2"];
     $value3 = $_POST["value3"];
@@ -282,11 +328,34 @@ if($code == 'getPenilaian') {
     $score5 = $_POST["score5"];
     $total_score = $_POST["total_score"];
     $periode = 2023;
-
+    $synergized1 = isset($_POST["synergized1"]) ? $_POST["synergized1"] : null;
+    $synergized2 = isset($_POST["synergized2"]) ? $_POST["synergized2"] : null;
+    $synergized3 = isset($_POST["synergized3"]) ? $_POST["synergized3"] : null;
+    $integrity1 = isset($_POST["integrity1"]) ? $_POST["integrity1"] : null;
+    $integrity2 = isset($_POST["integrity2"]) ? $_POST["integrity2"] : null;
+    $integrity3 = isset($_POST["integrity3"]) ? $_POST["integrity3"] : null;
+    $growth1 = isset($_POST["growth1"]) ? $_POST["growth1"] : null;
+    $growth2 = isset($_POST["growth2"]) ? $_POST["growth2"] : null;
+    $growth3 = isset($_POST["growth3"]) ? $_POST["growth3"] : null;
+    $adaptive1 = isset($_POST["adaptive1"]) ? $_POST["adaptive1"] : null;
+    $adaptive2 = isset($_POST["adaptive2"]) ? $_POST["adaptive2"] : null;
+    $adaptive3 = isset($_POST["adaptive3"]) ? $_POST["adaptive3"] : null;
+    $passion1 = isset($_POST["passion1"]) ? $_POST["passion1"] : null;
+    $passion2 = isset($_POST["passion2"]) ? $_POST["passion2"] : null;
+    $passion3 = isset($_POST["passion3"]) ? $_POST["passion3"] : null;
+    $leadership1 = isset($_POST["leadership1"]) ? $_POST["leadership1"] : null;
+    $leadership2 = isset($_POST["leadership2"]) ? $_POST["leadership2"] : null;
+    $leadership3 = isset($_POST["leadership3"]) ? $_POST["leadership3"] : null;
+    $leadership4 = isset($_POST["leadership4"]) ? $_POST["leadership4"] : null;
+    $leadership5 = isset($_POST["leadership5"]) ? $_POST["leadership5"] : null;
+    $leadership6 = isset($_POST["leadership6"]) ? $_POST["leadership6"] : null;
+    $comment = isset($_POST["comment_a1"]) ? $_POST["comment_a1"] : null;
+    $errors = false;
     try {
+        $koneksi->beginTransaction();
         $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $sql = "UPDATE transaksi_2023 SET 
+        $sql = "UPDATE %s SET 
                     value_1 = :value1,
                     value_2 = :value2,
                     value_3 = :value3,
@@ -298,14 +367,44 @@ if($code == 'getPenilaian') {
                     score_4 = :score4,
                     score_5 = :score5,
                     total_score = :total_score,
-                    updated_by = :idkar,
-                    updated_date = :updated_date
-                WHERE idkar = :idkar";
+                    updated_by = :idpic,
+                    updated_date = :updated_date,
+                    synergized1 = :synergized1,
+                    synergized2 = :synergized2,
+                    synergized3 = :synergized3,
+                    integrity1 = :integrity1,
+                    integrity2 = :integrity2,
+                    integrity3 = :integrity3,
+                    growth1 = :growth1,
+                    growth2 = :growth2,
+                    growth3 = :growth3,
+                    adaptive1 = :adaptive1,
+                    adaptive2 = :adaptive2,
+                    adaptive3 = :adaptive3,
+                    passion1 = :passion1,
+                    passion2 = :passion2,
+                    passion3 = :passion3,
+                    leadership1 = :leadership1,
+                    leadership2 = :leadership2,
+                    leadership3 = :leadership3,
+                    leadership4 = :leadership4,
+                    leadership5 = :leadership5,
+                    leadership6 = :leadership6,
+                    comment_a1 = :comment
+                    WHERE idkar = :idkar";
         
-            $stmt = $koneksi->prepare($sql);
+            if ($idpic == $idkar) {
+                $tableNames = ['transaksi_2023', 'transaksi_2023_awal'];
+            } else {
+                $tableNames = ['transaksi_2023', 'transaksi_2023_awal', 'transaksi_2023_a1'];
+            }
 
+            foreach ($tableNames as $tableName) {
+                // Create a prepared statement with the table name
+                $stmt = $koneksi->prepare(sprintf($sql, $tableName));
             // Bind the parameters
             $stmt->bindParam(':idkar', $idkar);
+            $stmt->bindParam(':idpic', $idpic);
             $stmt->bindParam(':value1', $value1);
             $stmt->bindParam(':value2', $value2);
             $stmt->bindParam(':value3', $value3);
@@ -318,8 +417,37 @@ if($code == 'getPenilaian') {
             $stmt->bindParam(':score5', $score5);
             $stmt->bindParam(':total_score', $total_score);
             $stmt->bindParam(':updated_date', $datetime);
+            $stmt->bindParam(':synergized1', $synergized1);
+            $stmt->bindParam(':synergized2', $synergized2);
+            $stmt->bindParam(':synergized3', $synergized3);
+            $stmt->bindParam(':integrity1', $integrity1);
+            $stmt->bindParam(':integrity2', $integrity2);
+            $stmt->bindParam(':integrity3', $integrity3);
+            $stmt->bindParam(':growth1', $growth1);
+            $stmt->bindParam(':growth2', $growth2);
+            $stmt->bindParam(':growth3', $growth3);
+            $stmt->bindParam(':adaptive1', $adaptive1);
+            $stmt->bindParam(':adaptive2', $adaptive2);
+            $stmt->bindParam(':adaptive3', $adaptive3);
+            $stmt->bindParam(':passion1', $passion1);
+            $stmt->bindParam(':passion2', $passion2);
+            $stmt->bindParam(':passion3', $passion3);
+            $stmt->bindParam(':leadership1', $leadership1);
+            $stmt->bindParam(':leadership2', $leadership2);
+            $stmt->bindParam(':leadership3', $leadership3);
+            $stmt->bindParam(':leadership4', $leadership4);
+            $stmt->bindParam(':leadership5', $leadership5);
+            $stmt->bindParam(':leadership6', $leadership6);
+            $stmt->bindParam(':comment', $comment);
+       
+            if (!$stmt->execute()) {
+                // If an error occurs, set the $errors variable to true
+                $errors = true;
+            }
         
-        if ($stmt->execute()) {
+        }
+        if (!$errors) {
+            $koneksi->commit();
             ?>
             <script>
                 window.location='home.php?link=mydata';
@@ -329,7 +457,7 @@ if($code == 'getPenilaian') {
         } else {
             ?>
             <script>
-                window.location='home.php?link=mydata';
+                // window.location='home.php?link=mydata';
                 console.log("Error");
             </script>
             <?php
@@ -350,15 +478,16 @@ if($code == 'getPenilaian') {
             $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // Example query: Select all data from a table named 'your_table'
-            $query = "SELECT a.id, a.idkar, a.total_score, a.periode, a.value_1, a.value_2, a.value_3, a.value_4, a.value_5, a.score_1, a.score_2, a.score_3, a.score_4, a.score_5, DATE_FORMAT(b.mulai_bekerja, '%d-%m-%Y') AS tmk, b.NIK, b.nik_baru, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, f.Nama_Perusahaan, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date 
+            $query = "SELECT a.*, DATE_FORMAT(b.mulai_bekerja, '%d-%m-%Y') AS tmk, b.NIK, b.nik_baru, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, c.fortable, d.Nama_OU, e.Nama_Departemen, f.Nama_Perusahaan, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo 
             FROM transaksi_2023 AS a 
             LEFT JOIN karyawan_2023 AS b ON b.id = a.idkar 
             LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
             LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU 
             LEFT JOIN daftardepartemen AS e ON e.kode_departemen = b.Kode_Departemen
             LEFT JOIN daftarperusahaan AS f ON f.Kode_Perusahaan = b.Kode_Perusahaan
-            WHERE a.id='$id'";
+            WHERE a.idkar= :id";
             $stmt = $koneksi->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_STR);
             $stmt->execute();
 
             // Fetch data as an associative array
@@ -366,6 +495,7 @@ if($code == 'getPenilaian') {
 
             $selectedResult = array();
             foreach ($result as $item) {
+                
                 $selectedResult[] = array(
                     'id' => $item['id'],
                     'idkar' => $item['idkar'],
@@ -380,6 +510,9 @@ if($code == 'getPenilaian') {
                     'Nama_OU' => $item['Nama_OU'],
                     'Nama_Departemen' => $item['Nama_Departemen'],
                     'Nama_Perusahaan' => $item['Nama_Perusahaan'],
+                    'jumlah_subo' => $item['jumlah_subo'],
+                    'fortable' => $item['fortable'],
+                    'comment_a1' => $item['comment_a1'],
                     'objective' => array(
                         'value1' => $item['value_1'],
                         'value2' => $item['value_2'],
@@ -393,6 +526,31 @@ if($code == 'getPenilaian') {
                         'score3' => $item['score_3'],
                         'score4' => $item['score_4'],
                         'score5' => $item['score_5']
+                    ),
+                    'culture' => array(
+                        'synergized1' => $item['synergized1'],
+                        'synergized2' => $item['synergized2'],
+                        'synergized3' => $item['synergized3'],
+                        'integrity1' => $item['integrity1'],
+                        'integrity2' => $item['integrity2'],
+                        'integrity3' => $item['integrity3'],
+                        'growth1' => $item['growth1'],
+                        'growth2' => $item['growth2'],
+                        'growth3' => $item['growth3'],
+                        'adaptive1' => $item['adaptive1'],
+                        'adaptive2' => $item['adaptive2'],
+                        'adaptive3' => $item['adaptive3'],
+                        'passion1' => $item['passion1'],
+                        'passion2' => $item['passion2'],
+                        'passion3' => $item['passion3'],
+                    ),
+                    'leadership' => array(
+                        'leadership1' => $item['leadership1'],
+                        'leadership2' => $item['leadership2'],
+                        'leadership3' => $item['leadership3'],
+                        'leadership4' => $item['leadership4'],
+                        'leadership5' => $item['leadership5'],
+                        'leadership6' => $item['leadership6'],                        
                     ),
                 );
             }

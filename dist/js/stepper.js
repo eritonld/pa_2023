@@ -1,49 +1,44 @@
 // ------------step-wizard-------------
 $(document).ready(function () {
-    $('.nav-tabs > li a[title]').tooltip();
-    
-    //Wizard
-    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+  $(".nav-tabs > li a[title]").tooltip();
 
-        var $target = $(e.target);
-    
-        if ($target.parent().hasClass('disabled')) {
-            return false;
-        }
-    });
+  //Wizard
+  $('a[data-toggle="tab"]').on("show.bs.tab", function (e) {
+    var $target = $(e.target);
 
-    $(".next-step").click(function (e) {
+    if ($target.parent().hasClass("disabled")) {
+      return false;
+    }
+  });
 
-        var $active = $('.wizard .nav-tabs li.active');
-        $active.next().removeClass('disabled');
-        nextTab($active);
-
-    });
-    $(".prev-step").click(function (e) {
-
-        var $active = $('.wizard .nav-tabs li.active');
-        prevTab($active);
-
-    });
+  $(".next-step-1").click(function (e) {
+    if (checkSelfReview("notFinal")) {
+      var $active = $(".wizard .nav-tabs li.active");
+      $active.next().removeClass("disabled");
+      nextTab($active);
+    }
+  });
+  $(".next-step-2").click(function (e) {
+    if (checkCulture("notFinal")) {
+      var $active = $(".wizard .nav-tabs li.active");
+      $active.next().removeClass("disabled");
+      nextTab($active);
+    }
+  });
+  $(".final-step-1").click(function (e) {
+    checkSelfReview("final");
+  });
+  $(".final-step-2").click(function (e) {
+    checkCulture("final");
+  });
+  $(".final-step-3").click(function (e) {
+    checkLeadership();
+  });
 });
 
 function nextTab(elem) {
-    $(elem).next().find('a[data-toggle="tab"]').click();
+  $(elem).next().find('a[data-toggle="tab"]').click();
 }
 function prevTab(elem) {
-    $(elem).prev().find('a[data-toggle="tab"]').click();
+  $(elem).prev().find('a[data-toggle="tab"]').click();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

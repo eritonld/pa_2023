@@ -26,7 +26,7 @@ if($id=='')
 exit;
 }
 try {
-    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.fortable, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo
             FROM $karyawan AS k
             LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
             LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.Kode_Departemen
@@ -38,7 +38,7 @@ try {
 			LEFT JOIN $karyawan AS a2 ON a2.id= a.id_atasan2
 			LEFT JOIN $karyawan AS a3 ON a3.id= a.id_atasan3
             WHERE k.id = :id";
-
+			
     $stmt = $koneksi->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_STR);
     $stmt->execute();
@@ -47,73 +47,76 @@ try {
 
     if ($ckaryawan) {
         // Process the data here
+		$fortable = $ckaryawan['fortable'] != "staff" ? $ckaryawan['fortable'] : ($ckaryawan['jumlah_subo'] > 0 ? "staffb" : "staff");
+		
+		if($fortable=='nonstaff')
+		{
+			$step = 2;
+		}
+		else if($fortable=='staff')
+		{
+			$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 2;
+		}
+		else if($fortable=='staffb')
+		{
+			$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+		}
+		else if($fortable=='managerial')
+		{
+			$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+		}
+
+		if($step==1){
+			$margin = array('','margin: auto','','margin: auto');
+			$steptitle = array('','Self Review');
+		}else if($step==2){
+			$margin = array('','margin-left: 0','margin-right: 0','margin: auto');
+			$steptitle = array('','Self Review','Culture');
+		}else{
+			$margin = array('','margin-left: 0','margin: auto','margin-right: 0');
+			$steptitle = array('','Self Review','Culture','Leadership');
+		}
+
     } else {
         echo "No data found for the provided NIK.";
     }
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
+
 try {
-    $queryCulture = "SELECT * FROM question_pa WHERE `group` = 'culture' ORDER BY `id` ASC";
+    $queryCultureTitle = "SELECT title FROM question_pa WHERE `group` = 'culture' GROUP BY title ORDER BY `id` ASC";
 
-    $stmtCulture = $koneksi->prepare($queryCulture);
-    $stmtCulture->execute();
+    $stmtCultureTitle = $koneksi->prepare($queryCultureTitle);
+    $stmtCultureTitle->execute();
 
-    $cultureValue = $stmtCulture->fetchAll(PDO::FETCH_ASSOC);
+	$cultureTitles = array(); // Create an empty array to store titles
 
-	$totalRows = $stmtCulture->rowCount();
+    while ($row = $stmtCultureTitle->fetch(PDO::FETCH_ASSOC)) {
+        $cultureTitles[] = $row['title']; // Store each title in the array
+    }
 
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
 
-if($ckaryawan['fortable']=='nonstaff')
-{
-	//$bahasa='ind';
-	if($statmember=='Y'){
-		$fortable='staff';
-		if($bahasa=='eng')		
-			$fortable_select='staff_english';
-		else
-			$fortable_select='staff';
-	}else{
-		$fortable='nonstaff';
-		if($bahasa=='eng')		
-			$fortable_select='nonstaff_english';
-		else
-			$fortable_select='nonstaff';
-	}
+
+try {
+    $queryLeadershipTitle = "SELECT title FROM question_pa WHERE `group` = 'leadership' AND `role`='$fortable' GROUP BY title ORDER BY `id` ASC";
+
+    $stmtLeadershipTitle = $koneksi->prepare($queryLeadershipTitle);
+    $stmtLeadershipTitle->execute();
+
+	$leadershipTitles = array(); // Create an empty array to store titles
+
+    while ($row = $stmtLeadershipTitle->fetch(PDO::FETCH_ASSOC)) {
+        $leadershipTitles[] = $row['title']; // Store each title in the array
+    }
+
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
 }
-else if($ckaryawan['fortable']=='staff')
-{
-	if($statbawah=='Y'){
-		$fortable='staffb';
-		if($bahasa=='eng')		
-			$fortable_select='staffb_english';
-		else
-			$fortable_select='staffb';
-	}else{
-		$fortable='staff';
-		if($bahasa=='eng')		
-			$fortable_select='staff_english';
-		else
-			$fortable_select='staff';
-	}
-}
-else if($ckaryawan['fortable']=='managerial')
-{
-	$fortable='managerial';
-	if($bahasa=='eng')		
-		$fortable_select='managerial_english';
-	else
-		$fortable_select='managerial';
-		
-	?>
-	<div class="Top Nav Example">
-		<marquee><h2 style="color:red;background-color:white;"> Sebagai Informasi, apabila proses penilaian dibiarkan terlalu lama maka Anda harus mengulang prosesnya dari awal. Dimohon untuk menyiapkan data-data yang diperlukan sebelum melakukan penilaian. Terima kasih</h2></marquee>
-	</div>
-	<?php
-}
+
 
 
 if($bahasa=='eng')
@@ -136,7 +139,6 @@ if($bahasa=='eng')
 	$title_a='Work Results';
 	$title_aa='Work Objectives';
 	$add_btn_name='Objective';
-	$alertRow='Sorry, you has reached maximum row.';
 	$title_comment='Direct Manager Comment';
 	$comment_placeholder='input your comment';
 }
@@ -160,7 +162,6 @@ else
 	$title_a='Hasil Kerja';
 	$title_aa='Objektif Kerja';
 	$add_btn_name='Objektif';
-	$alertRow='Maaf, kolom objektif sudah maksimal.';
 	$title_comment='Komentar Atasan Langsung';
 	$comment_placeholder='masukkan komentar anda';
 }
@@ -282,10 +283,10 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 			}?>
         </div>
     </div>
-	<form name="forminput" method="POST" action="apiController.php?code=submitNilaiAwal" onsubmit="return cekEmptyValue()">
+<form name="addAppraisal" id="addAppraisal" method="POST" action="apiController.php?code=submitNilaiAwal">
 	<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
-	<input type="hidden" name="idpic" value="<?="$scekuser[id]";?>">
-	<input type="hidden" name="idkar" value="<?="$ckaryawan[idkar]";?>">
+	<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
+	<input type="hidden" id="idkar" name="idkar" value="<?="$ckaryawan[idkar]";?>">
 	<input type="hidden" name="id_atasan1" value="<?="$ckaryawan[id_atasan1]";?>" readonly />
 	<input type="hidden" name="email_atasan1" value="<?="$ckaryawan[email_atasan1]";?>" readonly />
 	<div class="box box-danger">
@@ -300,17 +301,17 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
       <div class="col-md-10">
         <div class="wizard">
           <div class="wizard-inner">
-            <div class="connecting-line"></div>
+            <div class="connecting-line" style="display: <?= $step==1 ? "none" : ""; ?>;"></div>
             <ul class="nav nav-tabs" role="tablist">
-              <li role="presentation" style="margin-left: 0;" class="active">
-                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" aria-expanded="true"><span class="round-tab">1 </span> <i>Self Review</i></a>
-              </li>
-              <li role="presentation" class="disabled">
-                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" aria-expanded="false"><span class="round-tab">2</span> <i>Culture</i></a>
-              </li>
-              <li role="presentation" style="margin-right: 0;" class="disabled">
-                <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab"><span class="round-tab">3</span> <i>Leadership</i></a>
-              </li>
+			<?php 
+			for ($i=1; $i <= $step; $i++) { 
+			?>
+				<li role="presentation" style="<?= $margin[$i]; ?>;" class="<?= $i==1 ? "active" : ""; ?>">
+				  <a href="#step<?= $i; ?>" data-toggle="tab" aria-controls="step<?= $i; ?>" role="tab" aria-expanded="true"><span class="round-tab"><?= $i; ?> </span> <i><?= $steptitle[$i]; ?></i></a>
+				</li>
+			<?php
+			} 
+			?>
             </ul>
           </div>
             <div class="tab-content" id="main_form">
@@ -373,7 +374,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 								</div>
 							</div>
 						</div>
-						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']==$ckaryawan['idkar'] ? '' : 'none';?>">
+						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$scekuser['pic'] ? 'none' : '';?>">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-6" style="padding-right: 0;">
 									<h1 class="h5 text-bold"><?= $title_comment; ?> : </h1>
@@ -384,60 +385,98 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 					</div>
                 </div>
                 <ul class="list-inline pull-right">
-                  <li><button type="button" class="default-btn next-step">Continue to next step</button></li>
+                  <li><button type="button" class="btn btn-success <?= $step==1 ? "final-step-1" : "next-step-1"; ?>"><?= $step==1 ? "Submit" : "Continue to next step"; ?></button></li>
                 </ul>
               </div>
 			<!-- Self Review End -->
               <div class="tab-pane" role="tabpanel" id="step2">
-                <h4 class="text-center">SIGAP</h4>
+			  <h4 class="text-center">Culture Value of SIGAP</h4>
 				<div class="row">
-					<div class="container-fluid" id="container">
-							<!-- // Process the data here -->
-							<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
-								<h1 class="col-md-3 text-bold h4 culture">SYNERGIZED TEAM</h1>
-							</div>
-						<?php
-						foreach ($cultureValue as $data) { 
+					<div class="container-fluid container-culture">
+						<?php 
+						foreach ($cultureTitles as $title) {
 						?>
-							<div class="row" style="margin-bottom: 20px;">
-								<div class="col-md-9">
-									<span class="h4"><?= $data['item']; ?></span>
-								</div>
-								<div class="col-md-3">
-									<select class="form-control" name="scale_1a">
-										<option value="">- scale -</option>
-										<option value="1">Basic</option>
-										<option value="2">Comprehension</option>
-										<option value="3">Practitioner</option>
-										<option value="4">Advanced</option>
-										<option value="5">Expert</option>
-									</select>
-								</div>
+							<!-- // Process the data here -->
+							<div class="row" style="margin-top: 50px; margin-bottom: 20px;">
+								<h1 class="col-md-5 text-bold h4 culture"><?= $title; ?></h1>
 							</div>
 						<?php
+							try {
+								$queryCulture = "SELECT * FROM question_pa WHERE `group` = 'culture' AND title='$title' ORDER BY `id` ASC";
+							
+								$stmtCulture = $koneksi->prepare($queryCulture);
+								$stmtCulture->execute();
+							
+								$cultureValue = $stmtCulture->fetchAll(PDO::FETCH_ASSOC);
+							
+								$totalRows = $stmtCulture->rowCount();
+								$no = 1;
+
+							} catch (PDOException $e) {
+								echo "Error: " . $e->getMessage();
+							}
+							foreach ($cultureValue as $data) { 
+							?>
+								<div class="row" style="margin-bottom: 20px;">
+									<div class="col-md-9">
+										<span class="h4"><?= $data['item']; ?></span>
+									</div>
+									<div class="col-md-3">
+										<select class="form-control" name="<?= $data['name'].$no++; ?>">
+											<option value="">- scale -</option>
+											<option value="1">Basic</option>
+											<option value="2">Comprehension</option>
+											<option value="3">Practitioner</option>
+											<option value="4">Advanced</option>
+											<option value="5">Expert</option>
+										</select>
+									</div>
+								</div>
+							<?php
+							}
 						}
 						?>
 					</div>
                 </div>
                 <ul class="list-inline pull-right">
-                  <li><button type="button" class="default-btn prev-step">Back</button></li>
-                  <li><button type="button" class="default-btn next-step">Continue</button></li>
-                </ul>
+                  <li><button type="button" class="btn btn-default prev-step">Back</button></li>
+				  <li><button type="button" class="btn btn-success <?= $step==2 ? "final-step-2" : "next-step-2"; ?>"><?= $step==2 ? "Submit" : "Continue"; ?></button></li>                
+				</ul>
               </div>
               <div class="tab-pane" role="tabpanel" id="step3">
-			  <h4 class="text-center">Supervisor | Manager And Above</h4>
-				<div class="row">
-					<div class="container-fluid" id="container">
+			  <h4 class="text-center">Employee Leadership</h4>
+				<div class="row" style="margin-bottom: 30px;">
+					<div class="container-fluid container-leadership">
 							<!-- // Process the data here -->
-							<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-								<h1 class="col-md-3 text-bold h4">Komunikasi</h1>
+							<?php 
+							$y = 1;
+							foreach ($leadershipTitles as $title) {
+							$lNumber = $y++;
+							?>
+							<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
+								<h1 class="col-md-3 text-bold h4"><?= $title; ?></h1>
 							</div>
-							<div class="row" style="margin-bottom: 20px;">
+							<?php
+							try {
+								$queryLeadership = "SELECT * FROM question_pa WHERE `group` = 'leadership' AND title='$title' AND `role`='$fortable' ORDER BY `id` ASC";
+								$stmtLeadership = $koneksi->prepare($queryLeadership);
+								$stmtLeadership->execute();
+							
+								$leadershipValue = $stmtLeadership->fetchAll(PDO::FETCH_ASSOC);
+							
+								$totalRows = $stmtLeadership->rowCount();
+
+							} catch (PDOException $e) {
+								echo "Error: " . $e->getMessage();
+							}
+							foreach ($leadershipValue as $data) { 
+							?>
+							<div class="row">
 								<div class="col-md-9">
-									<span class="h4">Berbicara dan berdiskusi secara efektif, mengajak dan menginspirasi orang lain.</span>
+									<span class="h4"><?= $data['item']; ?></span>
 								</div>
 								<div class="col-md-3">
-									<select class="form-control" name="scale_1b">
+									<select class="form-control" name="<?= $data['name'].$lNumber; ?>">
 										<option value="">- scale -</option>
 										<option value="1">Basic</option>
 										<option value="2">Comprehension</option>
@@ -447,30 +486,16 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 									</select>
 								</div>
 							</div>
-							<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-								<h1 class="col-md-3 text-bold h4">Perencanaan Kerja</h1>
-							</div>
-							<div class="row" style="margin-bottom: 20px;">
-								<div class="col-md-9">
-									<span class="h4">Merencanakan kerja, sumber daya dan mengelola sumber daya, mengutamakan pekerjaan dan mengantisipasi potensi masalah dengan tujuan penyelesaian tugas atau project dengan tepat waktu.Mempertimbangkan kemampuannya untuk mengelola beberapa tugas atau project secara simultan (bersamaan).</span>
-								</div>
-								<div class="col-md-3">
-									<select class="form-control" name="scale_2b">
-										<option value="">- scale -</option>
-										<option value="1">Basic</option>
-										<option value="2">Comprehension</option>
-										<option value="3">Practitioner</option>
-										<option value="4">Advanced</option>
-										<option value="5">Expert</option>
-									</select>
-								</div>
-							</div>
+							<?php
+								}
+							}
+							?>
 					</div>
                 </div>
                 <ul class="list-inline pull-right">
-                  <li><button type="button" class="default-btn prev-step">Back</button></li>
-				  <li><button type="button" class="default-btn next-step">Finish</button></li>                
-				</ul>
+                  <li><button type="button" class="btn btn-default prev-step">Back</button></li>
+                  <li><button type="button" class="btn btn-success final-step-3">Submit</button></li>
+                </ul>
               </div>
               <div class="clearfix"></div>
             </div>
@@ -488,18 +513,21 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 </section>
 </div>
 <script>
-        function cekEmptyValue() {
+        function checkSelfReview(value) {
             // Loop through the textareas
-			var emptyFieldFound = false;
-			var textValue = document.getElementById('value1').value;
+			let emptyFieldFound = false;
+			let textValue = document.getElementById('value1').value;
+			let idPic = document.getElementById('idpic').value;
+			let idKar = document.getElementById('idkar').value;
+			let commentA1 = document.getElementById('comment_a1');
 			if (textValue.trim() === '') {
 				alert('Please fill in the field.');
 				document.getElementById('value1').focus();
 				return false; // Prevent form submission
 			}
-            for (var i = 1; i <= 5; i++) {
-                var textareaValue = document.getElementById('value' + i).value;
-                var scoreValue = document.getElementById('score' + i).value;
+            for (let i = 1; i <= 5; i++) {
+                let textareaValue = document.getElementById('value' + i).value;
+                let scoreValue = document.getElementById('score' + i).value;
                 if (textareaValue.trim() != '' && scoreValue === '' || textareaValue.trim() === '' && scoreValue != '') {
 					if(scoreValue === ''){
 						alert('Please select the score.');
@@ -513,8 +541,69 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
                     return false; // Prevent form submission
                 }
             }
-            return true; // Allow form submission
+			if (!commentA1.value&&idPic!=idKar){
+				alert('Please fill Komentar Atasan Langsung.');
+				commentA1.focus();
+				return false;
+			}			
+			if(value=='final'){
+				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
+				if (confirm){
+					document.getElementById('addAppraisal').submit();
+				}
+			}
+			return true;
         }
+		function checkCulture(value) {
+			let cultureContainer = document.querySelector('.container-culture');
+			let selectElements = cultureContainer.querySelectorAll('select');
+			let foundEmpty = false;
+
+			for (let i = 0; i < selectElements.length; i++) {
+				let selectElement = selectElements[i];
+
+				if (selectElement.value === "") {
+					foundEmpty = true;
+					alert("Please select a value for " + selectElement.name);
+					selectElement.focus();
+					break; // Exit the loop after displaying the first alert
+				}
+			}
+
+			if (!foundEmpty) {
+				if(value=='final'){
+					let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
+					if (confirm){
+						document.getElementById('addAppraisal').submit();
+					}
+				}
+				return true;
+			}
+		}
+		function checkLeadership() {
+			let cultureContainer = document.querySelector('.container-leadership');
+			let selectElements = cultureContainer.querySelectorAll('select');
+			let foundEmpty = false;
+
+			for (let i = 0; i < selectElements.length; i++) {
+				let selectElement = selectElements[i];
+
+				if (selectElement.value === "") {
+					foundEmpty = true;
+					alert("Please select a value for " + selectElement.name);
+					selectElement.focus();
+					break; // Exit the loop after displaying the first alert
+				}
+			}
+
+			if (!foundEmpty) {
+				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
+				if (confirm){
+					document.getElementById('addAppraisal').submit();
+				}
+			}
+			return false;
+		}
     </script>
 <script>
   
