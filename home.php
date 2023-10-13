@@ -64,6 +64,24 @@ else if ($link=="formpa_edit")
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
 }
+else if ($link=="formpa_review")
+{
+  $includefile		= "form_appraisal_review.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+}
+else if ($link=="formpa_review2")
+{
+  $includefile		= "form_appraisal_review2.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+}
+else if ($link=="formpa_review3")
+{
+  $includefile		= "form_appraisal_review3.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+}
 else if ($link=="gantipas")
 {
   $includefile		= "ubah_password.php";
@@ -163,6 +181,7 @@ else
 				$mydata1="My Appraisal";
 				$mydata2="My Subordinate (one-level) Appraisal";
 				$mydata3="My Subordinate (two-level) Appraisal";
+				$mydata4="My Subordinate (three-level) Appraisal";
 				$unitlokasi="Work Location";
 				$karyawandinilai="Employee to be Assessed";
 				$pilihunit="Chosee";
@@ -183,6 +202,7 @@ else
 				$mydata1="Penilaian Saya";
 				$mydata2="Nilai Bawahan Saya (1 Level)";
 				$mydata3="Nilai Bawahan Saya (2 Level)";
+				$mydata4="Nilai Bawahan Saya (3 Level)";
 				$unitlokasi="Unit/Lokasi Kerja";
 				$karyawandinilai="Karyawan dinilai";
 				$pilihunit="Pilih Unit";

@@ -1,6 +1,7 @@
 <?php
 include("conf/conf.php");
 include("tabel_setting.php");
+include("function.php");
 
 if(isset($_COOKIE['bahasa'])){
 	$bahasa=$_COOKIE['bahasa'];
@@ -29,7 +30,7 @@ try {
     $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.fortable, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo
             FROM $karyawan AS k
             LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
-            LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.Kode_Departemen
+            LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.kode_departemen
             LEFT JOIN daftargolongan AS dg ON k.Kode_Golongan = dg.Kode_Golongan
             LEFT JOIN daftarjabatan AS dj ON k.Kode_Jabatan = dj.Kode_Jabatan
             LEFT JOIN daftarou AS du ON k.Kode_OU = du.Kode_OU
@@ -372,13 +373,16 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 								<div class="col-md-2" style="padding-left: 0;">
 									<input type="text" name="total_score" id="total_score" class="form-control text-center text-bold" style="background: #FFFFCC;" value="-" readonly>
 								</div>
+								<div class="col-md-2" style="padding-left: 0;">
+									<input type="text" name="rating" id="rating" class="form-control text-center text-bold"  value="-" readonly>
+								</div>
 							</div>
 						</div>
-						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$scekuser['pic'] ? 'none' : '';?>">
+						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$ckaryawan['idkar'] ? 'none' : '';?>">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-6" style="padding-right: 0;">
 									<h1 class="h5 text-bold"><?= $title_comment; ?> : </h1>
-									<textarea class="form-control" name="comment_a1" id="comment_a1" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."></textarea>
+									<textarea class="form-control" name="comment" id="comment" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."></textarea>
 								</div>
 							</div>
 						</div>
@@ -519,7 +523,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 			let textValue = document.getElementById('value1').value;
 			let idPic = document.getElementById('idpic').value;
 			let idKar = document.getElementById('idkar').value;
-			let commentA1 = document.getElementById('comment_a1');
+			let commentA1 = document.getElementById('comment');
 			if (textValue.trim() === '') {
 				alert('Please fill in the field.');
 				document.getElementById('value1').focus();
@@ -660,12 +664,12 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 </script>
 <script>
     function calculateAverage() {
-        var total = 0;
-        var count = 0;
+        let total = 0;
+        let count = 0;
 
         // Loop through the select elements and calculate the total
-        for (var i = 1; i <= 5; i++) {
-            var score = document.getElementById('score' + i).value;
+        for (let i = 1; i <= 5; i++) {
+            let score = document.getElementById('score' + i).value;
             if (score !== "") {
                 total += parseInt(score);
                 count++;
@@ -673,9 +677,23 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
         }
 
         // Calculate the average
-        var average = count === 0 ? 0 : total / count;
+        let average = count === 0 ? 0 : total / count;
+		let decimalValue = average.toFixed(2);
+		if (decimalValue >= 4.50) {
+			var roundValue = Math.ceil(decimalValue);
+		} else if (decimalValue >= 3.50) {
+			roundValue = 4;
+		} else if (decimalValue >= 2.50) {
+			roundValue = 3;
+		} else if (decimalValue >= 1.50) {
+			roundValue = 2;
+		} else {
+			roundValue = Math.floor(decimalValue);
+		}
+		let rating = roundValue == 0 ? "" : (roundValue == 1 ? "E" : (roundValue == 2 ? "D" : (roundValue == 3 ? "C" : (roundValue == 4 ? "B" : "A"))));
 
         // Update the input element with the result
-        document.getElementById('total_score').value = average.toFixed(2); // Displaying the average with 2 decimal places
+        document.getElementById('total_score').value = decimalValue; // Displaying the average with 2 decimal places
+        document.getElementById('rating').value = rating; // Displaying the average with 2 decimal places
     }
 </script>

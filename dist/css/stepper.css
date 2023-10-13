@@ -49,6 +49,11 @@ button:focus,
   justify-content: space-between;
 }
 
+.disabled-tab {
+  cursor: not-allowed; /* Changes cursor to "not-allowed" (a circle with a line) */
+  pointer-events: none; /* Disables click events */
+}
+
 .wizard > div.wizard-inner {
   position: relative;
 }
@@ -187,6 +192,26 @@ span.round-tab i {
 .next-step-2 {
   background-color: #0db02b;
 }
+.next-step-review-1 {
+  font-size: 13px;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  margin-top: 30px;
+}
+.next-step-review-1 {
+  background-color: #0db02b;
+}
+.next-step-review-2 {
+  font-size: 13px;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  margin-top: 30px;
+}
+.next-step-review-2 {
+  background-color: #0db02b;
+}
 .final-step {
   font-size: 13px;
   padding: 8px 24px;
@@ -225,6 +250,26 @@ span.round-tab i {
   margin-top: 30px;
 }
 .final-step-3 {
+  background-color: #0db02b;
+}
+.final-step-review-2 {
+  font-size: 13px;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  margin-top: 30px;
+}
+.final-step-review-2 {
+  background-color: #0db02b;
+}
+.final-step-review-3 {
+  font-size: 13px;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  margin-top: 30px;
+}
+.final-step-review-3 {
   background-color: #0db02b;
 }
 .skip-btn {

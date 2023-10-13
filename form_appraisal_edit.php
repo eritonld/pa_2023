@@ -1,6 +1,7 @@
 <?php
 include("conf/conf.php");
 include("tabel_setting.php");
+include("function.php");
 
 if(isset($_COOKIE['bahasa'])){
 	$bahasa=$_COOKIE['bahasa'];
@@ -199,6 +200,7 @@ if ($response === false) {
                 $jumlah_subo = $item['jumlah_subo'];
                 $fortable = $item['fortable'];
                 $comment_a1 = $item['comment_a1'];
+                $rating_a1 = $item['rating_a1']==0 ? $total_score : $item['rating_a1'];
             }
 				$fortable = $fortable != "staff" ? $fortable : ($jumlah_subo > 0 ? "staffb" : "staff");
 		
@@ -374,20 +376,23 @@ if ($response === false) {
 								<div class="col-md-2" style="padding-left: 0;">
 									<input type="text" name="total_score" id="total_score" class="form-control text-center text-bold" style="background: #FFFFCC;" value="<?= $total_score; ?>" readonly>
 								</div>
+								<div class="col-md-2" style="padding-left: 0;">
+									<input type="text" name="rating" id="rating" class="form-control text-center text-bold" value="<?= convertRating($rating_a1); ?>" readonly>
+								</div>
 							</div>
 						</div>
-						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$scekuser['pic'] ? 'none' : '';?>">
+						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-6" style="padding-right: 0;">
 									<h1 class="h5 text-bold"><?= $title_comment; ?> : </h1>
-									<textarea class="form-control" name="comment_a1" id="comment_a1" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."><?= $comment_a1; ?></textarea>
+									<textarea class="form-control" name="comment" id="comment" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."><?= $comment_a1; ?></textarea>
 								</div>
 							</div>
 						</div>
 					</div>
                 </div>
                 <ul class="list-inline pull-right">
-                  <li><button type="button" class="btn btn-success <?= $step==1 ? "final-step-1" : "next-step-1"; ?>"><?= $step==1 ? "Submit" : "Continue to next step"; ?></button></li>
+                  <li><button type="button" class="btn btn-success <?= $step==1 ? "final-step-1" : "next-step-1"; ?>"><?= $step==1 ? "Update" : "Continue to next step"; ?></button></li>
                 </ul>
               </div>
 			<!-- Self Review End -->
@@ -444,7 +449,7 @@ if ($response === false) {
                 </div>
                 <ul class="list-inline pull-right">
                   <li><button type="button" class="btn btn-default prev-step">Back</button></li>
-                  <li><button type="button" class="btn btn-success <?= $step==2 ? "final-step-2" : "next-step-2"; ?>"><?= $step==2 ? "Submit" : "Continue"; ?></button></li>
+                  <li><button type="button" class="btn btn-success <?= $step==2 ? "final-step-2" : "next-step-2"; ?>"><?= $step==2 ? "Update" : "Continue"; ?></button></li>
                 </ul>
               </div>
               <div class="tab-pane" role="tabpanel" id="step3">
@@ -524,7 +529,7 @@ if ($response === false) {
 			let textValue = document.getElementById('value1').value;
 			let idPic = document.getElementById('idpic').value;
 			let idKar = document.getElementById('idkar').value;
-			let commentA1 = document.getElementById('comment_a1');
+			let commentA1 = document.getElementById('comment');
 			if (textValue.trim() === '') {
 				alert('Please fill in the field.');
 				document.getElementById('value1').focus();
@@ -625,10 +630,23 @@ if ($response === false) {
             }
         }
 
-        // Calculate the average
-        var average = count === 0 ? 0 : total / count;
+        let average = count === 0 ? 0 : total / count;
+		let decimalValue = average.toFixed(2);
+		if (decimalValue >= 4.50) {
+			var roundValue = Math.ceil(decimalValue);
+		} else if (decimalValue >= 3.50) {
+			roundValue = 4;
+		} else if (decimalValue >= 2.50) {
+			roundValue = 3;
+		} else if (decimalValue >= 1.50) {
+			roundValue = 2;
+		} else {
+			roundValue = Math.floor(decimalValue);
+		}
+		let rating = roundValue == 0 ? "" : (roundValue == 1 ? "E" : (roundValue == 2 ? "D" : (roundValue == 3 ? "C" : (roundValue == 4 ? "B" : "A"))));
 
         // Update the input element with the result
-        document.getElementById('total_score').value = average.toFixed(2); // Displaying the average with 2 decimal places
+        document.getElementById('total_score').value = decimalValue; // Displaying the average with 2 decimal places
+        document.getElementById('rating').value = rating; // Displaying the average with 2 decimal places
     }
 </script>

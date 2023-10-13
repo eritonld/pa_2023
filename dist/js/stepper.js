@@ -25,6 +25,24 @@ $(document).ready(function () {
       nextTab($active);
     }
   });
+  $(".next-step-review-1").click(function (e) {
+    if (checkSelfReview("notFinal")) {
+      var $active = $(".wizard .nav-tabs li.active");
+      $active.next().removeClass("disabled");
+      nextTab($active);
+    }
+  });
+  $(".next-step-review-2").click(function (e) {
+    if (checkCulture("notFinal")) {
+      var $active = $(".wizard .nav-tabs li.active");
+      $active.next().removeClass("disabled");
+      nextTab($active);
+    }
+  });
+  $(".prev-step").click(function (e) {
+    var $active = $(".wizard .nav-tabs li.active");
+    prevTab($active);
+  });
   $(".final-step-1").click(function (e) {
     checkSelfReview("final");
   });
@@ -32,6 +50,12 @@ $(document).ready(function () {
     checkCulture("final");
   });
   $(".final-step-3").click(function (e) {
+    checkLeadership();
+  });
+  $(".final-step-review-2").click(function (e) {
+    checkCulture("final");
+  });
+  $(".final-step-review-3").click(function (e) {
     checkLeadership();
   });
 });
