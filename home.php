@@ -82,6 +82,12 @@ else if ($link=="formpa_review3")
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
 }
+else if ($link=="formpa_review_superior")
+{
+  $includefile		= "form_appraisal_review_superior.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+}
 else if ($link=="gantipas")
 {
   $includefile		= "ubah_password.php";
@@ -182,6 +188,7 @@ else
 				$mydata2="My Subordinate (one-level) Appraisal";
 				$mydata3="My Subordinate (two-level) Appraisal";
 				$mydata4="My Subordinate (three-level) Appraisal";
+				$mydata5="My Superior (L1) Appraisal";
 				$unitlokasi="Work Location";
 				$karyawandinilai="Employee to be Assessed";
 				$pilihunit="Chosee";
@@ -203,6 +210,7 @@ else
 				$mydata2="Nilai Bawahan Saya (1 Level)";
 				$mydata3="Nilai Bawahan Saya (2 Level)";
 				$mydata4="Nilai Bawahan Saya (3 Level)";
+        $mydata5="Nilai Atasan Saya (L1)";
 				$unitlokasi="Unit/Lokasi Kerja";
 				$karyawandinilai="Karyawan dinilai";
 				$pilihunit="Pilih Unit";
@@ -266,7 +274,7 @@ else
           <div class="pull-right hidden-xs">
             <b>Version</b> 2.0
           </div>
-          <strong>Developed by HR System Development</strong>
+          <strong><i class="fa fa-copyright"></i> 2023 - KPN Corporation</strong>
         </footer>
     </div>
 

@@ -308,7 +308,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 			for ($i=1; $i <= $step; $i++) { 
 			?>
 				<li role="presentation" style="<?= $margin[$i]; ?>;" class="<?= $i==1 ? "active" : ""; ?>">
-				  <a href="#step<?= $i; ?>" data-toggle="tab" aria-controls="step<?= $i; ?>" role="tab" aria-expanded="true"><span class="round-tab"><?= $i; ?> </span> <i><?= $steptitle[$i]; ?></i></a>
+				  <a class="disabled-tab" href="#step<?= $i; ?>" data-toggle="tab" aria-controls="step<?= $i; ?>" role="tab" aria-expanded="true"><span class="round-tab"><?= $i; ?> </span> <i><?= $steptitle[$i]; ?></i></a>
 				</li>
 			<?php
 			} 
