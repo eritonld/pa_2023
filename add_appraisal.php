@@ -156,10 +156,7 @@ function cekvalid()
 				}
 				else
 				{	
-					if(fortable=='nonstaff' || fortable=='staff'){
-						alert("nonstaff");
-						window.location="home.php?link=formpa&id="+varid;
-					}
+					window.location="home.php?link=formpa&id="+varid;
 				}
 			}
         return false;
