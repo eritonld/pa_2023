@@ -250,7 +250,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 			</div>
         </div>
     </div>
-<form name="addAppraisal" id="addAppraisal" method="POST" action="apiController.php?code=submitReviewSuperior">
+<form name="addAppraisal" id="addAppraisal" method="POST" action="apiController.php?code=submitReviewPeers">
 	<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
 	<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
 	<input type="hidden" id="idkar" name="idkar" value="<?="$ckaryawan[idkar]";?>">
