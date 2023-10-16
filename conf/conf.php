@@ -1,10 +1,15 @@
 <?php
 date_default_timezone_set('Asia/Jakarta');
 
-$koneksi = mysqli_connect("localhost","root","","pa_2023");
- 
-// Check connection Sysdev@100619
-if (mysqli_connect_errno()){
-	echo "Koneksi database gagal : " . mysqli_connect_error();
+$db_host = 'localhost';
+$db_name = 'pa_2023';
+$db_user = 'root';
+$db_pass = '';
+
+try {
+    $koneksi = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
+    $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo "Koneksi database gagal: " . $e->getMessage();
 }
 ?>

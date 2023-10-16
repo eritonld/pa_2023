@@ -54,9 +54,9 @@ function cmdtampildata(data,asal,nik1)
 	xmlhttp.send(null);				
 }
 
-function statusbawahan(nik) {
+function statusbawahan(id) {
 //alert(nik);
-xmlhttp.open("get", "cekstatus.php?nik="+nik, true);
+xmlhttp.open("get", "cekstatus.php?id="+id, true);
 
 	xmlhttp.onreadystatechange = function()
 	{
@@ -101,7 +101,7 @@ function isi_emailatasan(superior,asal){
 }
 function cekvalid()
 {
-	alert("cek cek");
+	// alert("cek cek");
 	
 	if(document.getElementById('fortable').value=='')
 	{
@@ -125,7 +125,7 @@ function cekvalid()
 	}	
 	else
 	{	
-		var nik 					= document.getElementById('nik').value;		
+		var id 						= document.getElementById('id').value;		
 		var fortable 				= document.getElementById('fortable').value;
 		var email_atasan1 			= document.getElementById('email_atasan1').value;
 		var id_atasan1 				= document.getElementById('id_atasan1').value;
@@ -134,7 +134,7 @@ function cekvalid()
 		var email_atasan3 			= document.getElementById('email_atasan3').value;
 		var id_atasan3 				= document.getElementById('id_atasan3').value;
 		
-		xmlhttp.open("GET", "cekvalid.php?nik="+nik+"&id_atasan1="+id_atasan1+"&id_atasan2="+id_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan1="+email_atasan1+"&email_atasan2="+email_atasan2+"&email_atasan3="+email_atasan3, true);
+		xmlhttp.open("GET", "cekvalid.php?id="+id+"&id_atasan1="+id_atasan1+"&id_atasan2="+id_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan1="+email_atasan1+"&email_atasan2="+email_atasan2+"&email_atasan3="+email_atasan3, true);
 		
 		xmlhttp.onreadystatechange = function() 
 		{
@@ -143,13 +143,12 @@ function cekvalid()
 				// alert(xmlhttp.responseText);
 				var cekvalid			= xmlhttp.responseText.split('|');
 				var lanjut	 			= cekvalid[0];
-				var varnik				= cekvalid[1];
-
+				var varid				= cekvalid[1];
 				var namainput			= cekvalid[8];
 				
 				if(lanjut == 0)
 				{
-					alert("invalid NIK !!");
+					alert("invalid Employee !!");
 				}
 				else if(lanjut == 2)
 				{
@@ -157,9 +156,9 @@ function cekvalid()
 				}
 				else
 				{	
-					if(fortable=='nonstaff'){
+					if(fortable=='nonstaff' || fortable=='staff'){
 						alert("nonstaff");
-						window.location="home.php?link=formpa&nik="+varnik+"&id_atasan1="+id_atasan1+"&email_atasan1="+email_atasan1+"&id_atasan2="+id_atasan2+"&email_atasan2="+email_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan3="+email_atasan3;
+						window.location="home.php?link=formpa&id="+varid;
 					}
 				}
 			}
@@ -191,18 +190,26 @@ function cekvalid()
 			</tr>
 			  <tr>
 			  <td>
-				<select id="nik" name="nik" class="form-control" onchange="statusbawahan(this.value)" required>
+				<?php 
+				
+				?>
+				<select id="id" name="id" class="form-control" onchange="statusbawahan(this.value)" required>
 					<option value="" > -- <?php echo "$pilihnama"; ?> -- </option>
 					<?php 
-					$cekkar = mysqli_query ($koneksi, "SELECT ats.idkar, k.nik_baru, k.Nama_Lengkap FROM `atasan` as ats 
-					left join karyawan_2023 as k on k.id=ats.idkar
-					where ats.idkar='$idmaster_pa' or ats.id_atasan1='$idmaster_pa' ORDER BY k.Nama_Lengkap asc;");
-					  while ($scekkar	= mysqli_fetch_array ($cekkar))
-					  {
-					  ?>
-						<option value="<?php echo $scekkar['idkar']; ?>"><?php echo "$scekkar[Nama_Lengkap] ($scekkar[nik_baru])"; ?></option>
-					  <?php
-					  }
+					try {
+						$stmt = $koneksi->prepare("SELECT ats.idkar, k.nik_baru, k.Nama_Lengkap FROM atasan as ats 
+						LEFT JOIN karyawan_2023 as k ON k.id = ats.idkar
+						WHERE ats.idkar = :idmaster_pa OR ats.id_atasan1 = :idmaster_pa
+						ORDER BY k.Nama_Lengkap ASC");
+						$stmt->bindParam(':idmaster_pa', $idmaster_pa, PDO::PARAM_INT);
+						$stmt->execute();
+					
+						while ($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)) {
+							echo '<option value="' . $scekkar['idkar'] . '">' . $scekkar['Nama_Lengkap'] . ' (' . $scekkar['nik_baru'] . ')</option>';
+						}
+					} catch (PDOException $e) {
+						echo "Error: " . $e->getMessage();
+					}
 					  ?>
 				</select>
 				</td>

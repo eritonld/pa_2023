@@ -18,15 +18,25 @@ if($bahasa=='eng'){
 	$atasan3="Atasan 3";
 }
 
-$idkar=$_GET['nik'];
-$cekstatus=mysqli_query($koneksi,"SELECT k.id, ats.id_atasan1, a1.Nama_Lengkap as nama_atasan1, a1.Email as email_atasan1, ats.id_atasan2, a2.Nama_Lengkap  as nama_atasan2, a2.Email as email_atasan2, ats.id_atasan3, a3.Nama_Lengkap  as nama_atasan3, a3.Email as email_atasan3, ats.p1,ats.p2,ats.p3,dg.fortable, dg.Nama_Golongan, (SELECT COUNT(idkar) FROM `atasan` where id_atasan1='$idkar' or id_atasan2='$idkar' or id_atasan3='$idkar') as jumlah_subo FROM $karyawan as k 
-left join daftargolongan as dg on dg.Kode_Golongan=k.Kode_Golongan 
-left join atasan as ats on ats.idkar=k.id
-left join $karyawan as a1 on a1.id=ats.id_atasan1
-left join $karyawan as a2 on a2.id=ats.id_atasan2
-left join $karyawan as a3 on a3.id=ats.id_atasan3
-where k.id='$idkar'");
-$scekstatus=mysqli_fetch_array($cekstatus);
+$idkar=$_GET['id'];
+try {
+    $stmt = $koneksi->prepare("SELECT k.id, ats.id_atasan1, a1.Nama_Lengkap as nama_atasan1, a1.Email as email_atasan1, ats.id_atasan2, a2.Nama_Lengkap as nama_atasan2, a2.Email as email_atasan2, ats.id_atasan3, a3.Nama_Lengkap as nama_atasan3, a3.Email as email_atasan3, ats.p1, ats.p2, ats.p3, dg.fortable, dg.Nama_Golongan, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :idkar OR id_atasan2 = :idkar OR id_atasan3 = :idkar) as jumlah_subo FROM $karyawan as k 
+    LEFT JOIN daftargolongan as dg ON dg.Kode_Golongan = k.Kode_Golongan 
+    LEFT JOIN atasan as ats ON ats.idkar = k.id
+    LEFT JOIN $karyawan as a1 ON a1.id = ats.id_atasan1
+    LEFT JOIN $karyawan as a2 ON a2.id = ats.id_atasan2
+    LEFT JOIN $karyawan as a3 ON a3.id = ats.id_atasan3
+    WHERE k.id = :idkar");
+    $stmt->bindParam(':idkar', $idkar, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $scekstatus = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Access data as needed, e.g., $scekstatus['id'], $scekstatus['nama_atasan1'], etc.
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+
 
 $fortable="";
 
