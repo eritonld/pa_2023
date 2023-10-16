@@ -251,37 +251,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 					<div class="col-md-4">: <?="$statussp / $periode";?></div>
 				</div>				
 			</div>
-			<?php
-			if($fortable=='managerial')
-			{
-				if($bahasa=='eng')
-				{
-					$a14='SECTION II SELF-EVALUATION';
-					$a15='Describe your primary duties and additional work (if any) undertaken';
-					$a16='Provide a self-assessment of your performance in the past year and suggest areas of improvement';
-				}
-				else
-				{
-					$a14='BAGIAN II PENILAIAN DIRI';
-					$a15='Tuliskan tugas utama Anda dan tugas tambahan (jika ada)';
-					$a16='Berikan penilaian terhadap diri Anda atas kinerja pada tahun lalu dan usulan area mana yang perlu diperbaiki.';
-					
-				}
-			?>
-			<tr>
-				<th colspan="4" style="border:none;"><?="$a14";?></th> 
-			</tr>
-			<tr>
-				<th colspan="4" style="border:none;">1. <?="$a15";?><br />
-				<textarea name="tugas" rows="7" style="background:#ffffaa; width:70%;" class="textarea form-control"></textarea>
-				</th> 
-			</tr>
-			<tr>
-				<th colspan="4" style="border:none;">2. <?="$a16";?><br />
-				<textarea name="penilaian_tugas" rows="7" style="background:#ffffaa; width:70%;" class="textarea form-control"></textarea></th> 
-			</tr>
-			<?php
-			}?>
+			
         </div>
     </div>
 <form name="addAppraisal" id="addAppraisal" method="POST" action="apiController.php?code=submitNilaiAwal">

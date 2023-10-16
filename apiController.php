@@ -200,6 +200,43 @@ if($code == 'getPenilaian') {
     // Step 6: Close the database connection
     // $koneksi->close();
 
+}else if($code == 'getPenilaianPeers') {
+
+    try {
+
+        $sql = "SELECT a.id, a.idkar, a.total_culture, a.total_leadership, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, g.created_by
+                FROM transaksi_2023 AS a 
+                LEFT JOIN $karyawan AS b ON b.id = a.idkar 
+                LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
+                LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU 
+                LEFT JOIN daftardepartemen AS e ON e.kode_departemen = b.Kode_Departemen
+                LEFT JOIN transaksi_2023_peers AS g ON g.peers='$iduser'
+                WHERE a.idkar=g.idkar";
+    
+        $result = $koneksi->query($sql);
+    
+        if ($result) {
+            $employee = $result->fetchAll(PDO::FETCH_ASSOC);
+    
+            $dataset = array(
+                "totalrecords" => count($employee),
+                "totaldisplayrecords" => count($employee),
+                "data" => $employee
+            );
+    
+            header('Content-Type: application/json');
+            echo json_encode($dataset);
+        } else {
+            echo json_encode(array("error" => "Query execution failed."));
+        }
+    } catch (PDOException $e) {
+        echo json_encode(array("error" => $e->getMessage()));
+    }
+    
+
+    // Step 6: Close the database connection
+    // $koneksi->close();
+
 }else if($code == 'submitNilaiAwal') {
     $pic = $_POST["pic"];
     $idpic = $_POST["idpic"];
@@ -880,6 +917,306 @@ if($code == 'getPenilaian') {
             $stmtInsert->bindParam( 40, $datetime);
 
             $stmtInsert->execute();
+        }
+        echo "<script>
+                window.location='home.php?link=mydata';
+                console.log('Data submitted successfully!');
+                </script>";
+        $koneksi->commit();
+    } catch (PDOException $e) {
+        $koneksi->rollBack();
+        echo '<script>console.log("Error: ' . $e->getMessage() . '");</script>';
+    }
+
+}else if($code == 'submitReviewA1Manager') {
+    $idkar = $_POST["idkar"];
+    $idpic = $_POST["idpic"];
+    $value1 = $_POST["value1"];
+    $value2 = $_POST["value2"];
+    $value3 = $_POST["value3"];
+    $value4 = $_POST["value4"];
+    $value5 = $_POST["value5"];
+    $score1 = $_POST["score1"];
+    $score2 = $_POST["score2"];
+    $score3 = $_POST["score3"];
+    $score4 = $_POST["score4"];
+    $score5 = $_POST["score5"];
+    $total_score = $_POST["total_score"];
+    $periode = 2023;
+    $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
+    $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
+    $synergized3 = floatval(isset($_POST["synergized3"]) ? $_POST["synergized3"] : 0);
+    $integrity1 = floatval(isset($_POST["integrity1"]) ? $_POST["integrity1"] : 0);
+    $integrity2 = floatval(isset($_POST["integrity2"]) ? $_POST["integrity2"] : 0);
+    $integrity3 = floatval(isset($_POST["integrity3"]) ? $_POST["integrity3"] : 0);
+    $growth1 = floatval(isset($_POST["growth1"]) ? $_POST["growth1"] : 0);
+    $growth2 = floatval(isset($_POST["growth2"]) ? $_POST["growth2"] : 0);
+    $growth3 = floatval(isset($_POST["growth3"]) ? $_POST["growth3"] : 0);
+    $adaptive1 = floatval(isset($_POST["adaptive1"]) ? $_POST["adaptive1"] : 0);
+    $adaptive2 = floatval(isset($_POST["adaptive2"]) ? $_POST["adaptive2"] : 0);
+    $adaptive3 = floatval(isset($_POST["adaptive3"]) ? $_POST["adaptive3"] : 0);
+    $passion1 = floatval(isset($_POST["passion1"]) ? $_POST["passion1"] : 0);
+    $passion2 = floatval(isset($_POST["passion2"]) ? $_POST["passion2"] : 0);
+    $passion3 = floatval(isset($_POST["passion3"]) ? $_POST["passion3"] : 0);
+    $leadership1 = floatval(isset($_POST["leadership1"]) ? $_POST["leadership1"] : 0);
+    $leadership2 = floatval(isset($_POST["leadership2"]) ? $_POST["leadership2"] : 0);
+    $leadership3 = floatval(isset($_POST["leadership3"]) ? $_POST["leadership3"] : 0);
+    $leadership4 = floatval(isset($_POST["leadership4"]) ? $_POST["leadership4"] : 0);
+    $leadership5 = floatval(isset($_POST["leadership5"]) ? $_POST["leadership5"] : 0);
+    $leadership6 = floatval(isset($_POST["leadership6"]) ? $_POST["leadership6"] : 0);
+
+    $peersArray = array(
+        isset($_POST["peers1"]) ? $_POST["peers1"] : "",
+        isset($_POST["peers2"]) ? $_POST["peers2"] : "",
+        isset($_POST["peers3"]) ? $_POST["peers3"] : ""
+    );
+    $total_culture = number_format(($synergized1 + $synergized2 + $synergized3 + $integrity1 + $integrity2 + $integrity3 + $growth1 + $growth2 + $growth3 + $adaptive1 + $adaptive2 + $adaptive3 + $passion1 + $passion2 + $passion3) / 15 , 2);
+    $avg = $leadership6 == 0 ? 5 : 6;
+    $total_leadership = number_format(($leadership1 + $leadership2 + $leadership3 + $leadership4 + $leadership5 + $leadership6) / $avg , 2);
+    $rating = isset($_POST["rating"]) ? $_POST["rating"] : null;
+    $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
+
+    try {
+        $sql = "SELECT a.id, a.idkar, a.total_score FROM transaksi_2023_a1 AS a WHERE a.idkar='$idkar'";
+
+        $result = $koneksi->query($sql);
+
+        if ($result) {
+            $employees = $result->fetchAll(PDO::FETCH_ASSOC);
+            $employee_available =  count($employees);
+
+        } else {
+            echo "<script>console.log('Error : data not found')</script>";
+        }
+    } catch (PDOException $e) {
+        echo "error", $e->getMessage();
+    }
+    
+    try {
+        $koneksi->beginTransaction();
+        $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $updateQuery = "UPDATE %s SET
+                    value_1 = :value1,
+                    value_2 = :value2,
+                    value_3 = :value3,
+                    value_4 = :value4,
+                    value_5 = :value5,
+                    score_1 = :score1,
+                    score_2 = :score2,
+                    score_3 = :score3,
+                    score_4 = :score4,
+                    score_5 = :score5,
+                    total_score = :total_score,
+                    updated_by = :idpic,
+                    updated_date = :updated_date,
+                    synergized1 = :synergized1,
+                    synergized2 = :synergized2,
+                    synergized3 = :synergized3,
+                    integrity1 = :integrity1,
+                    integrity2 = :integrity2,
+                    integrity3 = :integrity3,
+                    growth1 = :growth1,
+                    growth2 = :growth2,
+                    growth3 = :growth3,
+                    adaptive1 = :adaptive1,
+                    adaptive2 = :adaptive2,
+                    adaptive3 = :adaptive3,
+                    passion1 = :passion1,
+                    passion2 = :passion2,
+                    passion3 = :passion3,
+                    leadership1 = :leadership1,
+                    leadership2 = :leadership2,
+                    leadership3 = :leadership3,
+                    leadership4 = :leadership4,
+                    leadership5 = :leadership5,
+                    leadership6 = :leadership6,
+                    total_culture = :total_culture,
+                    total_leadership = :total_leadership,
+                    rating_a1 = :rating,
+                    comment_a1 = :comment
+                    WHERE idkar = :idkar";
+
+        if($employee_available){
+
+            $tableNames = ['transaksi_2023', 'transaksi_2023_a1'];
+            foreach ($tableNames as $tableName) {
+                // Create a prepared statement with the table name
+            $stmtUpdate = $koneksi->prepare(sprintf($updateQuery, $tableName));
+            $stmtUpdate->bindParam(':idkar', $idkar);
+            $stmtUpdate->bindParam(':idpic', $idpic);
+            $stmtUpdate->bindParam(':value1', $value1);
+            $stmtUpdate->bindParam(':value2', $value2);
+            $stmtUpdate->bindParam(':value3', $value3);
+            $stmtUpdate->bindParam(':value4', $value4);
+            $stmtUpdate->bindParam(':value5', $value5);
+            $stmtUpdate->bindParam(':score1', $score1);
+            $stmtUpdate->bindParam(':score2', $score2);
+            $stmtUpdate->bindParam(':score3', $score3);
+            $stmtUpdate->bindParam(':score4', $score4);
+            $stmtUpdate->bindParam(':score5', $score5);
+            $stmtUpdate->bindParam(':total_score', $total_score);
+            $stmtUpdate->bindParam(':updated_date', $datetime);
+            $stmtUpdate->bindParam(':synergized1', $synergized1);
+            $stmtUpdate->bindParam(':synergized2', $synergized2);
+            $stmtUpdate->bindParam(':synergized3', $synergized3);
+            $stmtUpdate->bindParam(':integrity1', $integrity1);
+            $stmtUpdate->bindParam(':integrity2', $integrity2);
+            $stmtUpdate->bindParam(':integrity3', $integrity3);
+            $stmtUpdate->bindParam(':growth1', $growth1);
+            $stmtUpdate->bindParam(':growth2', $growth2);
+            $stmtUpdate->bindParam(':growth3', $growth3);
+            $stmtUpdate->bindParam(':adaptive1', $adaptive1);
+            $stmtUpdate->bindParam(':adaptive2', $adaptive2);
+            $stmtUpdate->bindParam(':adaptive3', $adaptive3);
+            $stmtUpdate->bindParam(':passion1', $passion1);
+            $stmtUpdate->bindParam(':passion2', $passion2);
+            $stmtUpdate->bindParam(':passion3', $passion3);
+            $stmtUpdate->bindParam(':leadership1', $leadership1);
+            $stmtUpdate->bindParam(':leadership2', $leadership2);
+            $stmtUpdate->bindParam(':leadership3', $leadership3);
+            $stmtUpdate->bindParam(':leadership4', $leadership4);
+            $stmtUpdate->bindParam(':leadership5', $leadership5);
+            $stmtUpdate->bindParam(':leadership6', $leadership6);
+            $stmtUpdate->bindParam(':total_culture', $total_culture);
+            $stmtUpdate->bindParam(':total_leadership', $total_leadership);
+            $stmtUpdate->bindParam(':rating', $rating);
+            $stmtUpdate->bindParam(':comment', $comment);
+
+            $stmtUpdate->execute();
+            }
+
+            $updatePeersQuery = "UPDATE transaksi_2023_peers SET
+                    updated_by = :idpic,
+                    updated_date = :updated_date,
+                    periode = :periode,
+                    WHERE peers = :idpeers";
+
+            foreach ($peersArray as $peers) {
+                $stmtUpdatePeers = $koneksi->prepare($updatePeersQuery);
+                $stmtUpdatePeers->bindParam(':idpeers', $peers);
+                $stmtUpdatePeers->bindParam(':idpic', $idpic);
+                $stmtUpdatePeers->bindParam(':periode', $periode);
+                $stmtUpdatePeers->bindParam(':updated_date', $datetime);
+
+                // Execute the query for each peer
+                $stmtUpdatePeers->execute();
+            }
+
+        }else{
+
+        $tableNames = ['transaksi_2023'];
+        foreach ($tableNames as $tableName) {
+            // Create a prepared statement with the table name
+        $stmtUpdate = $koneksi->prepare(sprintf($updateQuery, $tableName));
+        
+        $stmtUpdate->bindParam(':idkar', $idkar);
+        $stmtUpdate->bindParam(':idpic', $idpic);
+        $stmtUpdate->bindParam(':value1', $value1);
+        $stmtUpdate->bindParam(':value2', $value2);
+        $stmtUpdate->bindParam(':value3', $value3);
+        $stmtUpdate->bindParam(':value4', $value4);
+        $stmtUpdate->bindParam(':value5', $value5);
+        $stmtUpdate->bindParam(':score1', $score1);
+        $stmtUpdate->bindParam(':score2', $score2);
+        $stmtUpdate->bindParam(':score3', $score3);
+        $stmtUpdate->bindParam(':score4', $score4);
+        $stmtUpdate->bindParam(':score5', $score5);
+        $stmtUpdate->bindParam(':total_score', $total_score);
+        $stmtUpdate->bindParam(':updated_date', $datetime);
+        $stmtUpdate->bindParam(':synergized1', $synergized1);
+        $stmtUpdate->bindParam(':synergized2', $synergized2);
+        $stmtUpdate->bindParam(':synergized3', $synergized3);
+        $stmtUpdate->bindParam(':integrity1', $integrity1);
+        $stmtUpdate->bindParam(':integrity2', $integrity2);
+        $stmtUpdate->bindParam(':integrity3', $integrity3);
+        $stmtUpdate->bindParam(':growth1', $growth1);
+        $stmtUpdate->bindParam(':growth2', $growth2);
+        $stmtUpdate->bindParam(':growth3', $growth3);
+        $stmtUpdate->bindParam(':adaptive1', $adaptive1);
+        $stmtUpdate->bindParam(':adaptive2', $adaptive2);
+        $stmtUpdate->bindParam(':adaptive3', $adaptive3);
+        $stmtUpdate->bindParam(':passion1', $passion1);
+        $stmtUpdate->bindParam(':passion2', $passion2);
+        $stmtUpdate->bindParam(':passion3', $passion3);
+        $stmtUpdate->bindParam(':leadership1', $leadership1);
+        $stmtUpdate->bindParam(':leadership2', $leadership2);
+        $stmtUpdate->bindParam(':leadership3', $leadership3);
+        $stmtUpdate->bindParam(':leadership4', $leadership4);
+        $stmtUpdate->bindParam(':leadership5', $leadership5);
+        $stmtUpdate->bindParam(':leadership6', $leadership6);
+        $stmtUpdate->bindParam(':total_culture', $total_culture);
+        $stmtUpdate->bindParam(':total_leadership', $total_leadership);
+        $stmtUpdate->bindParam(':rating', $rating);
+        $stmtUpdate->bindParam(':comment', $comment);
+        
+        $stmtUpdate->execute();
+        }
+
+        $insertQuery = "INSERT INTO transaksi_2023_a1 (idkar, created_by, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, total_culture, total_leadership, rating_a1, comment_a1, periode, created_date) 
+        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+            // Create a prepared statement with the table name
+            $stmtInsert = $koneksi->prepare($insertQuery);
+            
+            // Bind the parameters
+            $stmtInsert->bindParam( 1, $idkar);
+            $stmtInsert->bindParam( 2, $idpic);
+            $stmtInsert->bindParam( 3, $value1);
+            $stmtInsert->bindParam( 4, $value2);
+            $stmtInsert->bindParam( 5, $value3);
+            $stmtInsert->bindParam( 6, $value4);
+            $stmtInsert->bindParam( 7, $value5);
+            $stmtInsert->bindParam( 8, $score1);
+            $stmtInsert->bindParam( 9, $score2);
+            $stmtInsert->bindParam( 10, $score3);
+            $stmtInsert->bindParam( 11, $score4);
+            $stmtInsert->bindParam( 12, $score5);
+            $stmtInsert->bindParam( 13, $total_score);
+            $stmtInsert->bindParam( 14, $synergized1);
+            $stmtInsert->bindParam( 15, $synergized2);
+            $stmtInsert->bindParam( 16, $synergized3);
+            $stmtInsert->bindParam( 17, $integrity1);
+            $stmtInsert->bindParam( 18, $integrity2);
+            $stmtInsert->bindParam( 19, $integrity3);
+            $stmtInsert->bindParam( 20, $growth1);
+            $stmtInsert->bindParam( 21, $growth2);
+            $stmtInsert->bindParam( 22, $growth3);
+            $stmtInsert->bindParam( 23, $adaptive1);
+            $stmtInsert->bindParam( 24, $adaptive2);
+            $stmtInsert->bindParam( 25, $adaptive3);
+            $stmtInsert->bindParam( 26, $passion1);
+            $stmtInsert->bindParam( 27, $passion2);
+            $stmtInsert->bindParam( 28, $passion3);
+            $stmtInsert->bindParam( 29, $leadership1);
+            $stmtInsert->bindParam( 30, $leadership2);
+            $stmtInsert->bindParam( 31, $leadership3);
+            $stmtInsert->bindParam( 32, $leadership4);
+            $stmtInsert->bindParam( 33, $leadership5);
+            $stmtInsert->bindParam( 34, $leadership6);
+            $stmtInsert->bindParam( 35, $total_culture);
+            $stmtInsert->bindParam( 36, $total_leadership);
+            $stmtInsert->bindParam( 37, $rating);  // Use the correct name
+            $stmtInsert->bindParam( 38, $comment);  // Use the correct name
+            $stmtInsert->bindParam( 39, $periode);
+            $stmtInsert->bindParam( 40, $datetime);
+
+            $stmtInsert->execute();
+
+            $InsertPeersQuery = "INSERT INTO transaksi_2023_peers (created_by, created_date, peers, periode, idkar) VALUES (?, ?, ?, ?, ?)";
+
+            foreach ($peersArray as $peers) {
+                $stmtInsertPeers = $koneksi->prepare($InsertPeersQuery);
+                $stmtInsertPeers->bindParam( 1, $idpic);
+                $stmtInsertPeers->bindParam( 2, $datetime);
+                $stmtInsertPeers->bindParam( 3, $peers);
+                $stmtInsertPeers->bindParam( 4, $periode);
+                $stmtInsertPeers->bindParam( 5, $idkar);
+
+                // Execute the query for each peer
+                $stmtInsertPeers->execute();
+            }
+
         }
         echo "<script>
                 window.location='home.php?link=mydata';
@@ -1745,6 +2082,119 @@ if($code == 'getPenilaian') {
             </script>
             <?php
         }
+        
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+
+}else if($code == 'submitReviewPeers') {
+    $pic = $_POST["pic"];
+    $idpic = $_POST["idpic"];
+    $idkar = $_POST["idkar"];
+    $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
+    $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
+    $synergized3 = floatval(isset($_POST["synergized3"]) ? $_POST["synergized3"] : 0);
+    $integrity1 = floatval(isset($_POST["integrity1"]) ? $_POST["integrity1"] : 0);
+    $integrity2 = floatval(isset($_POST["integrity2"]) ? $_POST["integrity2"] : 0);
+    $integrity3 = floatval(isset($_POST["integrity3"]) ? $_POST["integrity3"] : 0);
+    $growth1 = floatval(isset($_POST["growth1"]) ? $_POST["growth1"] : 0);
+    $growth2 = floatval(isset($_POST["growth2"]) ? $_POST["growth2"] : 0);
+    $growth3 = floatval(isset($_POST["growth3"]) ? $_POST["growth3"] : 0);
+    $adaptive1 = floatval(isset($_POST["adaptive1"]) ? $_POST["adaptive1"] : 0);
+    $adaptive2 = floatval(isset($_POST["adaptive2"]) ? $_POST["adaptive2"] : 0);
+    $adaptive3 = floatval(isset($_POST["adaptive3"]) ? $_POST["adaptive3"] : 0);
+    $passion1 = floatval(isset($_POST["passion1"]) ? $_POST["passion1"] : 0);
+    $passion2 = floatval(isset($_POST["passion2"]) ? $_POST["passion2"] : 0);
+    $passion3 = floatval(isset($_POST["passion3"]) ? $_POST["passion3"] : 0);
+    $leadership1 = floatval(isset($_POST["leadership1"]) ? $_POST["leadership1"] : 0);
+    $leadership2 = floatval(isset($_POST["leadership2"]) ? $_POST["leadership2"] : 0);
+    $leadership3 = floatval(isset($_POST["leadership3"]) ? $_POST["leadership3"] : 0);
+    $leadership4 = floatval(isset($_POST["leadership4"]) ? $_POST["leadership4"] : 0);
+    $leadership5 = floatval(isset($_POST["leadership5"]) ? $_POST["leadership5"] : 0);
+    $leadership6 = floatval(isset($_POST["leadership6"]) ? $_POST["leadership6"] : 0);
+    $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
+    $total_culture = number_format(($synergized1 + $synergized2 + $synergized3 + $integrity1 + $integrity2 + $integrity3 + $growth1 + $growth2 + $growth3 + $adaptive1 + $adaptive2 + $adaptive3 + $passion1 + $passion2 + $passion3) / 15 , 2);
+    $avg = $leadership6 == 0 ? 5 : 6;
+    $total_leadership = number_format(($leadership1 + $leadership2 + $leadership3 + $leadership4 + $leadership5 + $leadership6) / $avg , 2);
+
+    try {
+
+            // Process the data here
+            $updateQuery = "UPDATE transaksi_2023_peers SET
+            updated_by = :idpic,
+            updated_date = :updated_date,
+            synergized1 = :synergized1,
+            synergized2 = :synergized2,
+            synergized3 = :synergized3,
+            integrity1 = :integrity1,
+            integrity2 = :integrity2,
+            integrity3 = :integrity3,
+            growth1 = :growth1,
+            growth2 = :growth2,
+            growth3 = :growth3,
+            adaptive1 = :adaptive1,
+            adaptive2 = :adaptive2,
+            adaptive3 = :adaptive3,
+            passion1 = :passion1,
+            passion2 = :passion2,
+            passion3 = :passion3,
+            leadership1 = :leadership1,
+            leadership2 = :leadership2,
+            leadership3 = :leadership3,
+            leadership4 = :leadership4,
+            leadership5 = :leadership5,
+            leadership6 = :leadership6,
+            leadership6 = :leadership6,
+            total_culture = :total_culture,
+            total_leadership = :total_leadership
+            WHERE idkar = :idkar AND peers = :idpic";
+
+            $koneksi->beginTransaction();
+
+            // Create a prepared statement with the table name
+            $stmtUpdate = $koneksi->prepare($updateQuery);
+
+            $stmtUpdate->bindParam(':idkar', $idkar);
+            $stmtUpdate->bindParam(':idpic', $idpic);
+            $stmtUpdate->bindParam(':updated_date', $datetime);
+            $stmtUpdate->bindParam(':synergized1', $synergized1);
+            $stmtUpdate->bindParam(':synergized2', $synergized2);
+            $stmtUpdate->bindParam(':synergized3', $synergized3);
+            $stmtUpdate->bindParam(':integrity1', $integrity1);
+            $stmtUpdate->bindParam(':integrity2', $integrity2);
+            $stmtUpdate->bindParam(':integrity3', $integrity3);
+            $stmtUpdate->bindParam(':growth1', $growth1);
+            $stmtUpdate->bindParam(':growth2', $growth2);
+            $stmtUpdate->bindParam(':growth3', $growth3);
+            $stmtUpdate->bindParam(':adaptive1', $adaptive1);
+            $stmtUpdate->bindParam(':adaptive2', $adaptive2);
+            $stmtUpdate->bindParam(':adaptive3', $adaptive3);
+            $stmtUpdate->bindParam(':passion1', $passion1);
+            $stmtUpdate->bindParam(':passion2', $passion2);
+            $stmtUpdate->bindParam(':passion3', $passion3);
+            $stmtUpdate->bindParam(':leadership1', $leadership1);
+            $stmtUpdate->bindParam(':leadership2', $leadership2);
+            $stmtUpdate->bindParam(':leadership3', $leadership3);
+            $stmtUpdate->bindParam(':leadership4', $leadership4);
+            $stmtUpdate->bindParam(':leadership5', $leadership5);
+            $stmtUpdate->bindParam(':leadership6', $leadership6);
+            $stmtUpdate->bindParam(':total_culture', $total_culture);
+            $stmtUpdate->bindParam(':total_leadership', $total_leadership);
+
+            // Execute the INSERT statement for the current table
+            if ($stmtUpdate->execute()) {
+                // If an error occurs, set the $errors variable to true
+                $koneksi->commit();
+                ?>
+                <script>
+                    window.location='home.php?link=mydata';
+                    // console.log("Data created successfully!");
+                </script>
+                <?php
+            }
+
+            $stmtInsert->closeCursor();
+
         
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();

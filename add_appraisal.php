@@ -62,18 +62,7 @@ xmlhttp.open("get", "cekstatus.php?id="+id, true);
 	{
 		if((xmlhttp.readyState==4)&&(xmlhttp.status==200))
 		{
-			// alert(xmlhttp.responseText);
-			// document.getElementById('fortable').value=xmlhttp.responseText;
 			document.getElementById('detail_superior').innerHTML=xmlhttp.responseText;
-			
-			// if(xmlhttp.responseText == 'staff'){
-				// document.getElementById('bawahan').style.display = "";
-			// }else if(xmlhttp.responseText == 'Member'){
-				// document.getElementById('member').style.display = "";
-			// }else{
-				// document.getElementById('bawahan').style.display = "none";
-				// document.getElementById('member').style.display = "none";
-			// }
 			
 		}
 		return false;
@@ -108,54 +97,50 @@ function cekvalid()
 		alert('fortable');
 		return false
 	}
-	else if(document.getElementById('email_atasan1').value=='')
-	{
-		alert('Email Atasan 1 Kosong');
-		return false
-	}
-	else if (document.getElementById('email_atasan2').value=='')
-	{
-		alert("Email Atasan 2 Kosong");
-		return false
-	}
-	else if(document.getElementById('email_atasan3').value=='')
-	{
-		alert('Email Atasan 3 Kosong');
-		return false
-	}	
 	else
 	{	
-		var id 						= document.getElementById('id').value;		
-		var fortable 				= document.getElementById('fortable').value;
-		var email_atasan1 			= document.getElementById('email_atasan1').value;
-		var id_atasan1 				= document.getElementById('id_atasan1').value;
-		var email_atasan2 			= document.getElementById('email_atasan2').value;
-		var id_atasan2 				= document.getElementById('id_atasan2').value;
-		var email_atasan3 			= document.getElementById('email_atasan3').value;
-		var id_atasan3 				= document.getElementById('id_atasan3').value;
+		let id = document.getElementById('id').value;
+		let check_atasan1 = document.getElementById('check_atasan1');
+		let check_atasan2 = document.getElementById('check_atasan2');
+		let check_atasan3 = document.getElementById('check_atasan3');
 		
-		xmlhttp.open("GET", "cekvalid.php?id="+id+"&id_atasan1="+id_atasan1+"&id_atasan2="+id_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan1="+email_atasan1+"&email_atasan2="+email_atasan2+"&email_atasan3="+email_atasan3, true);
+		xmlhttp.open("GET", "cekvalid.php?id="+id, true);
 		
 		xmlhttp.onreadystatechange = function() 
 		{
 			if ((xmlhttp.readyState == 4) && (xmlhttp.status == 200))
 			{
 				// alert(xmlhttp.responseText);
-				var cekvalid			= xmlhttp.responseText.split('|');
-				var lanjut	 			= cekvalid[0];
-				var varid				= cekvalid[1];
-				var namainput			= cekvalid[8];
-				
-				if(lanjut == 0)
+				let data = JSON.parse(xmlhttp.responseText);
+				let valid	= data.cekvalid;
+				let varid	= data.varid;
+				let inputby	= data.inputby;
+
+				if(valid == 0)
 				{
 					alert("invalid Employee !!");
 				}
-				else if(lanjut == 2)
+				else if(valid == 2)
 				{
-					alert("Data Already Available, PA was Assessed by "+namainput);
+					alert("This employee PA already assessed by "+inputby);
 				}
 				else
 				{	
+					if (!check_atasan1.checked){
+						alert("Please confirm employee L1");
+						document.getElementById('nama_atasan1').focus();
+						return;
+					}
+					if (!check_atasan2.checked){
+						alert("Please confirm employee L2");
+						document.getElementById('nama_atasan2').focus();
+						return;
+					}
+					if (!check_atasan3.checked){
+						alert("Please confirm employee L3");
+						document.getElementById('nama_atasan3').focus();
+						return;
+					}
 					window.location="home.php?link=formpa&id="+varid;
 				}
 			}
@@ -176,50 +161,33 @@ function cekvalid()
         </div>
         <div class="box-body">			
 			<!-- <input type="text" name="fortable" id="fortable" /> -->
-			<div class="form-group">
-			
-			  <table>
-			  <tr>
-				<td style="width:20%"><label><?php echo "$karyawandinilai"; ?></label></td>
-				<td style="width:1%"></td>
-				<td style="width:24%"><label><?php echo " "; ?></label></td>
-				<td style="width:55%"></td>
-			</tr>
-			  <tr>
-			  <td>
-				<?php 
-				
-				?>
-				<select id="id" name="id" class="form-control" onchange="statusbawahan(this.value)" required>
-					<option value="" > -- <?php echo "$pilihnama"; ?> -- </option>
-					<?php 
-					try {
-						$stmt = $koneksi->prepare("SELECT ats.idkar, k.nik_baru, k.Nama_Lengkap FROM atasan as ats 
-						LEFT JOIN karyawan_2023 as k ON k.id = ats.idkar
-						WHERE ats.idkar = :idmaster_pa OR ats.id_atasan1 = :idmaster_pa
-						ORDER BY k.Nama_Lengkap ASC");
-						$stmt->bindParam(':idmaster_pa', $idmaster_pa, PDO::PARAM_INT);
-						$stmt->execute();
-					
-						while ($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)) {
-							echo '<option value="' . $scekkar['idkar'] . '">' . $scekkar['Nama_Lengkap'] . ' (' . $scekkar['nik_baru'] . ')</option>';
-						}
-					} catch (PDOException $e) {
-						echo "Error: " . $e->getMessage();
-					}
-					  ?>
-				</select>
-				</td>
-				<td></td>
-			    <td>
-				</td>
-			    <td></td>
-			  </tr>
-			  </table>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label><?php echo "$karyawandinilai"; ?></label>
+						<select id="id" name="id" class="form-control" onchange="statusbawahan(this.value)" required>
+							<option value="" > -- <?php echo "$pilihnama"; ?> -- </option>
+							<?php 
+							try {
+								$stmt = $koneksi->prepare("SELECT ats.idkar, k.nik_baru, k.Nama_Lengkap FROM atasan as ats 
+								LEFT JOIN karyawan_2023 as k ON k.id = ats.idkar
+								WHERE ats.idkar = :idmaster_pa OR ats.id_atasan1 = :idmaster_pa
+								ORDER BY k.Nama_Lengkap ASC");
+								$stmt->bindParam(':idmaster_pa', $idmaster_pa, PDO::PARAM_INT);
+								$stmt->execute();
+							
+								while ($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)) {
+									echo '<option value="' . $scekkar['idkar'] . '">' . $scekkar['Nama_Lengkap'] . ' (' . $scekkar['nik_baru'] . ')</option>';
+								}
+							} catch (PDOException $e) {
+								echo "Error: " . $e->getMessage();
+							}
+							?>
+						</select>
+					</div>
+				</div>
 			</div>
-			<div class="form-group" id="detail_superior" name="detail_superior">
-			</div>
-			
+			<div class="form-group" id="detail_superior" name="detail_superior"></div>
 			<div class="box-footer">
 		      <button type="submit" class="btn btn-success" onclick="cekvalid()" name="btnsave">Submit</button>
 			</div>

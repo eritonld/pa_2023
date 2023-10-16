@@ -143,6 +143,10 @@ if($bahasa=='eng')
 	$title_comment='Comment';
 	$comment_placeholder='input your comment';
 	$title_rating='Give Rating :';
+	$peersTitle[1]='Choose Peers 1 :';
+	$peersTitle[2]='Choose Peers 2 :';
+	$peersTitle[3]='Choose Peers 3 :';
+	$selectPeers='select peers';
 }
 else
 {	
@@ -167,6 +171,10 @@ else
 	$title_comment='Komentar';
 	$comment_placeholder='masukkan komentar anda';
 	$title_rating='Berikan Rating :';
+	$peersTitle[1]='Pilih Peers 1 :';
+	$peersTitle[2]='Pilih Peers 2 :';
+	$peersTitle[3]='Pilih Peers 3 :';
+	$selectPeers='pilih peers';
 }
 
 // try {
@@ -246,21 +254,26 @@ if ($response === false) {
 				$tScore = ceil($total_score);
 				$total_rating = $tScore == 1 ? "E" : ($tScore == 2 ? "D" : ($tScore == 3 ? "C" : ($tScore == 4 ? "B" : "A")));
 
+				$submitReview = 'submitReviewA1';
 				if($fortable=='nonstaff')
 				{
 					$step = 2;
+					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='staff')
 				{
 					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 2;
+					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='staffb')
 				{
 					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='managerial')
 				{
 					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+					$submitReview = 'submitReviewA1Manager';
 				}
 
 				if($step==1){
@@ -338,7 +351,7 @@ if ($response === false) {
 			</div>
         </div>
     </div>
-	<form name="updateAppraisal" id="updateAppraisal" method="POST" action="apiController.php?code=submitReviewA1" onsubmit="return cekEmptyValue()">
+	<form name="updateAppraisal" id="updateAppraisal" method="POST" action="apiController.php?code=<?= $submitReview; ?>" onsubmit="return cekEmptyValue()">
 		<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
 		<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
 		<input type="hidden" id="idkar" name="idkar" value="<?="$idkar";?>">
@@ -555,6 +568,44 @@ if ($response === false) {
 							?>
 					</div>
                 </div>
+				<div class="row" style="display: <?= $fortable=='managerial' ? "":"none"; ?>; margin-top: 60px;">
+					<div class="container-fluid container-peers">
+						<?php 
+						for ($i=1; $i <= 3 ; $i++) { 
+						?>
+						<div class="row">
+							<div class="col-md-offset-1 col-md-5" style="margin-top: 20px;">
+								<div class="form-group">
+									<label><?= $peersTitle[$i]; ?></label>
+									<select id="peers<?= $i; ?>" name="peers<?= $i; ?>" class="form-control" required>
+										<option value="" > -- <?= $selectPeers; ?> -- </option>
+										<?php 
+										try {
+											$stmt = $koneksi->prepare("SELECT k.id, k.NIK, k.nik_baru, k.Nama_Lengkap
+											FROM karyawan_2023 AS k
+											LEFT JOIN atasan AS a ON a.idkar = k.id
+											WHERE k.id!=:idmaster_pa AND a.id_atasan1 = :idmaster_pa
+											ORDER BY k.Nama_Lengkap ASC");
+											$stmt->bindParam(':idmaster_pa', $idmaster_pa, PDO::PARAM_INT);
+											$stmt->execute();
+										
+											while ($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)) {
+												$nikPeers = $scekkar['nik_baru'] ? $scekkar['nik_baru'] : $scekkar['NIK'];
+												echo '<option value="' . $scekkar['id'] . '">' . $scekkar['Nama_Lengkap'] . ' (' . $nikPeers . ')</option>';
+											}
+										} catch (PDOException $e) {
+											echo "Error: " . $e->getMessage();
+										}
+										?>
+									</select>
+								</div>
+							</div>
+						</div>
+						<?php
+						}
+						?>
+					</div>
+				</div>
                 <ul class="list-inline pull-right">
                   <li><button type="button" class="btn btn-default prev-step">Back</button></li>
 				  <li><button type="button" class="btn btn-success final-step-review-3">Submit</button></li>                
@@ -632,21 +683,36 @@ if ($response === false) {
 		function checkLeadership() {
 			let cultureContainer = document.querySelector('.container-leadership');
 			let selectElements = cultureContainer.querySelectorAll('select');
-			let foundEmpty = false;
+			let peersContainer = document.querySelector('.container-peers');
+			let selectPeers = peersContainer.querySelectorAll('select');
+			let leadershipEmpty = false;
+			let peersEmpty = false;
 
 			for (let i = 0; i < selectElements.length; i++) {
 				let selectElement = selectElements[i];
 
 				if (selectElement.value === "") {
-					foundEmpty = true;
+					leadershipEmpty = true;
 					alert("Please select a value for " + selectElement.name);
 					selectElement.focus();
 					break; // Exit the loop after displaying the first alert
 				}
 			}
+			if(<?= $fortable=='managerial'; ?>&&!leadershipEmpty){
+				for (let i = 0; i < selectPeers.length; i++) {
+					let selectPeer = selectPeers[i];
+	
+					if (selectPeer.value === "") {
+						peersEmpty = true;
+						alert("Please select a value for " + selectPeer.name);
+						selectPeer.focus();
+						break; // Exit the loop after displaying the first alert
+					}
+				}
+			}
 
-			if (!foundEmpty) {
-				let confirm = window.confirm("Penilaian akan di Update, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
+			if (!leadershipEmpty&&!peersEmpty) {
+				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
 					document.getElementById('updateAppraisal').submit();
 				}
