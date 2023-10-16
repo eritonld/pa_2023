@@ -3,6 +3,7 @@ include("conf/conf.php");
 include("tabel_setting.php");
 include("function.php");
 
+
 if(isset($_COOKIE['bahasa'])){
 	$bahasa=$_COOKIE['bahasa'];
 }else{
@@ -27,7 +28,7 @@ if($id=='')
 exit;
 }
 try {
-    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo
             FROM $karyawan AS k
             LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
             LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.Kode_Departemen
@@ -48,6 +49,35 @@ try {
 
     if ($ckaryawan) {
         // Process the data here
+		$fortable = $ckaryawan['fortable'] != "staff" ? $ckaryawan['fortable'] : ($ckaryawan['jumlah_subo'] > 0 ? "staffb" : "staff");
+		
+		if($fortable=='nonstaff')
+		{
+			$step = 2;
+		}
+		else if($fortable=='staff')
+		{
+			$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 2;
+		}
+		else if($fortable=='staffb')
+		{
+			$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+		}
+		else if($fortable=='managerial')
+		{
+			$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+		}
+
+		if($step==1){
+			$margin = array('','margin: auto','','margin: auto');
+			$steptitle = array('','Self Review');
+		}else if($step==2){
+			$margin = array('','margin-left: 0','margin-right: 0','margin: auto');
+			$steptitle = array('','Self Review','Culture');
+		}else{
+			$margin = array('','margin-left: 0','margin: auto','margin-right: 0');
+			$steptitle = array('','Self Review','Culture','Leadership');
+		}
     } else {
         echo "No data found for the provided NIK.";
     }
@@ -71,10 +101,9 @@ try {
     echo "Error: " . $e->getMessage();
 }
 
-$role='spv'; 
 
 try {
-    $queryLeadershipTitle = "SELECT title FROM question_pa WHERE `group` = 'leadership' AND `role`='$role' GROUP BY title ORDER BY `id` ASC";
+    $queryLeadershipTitle = "SELECT title FROM question_pa WHERE `group` = 'leadership' AND `role`='$fortable' GROUP BY title ORDER BY `id` ASC";
 
     $stmtLeadershipTitle = $koneksi->prepare($queryLeadershipTitle);
     $stmtLeadershipTitle->execute();
@@ -111,8 +140,13 @@ if($bahasa=='eng')
 	$title_a='Work Results';
 	$title_aa='Work Objectives';
 	$add_btn_name='Objective';
-	$title_comment='Direct Manager Comment';
+	$title_comment='Comment';
 	$comment_placeholder='input your comment';
+	$title_rating='Give Rating :';
+	$peersTitle[1]='Choose Peers 1 :';
+	$peersTitle[2]='Choose Peers 2 :';
+	$peersTitle[3]='Choose Peers 3 :';
+	$selectPeers='select peers';
 }
 else
 {	
@@ -134,8 +168,13 @@ else
 	$title_a='Hasil Kerja';
 	$title_aa='Objektif Kerja';
 	$add_btn_name='Objektif';
-	$title_comment='Komentar Atasan Langsung';
+	$title_comment='Komentar';
 	$comment_placeholder='masukkan komentar anda';
+	$title_rating='Berikan Rating :';
+	$peersTitle[1]='Pilih Peers 1 :';
+	$peersTitle[2]='Pilih Peers 2 :';
+	$peersTitle[3]='Pilih Peers 3 :';
+	$selectPeers='pilih peers';
 }
 
 // try {
@@ -160,7 +199,7 @@ else
 // $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 
 
-$api_url = 'http://localhost:8080/hcis-pa-2023/apiController.php?code=getDataEditAwal&id='.$id; // Replace with your API endpoint URL
+$api_url = 'http://localhost:8080/hcis-pa-2023/apiController.php?code=getDataReview&id='.$id; // Replace with your API endpoint URL
 
 // Make an HTTP GET request to the API
 $response = file_get_contents($api_url);
@@ -200,25 +239,41 @@ if ($response === false) {
                 $jumlah_subo = $item['jumlah_subo'];
                 $fortable = $item['fortable'];
                 $comment_a1 = $item['comment_a1'];
-                $rating_a1 = $item['rating_a1']==0 ? $total_score : $item['rating_a1'];
+                $rating_a1 = $item['rating_a1'];
+                $comment_a2 = $item['comment_a2'];
+                $rating_a2 = $item['rating_a2'];
+                $comment_a3 = $item['comment_a3'];
+                $rating_a3 = $item['rating_a3'];
+                $id_atasan1 = $item['id_atasan1'];
+                $id_atasan2 = $item['id_atasan2'];
+                $id_atasan3 = $item['id_atasan3'];
+                $updated_by = $item['updated_by'];
             }
 				$fortable = $fortable != "staff" ? $fortable : ($jumlah_subo > 0 ? "staffb" : "staff");
 		
+				$tScore = ceil($total_score);
+				$total_rating = $tScore == 1 ? "E" : ($tScore == 2 ? "D" : ($tScore == 3 ? "C" : ($tScore == 4 ? "B" : "A")));
+
+				$submitReview = 'submitReviewA1';
 				if($fortable=='nonstaff')
 				{
 					$step = 2;
+					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='staff')
 				{
 					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 2;
+					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='staffb')
 				{
 					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='managerial')
 				{
 					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+					$submitReview = 'submitReviewA1Manager';
 				}
 
 				if($step==1){
@@ -296,7 +351,7 @@ if ($response === false) {
 			</div>
         </div>
     </div>
-	<form name="updateAppraisal" id="updateAppraisal" method="POST" action="apiController.php?code=updateNilaiAwal" onsubmit="return cekEmptyValue()">
+	<form name="updateAppraisal" id="updateAppraisal" method="POST" action="apiController.php?code=<?= $submitReview; ?>" onsubmit="return cekEmptyValue()">
 		<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
 		<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
 		<input type="hidden" id="idkar" name="idkar" value="<?="$idkar";?>">
@@ -343,18 +398,10 @@ if ($response === false) {
 							<div class="form-horizontal">
 								<label for="value<?= $i; ?>" class="col-md-1 control-label"><?= $i.'.'; ?></label>
 								<div class="col-md-9">
-									<!-- <input type="test" class="form-control" id="value<?= $i; ?>" placeholder="..."> -->
-									<textarea class="form-control" name="value<?= $i; ?>" id="value<?= $i; ?>" style="resize: none; height: 100px;" placeholder="..."><?= $objective['value'.$i]; ?></textarea>
+									<textarea class="form-control" name="value<?= $i; ?>" id="value<?= $i; ?>" style="resize: none; height: 100px;" placeholder="..." readonly><?= $objective['value'.$i]; ?></textarea>
 								</div>
 								<div class="col-md-2">
-									<select class="form-control" name="score<?= $i; ?>" id="score<?= $i; ?>">
-										<option value="">- score -</option>
-										<option value="5" <?= $score['score'.$i]==5 ? 'selected' : ''; ?>>5</option>
-										<option value="4" <?= $score['score'.$i]==4 ? 'selected' : ''; ?>>4</option>
-										<option value="3" <?= $score['score'.$i]==3 ? 'selected' : ''; ?>>3</option>
-										<option value="2" <?= $score['score'.$i]==2 ? 'selected' : ''; ?>>2</option>
-										<option value="1" <?= $score['score'.$i]==1 ? 'selected' : ''; ?>>1</option>
-									</select>
+									<input type="text" class="form-control text-center" name="score<?= $i; ?>" id="score<?= $i; ?>" value="<?= $score['score'.$i] ? $score['score'.$i]: ""; ?>" readonly>
 								</div>
 							</div>
 						</div>
@@ -371,20 +418,39 @@ if ($response === false) {
 						<div class="row" style="margin-top: 10px;">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
-									<h1 class="h4 text-bold">Average Score :</h1>
+									<h1 class="h4">Average Score :</h1>
 								</div>
 								<div class="col-md-2" style="padding-left: 0;">
-									<input type="text" name="total_score" id="total_score" class="form-control text-center text-bold" style="background: #FFFFCC;" value="<?= $total_score; ?>" readonly>
+									<input type="text" name="total_score" id="total_score" class="form-control text-center" style="background: #FFFFCC;" value="<?= $total_score; ?>" readonly>
 								</div>
-								<div class="col-md-2" style="padding-left: 0;">
-									<input type="text" name="rating" id="rating" class="form-control text-center text-bold" value="<?= convertRating($rating_a1); ?>" readonly>
+								<div class="col-md-1" style="padding-left: 0;">
+									<span class="form-control text-center text-bold">
+										<?= convertRating($total_score); ?>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
+							<div class="form-horizontal">
+								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
+									<h1 class="h4"><?= $title_rating; ?></h1>
+								</div>
+								<div class="col-md-2" style="padding-right: 0;">
+									<select class="form-control text-center" name="rating" id="rating" style="background: #FFFFCC;">
+										<option value="">- rating -</option>
+										<option value="5" <?= convertRating($rating_a1) == "A" ? "selected" : ""; ?>>A</option>
+										<option value="4" <?= convertRating($rating_a1) == "B" ? "selected" : ""; ?>>B</option>
+										<option value="3" <?= convertRating($rating_a1) == "C" ? "selected" : ""; ?>>C</option>
+										<option value="2" <?= convertRating($rating_a1) == "D" ? "selected" : ""; ?>>D</option>
+										<option value="1" <?= convertRating($rating_a1) == "E" ? "selected" : ""; ?>>E</option>
+									</select>
 								</div>
 							</div>
 						</div>
 						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-6" style="padding-right: 0;">
-									<h1 class="h5 text-bold"><?= $title_comment; ?> : </h1>
+									<h1 class="h4"><?= $title_comment; ?> : </h1>
 									<textarea class="form-control" name="comment" id="comment" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."><?= $comment_a1; ?></textarea>
 								</div>
 							</div>
@@ -392,7 +458,7 @@ if ($response === false) {
 					</div>
                 </div>
                 <ul class="list-inline pull-right">
-                  <li><button type="button" class="btn btn-success <?= $step==1 ? "final-step-1" : "next-step-1"; ?>"><?= $step==1 ? "Update" : "Continue to next step"; ?></button></li>
+                  <li><button type="button" class="btn btn-success next-step-review-1">Continue to next step</button></li>
                 </ul>
               </div>
 			<!-- Self Review End -->
@@ -449,7 +515,7 @@ if ($response === false) {
                 </div>
                 <ul class="list-inline pull-right">
                   <li><button type="button" class="btn btn-default prev-step">Back</button></li>
-                  <li><button type="button" class="btn btn-success <?= $step==2 ? "final-step-2" : "next-step-2"; ?>"><?= $step==2 ? "Update" : "Continue"; ?></button></li>
+                  <li><button type="button" class="btn btn-success <?= $step==2 ? "final-step-review-2" : "next-step-review-2"; ?>"><?= $step==2 ? "Submit" : "Continue"; ?></button></li>
                 </ul>
               </div>
               <div class="tab-pane" role="tabpanel" id="step3">
@@ -467,7 +533,7 @@ if ($response === false) {
 							</div>
 							<?php
 							try {
-								$queryLeadership = "SELECT * FROM question_pa WHERE `group` = 'leadership' AND title='$title' AND `role`='$role' ORDER BY `id` ASC";
+								$queryLeadership = "SELECT * FROM question_pa WHERE `group` = 'leadership' AND title='$title' AND `role`='$fortable' ORDER BY `id` ASC";
 								$stmtLeadership = $koneksi->prepare($queryLeadership);
 								$stmtLeadership->execute();
 							
@@ -502,9 +568,47 @@ if ($response === false) {
 							?>
 					</div>
                 </div>
+				<div class="row" style="display: <?= $fortable=='managerial' ? "":"none"; ?>; margin-top: 60px;">
+					<div class="container-fluid container-peers">
+						<?php 
+						for ($i=1; $i <= 3 ; $i++) { 
+						?>
+						<div class="row">
+							<div class="col-md-offset-1 col-md-5" style="margin-top: 20px;">
+								<div class="form-group">
+									<label><?= $peersTitle[$i]; ?></label>
+									<select id="peers<?= $i; ?>" name="peers<?= $i; ?>" class="form-control" required>
+										<option value="" > -- <?= $selectPeers; ?> -- </option>
+										<?php 
+										try {
+											$stmt = $koneksi->prepare("SELECT k.id, k.NIK, k.nik_baru, k.Nama_Lengkap
+											FROM karyawan_2023 AS k
+											LEFT JOIN atasan AS a ON a.idkar = k.id
+											WHERE k.id!=:idmaster_pa AND a.id_atasan1 = :idmaster_pa
+											ORDER BY k.Nama_Lengkap ASC");
+											$stmt->bindParam(':idmaster_pa', $idmaster_pa, PDO::PARAM_INT);
+											$stmt->execute();
+										
+											while ($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)) {
+												$nikPeers = $scekkar['nik_baru'] ? $scekkar['nik_baru'] : $scekkar['NIK'];
+												echo '<option value="' . $scekkar['id'] . '">' . $scekkar['Nama_Lengkap'] . ' (' . $nikPeers . ')</option>';
+											}
+										} catch (PDOException $e) {
+											echo "Error: " . $e->getMessage();
+										}
+										?>
+									</select>
+								</div>
+							</div>
+						</div>
+						<?php
+						}
+						?>
+					</div>
+				</div>
                 <ul class="list-inline pull-right">
                   <li><button type="button" class="btn btn-default prev-step">Back</button></li>
-				  <li><button type="button" class="btn btn-success final-step">Update</button></li>                
+				  <li><button type="button" class="btn btn-success final-step-review-3">Submit</button></li>                
 				</ul>
               </div>
               <div class="clearfix"></div>
@@ -529,37 +633,23 @@ if ($response === false) {
 			let textValue = document.getElementById('value1').value;
 			let idPic = document.getElementById('idpic').value;
 			let idKar = document.getElementById('idkar').value;
+			let ratingA1 = document.getElementById('rating');
 			let commentA1 = document.getElementById('comment');
-			if (textValue.trim() === '') {
-				alert('Please fill in the field.');
-				document.getElementById('value1').focus();
-				return false; // Prevent form submission
+
+			if (!ratingA1.value){
+				alert('Please give Rating.');
+				ratingA1.focus();
+				return false;
 			}
-            for (let i = 1; i <= 5; i++) {
-                let textareaValue = document.getElementById('value' + i).value;
-                let scoreValue = document.getElementById('score' + i).value;
-                if (textareaValue.trim() != '' && scoreValue === '' || textareaValue.trim() === '' && scoreValue != '') {
-					if(scoreValue === ''){
-						alert('Please select the score.');
-						document.getElementById('score' + i).focus();
-					}
-					if(textareaValue.trim() === ''){
-						alert('Please fill in the field.');
-						document.getElementById('value' + i).focus();
-					}
-					emptyFieldFound = true;
-                    return false; // Prevent form submission
-                }
-            }
-			if (!commentA1.value&&idPic!=idKar){
-				alert('Please fill Komentar Atasan Langsung.');
+			if (!commentA1.value){
+				alert('Please fill Komentar.');
 				commentA1.focus();
 				return false;
 			}
             if(value=='final'){
 				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
-					document.getElementById('updateAppraisal').submit();
+					document.getElementById('updateReviewA1').submit();
 				}
 			}
 			return true;
@@ -593,21 +683,36 @@ if ($response === false) {
 		function checkLeadership() {
 			let cultureContainer = document.querySelector('.container-leadership');
 			let selectElements = cultureContainer.querySelectorAll('select');
-			let foundEmpty = false;
+			let peersContainer = document.querySelector('.container-peers');
+			let selectPeers = peersContainer.querySelectorAll('select');
+			let leadershipEmpty = false;
+			let peersEmpty = false;
 
 			for (let i = 0; i < selectElements.length; i++) {
 				let selectElement = selectElements[i];
 
 				if (selectElement.value === "") {
-					foundEmpty = true;
+					leadershipEmpty = true;
 					alert("Please select a value for " + selectElement.name);
 					selectElement.focus();
 					break; // Exit the loop after displaying the first alert
 				}
 			}
+			if(<?= $fortable=='managerial'; ?>&&!leadershipEmpty){
+				for (let i = 0; i < selectPeers.length; i++) {
+					let selectPeer = selectPeers[i];
+	
+					if (selectPeer.value === "") {
+						peersEmpty = true;
+						alert("Please select a value for " + selectPeer.name);
+						selectPeer.focus();
+						break; // Exit the loop after displaying the first alert
+					}
+				}
+			}
 
-			if (!foundEmpty) {
-				let confirm = window.confirm("Penilaian akan di Update, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
+			if (!leadershipEmpty&&!peersEmpty) {
+				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
 					document.getElementById('updateAppraisal').submit();
 				}
@@ -630,23 +735,10 @@ if ($response === false) {
             }
         }
 
-        let average = count === 0 ? 0 : total / count;
-		let decimalValue = average.toFixed(2);
-		if (decimalValue >= 4.50) {
-			var roundValue = Math.ceil(decimalValue);
-		} else if (decimalValue >= 3.50) {
-			roundValue = 4;
-		} else if (decimalValue >= 2.50) {
-			roundValue = 3;
-		} else if (decimalValue >= 1.50) {
-			roundValue = 2;
-		} else {
-			roundValue = Math.floor(decimalValue);
-		}
-		let rating = roundValue == 0 ? "" : (roundValue == 1 ? "E" : (roundValue == 2 ? "D" : (roundValue == 3 ? "C" : (roundValue == 4 ? "B" : "A"))));
+        // Calculate the average
+        var average = count === 0 ? 0 : total / count;
 
         // Update the input element with the result
-        document.getElementById('total_score').value = decimalValue; // Displaying the average with 2 decimal places
-        document.getElementById('rating').value = rating; // Displaying the average with 2 decimal places
+        document.getElementById('total_score').value = average.toFixed(2); // Displaying the average with 2 decimal places
     }
 </script>

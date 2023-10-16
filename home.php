@@ -69,6 +69,36 @@ else if ($link=="formpa_edit")
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
 }
+else if ($link=="formpa_review")
+{
+  $includefile		= "form_appraisal_review.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+}
+else if ($link=="formpa_review2")
+{
+  $includefile		= "form_appraisal_review2.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+}
+else if ($link=="formpa_review3")
+{
+  $includefile		= "form_appraisal_review3.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+}
+else if ($link=="formpa_review_superior")
+{
+  $includefile		= "form_appraisal_review_superior.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+}
+else if ($link=="formpa_review_peers")
+{
+  $includefile		= "form_appraisal_review_peers.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+}
 else if ($link=="gantipas")
 {
   $includefile		= "ubah_password.php";
@@ -107,7 +137,7 @@ else
     <link href="plugins/morris/morris.css" rel="stylesheet" type="text/css" />
 	
 	<link rel="stylesheet" href="plugins/select2/multiple-select.css"/>
-	<script src="plugins/jQuery/jQuery-2.1.3.min.js"></script>
+	<script src="plugins/jQuery/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 	<!--
 	
@@ -168,6 +198,9 @@ else
 				$mydata1="My Appraisal";
 				$mydata2="My Subordinate (one-level) Appraisal";
 				$mydata3="My Subordinate (two-level) Appraisal";
+				$mydata4="My Subordinate (three-level) Appraisal";
+				$mydata5="My Superior (L1) Appraisal";
+				$mydata6="Peers Appraisal";
 				$unitlokasi="Work Location";
 				$karyawandinilai="Employee to be Assessed";
 				$pilihunit="Chosee";
@@ -188,6 +221,9 @@ else
 				$mydata1="Penilaian Saya";
 				$mydata2="Nilai Bawahan Saya (1 Level)";
 				$mydata3="Nilai Bawahan Saya (2 Level)";
+				$mydata4="Nilai Bawahan Saya (3 Level)";
+        $mydata5="Nilai Atasan Saya (L1)";
+        $mydata6="Nilai Peers";
 				$unitlokasi="Unit/Lokasi Kerja";
 				$karyawandinilai="Karyawan dinilai";
 				$pilihunit="Pilih Unit";
@@ -251,7 +287,7 @@ else
           <div class="pull-right hidden-xs">
             <b>Version</b> 2.0
           </div>
-          <strong>Developed by HR System Development</strong>
+          <strong><i class="fa fa-copyright"></i> 2023 - KPN Corporation</strong>
         </footer>
     </div>
 

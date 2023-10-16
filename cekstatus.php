@@ -52,66 +52,45 @@ if($scekstatus['fortable']=='staff'){
 // echo "<br>$fortable";
 ?>
 <input type="hidden" class="form-control" id ="fortable" name="fortable" value="<?php echo "$fortable"; ?>" readonly>
-<div class="form-group">
-	<table style="width:100%">
-		<tr>
-			<td style="width:20%"><label><?php echo "$atasan1"; ?></label></td>
-			<td style="width:1%"></td>
-			<td style="width:24%"><label>Email</label></td>
-			<td style="width:55%"></td>
-		</tr>
-		<tr>
-			<td>
-				<input type="hidden" class="form-control" id ="id_atasan1" name="id_atasan1" value="<?php echo "$scekstatus[id_atasan1]"; ?>">
+<div class="row" style="margin-top: 20px;">
+	<div class="col-md-4">
+		<div class="form-group">
+			<label><?php echo "$atasan1"; ?></label>
+			<input type="hidden" class="form-control" id ="id_atasan1" name="id_atasan1" value="<?php echo "$scekstatus[id_atasan1]"; ?>">
+			<div class="input-group">
 				<input type="text" class="form-control" id ="nama_atasan1" name="nama_atasan1" value="<?php echo "$scekstatus[nama_atasan1]"; ?>" readonly>
-			</td>
-			<td style="width:1%"></td>
-			<td>
-				<input type="text" class="form-control" id ="email_atasan1" name="email_atasan1" value="<?php echo "$scekstatus[email_atasan1]"; ?>" readonly>
-			</td>
-			<td></td>
-		</tr>
-	</table>
+				<span class="input-group-addon">
+					<input type="checkbox" id="check_atasan1" aria-label="...">
+				</span>
+			</div>
+		</div>
+	</div>
 </div>
-<div class="form-group">
-	<table style="width:100%">
-		<tr>
-			<td style="width:20%"><label><?php echo "$atasan2"; ?></label></td>
-			<td style="width:1%"></td>
-			<td style="width:24%"><label>Email</label></td>
-			<td style="width:55%"></td>
-		</tr>
-		<tr>
-			<td>
-				<input type="hidden" class="form-control" id ="id_atasan2" name="id_atasan2" value="<?php echo "$scekstatus[id_atasan2]"; ?>">
+<div class="row">
+	<div class="col-md-4">
+		<div class="form-group">
+			<label><?php echo "$atasan2"; ?></label>
+			<input type="hidden" class="form-control" id ="id_atasan2" name="id_atasan2" value="<?php echo "$scekstatus[id_atasan2]"; ?>">
+			<div class="input-group">
 				<input type="text" class="form-control" id ="nama_atasan2" name="nama_atasan2" value="<?php echo "$scekstatus[nama_atasan2]"; ?>" readonly>
-			</td>
-			<td style="width:1%"></td>
-			<td>
-				<input type="text" class="form-control" id ="email_atasan2" name="email_atasan2" value="<?php echo "$scekstatus[email_atasan2]"; ?>" readonly>
-			</td>
-			<td></td>
-		</tr>
-	</table>
+				<span class="input-group-addon">
+					<input type="checkbox" id="check_atasan2" aria-label="...">
+				</span>
+			</div>
+		</div>
+	</div>
 </div>
-<div class="form-group">
-	<table style="width:100%">
-		<tr>
-			<td style="width:20%"><label><?php echo "$atasan3"; ?></label></td>
-			<td style="width:1%"></td>
-			<td style="width:24%"><label>Email</label></td>
-			<td style="width:55%"></td>
-		</tr>
-		<tr>
-			<td>
-				<input type="hidden" class="form-control" id ="id_atasan3" name="id_atasan3" value="<?php echo "$scekstatus[id_atasan3]"; ?>">
+<div class="row">
+	<div class="col-md-4">
+		<div class="form-group">
+			<label><?php echo "$atasan3"; ?></label>
+			<input type="hidden" class="form-control" id ="id_atasan3" name="id_atasan3" value="<?php echo "$scekstatus[id_atasan3]"; ?>">
+			<div class="input-group">
 				<input type="text" class="form-control" id ="nama_atasan3" name="nama_atasan3" value="<?php echo "$scekstatus[nama_atasan3]"; ?>" readonly>
-			</td>
-			<td style="width:1%"></td>
-			<td>
-				<input type="text" class="form-control" id ="email_atasan3" name="email_atasan3" value="<?php echo "$scekstatus[email_atasan3]"; ?>" readonly>
-			</td>
-			<td></td>
-		</tr>
-	</table>
+				<span class="input-group-addon">
+					<input type="checkbox" id="check_atasan3" aria-label="...">
+				</span>
+			</div>
+		</div>
+	</div>
 </div>
