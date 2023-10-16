@@ -46,8 +46,12 @@ else
 }
 if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 	$nik=$_POST['nik'];
-	$cekkar=mysqli_query($koneksi, "select NIK from $karyawan where NIK='$nik'");
-	$scekkar=mysqli_fetch_array($cekkar);
+	
+	$sql = "select id,NIK from $karyawan where NIK='$nik'";
+	$stmt = $koneksi->prepare($sql);
+	$stmt->execute();
+	
+	$scekkar = $stmt->fetch(PDO::FETCH_ASSOC);
 
 	if(isset($scekkar['NIK'])){
 		?>
@@ -63,13 +67,24 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 		$unit=$_POST['unit'];
 		$email=$_POST['email'];
 		
-		$ins=mysqli_query($koneksi, "insert into $karyawan (NIK,note_nik,Nama_Lengkap,Mulai_Bekerja,Kode_Departemen,Kode_StatusKerja,Nama_Jabatan,Kode_Golongan,Kode_Perusahaan,Kode_OU,Email) values ('$nik','tambahan_pa_2022','$nama','$mulai','$dept','','$jabatan','$gol','$pt','$unit','$email')");
+		$sql = "insert into $karyawan (NIK,note_nik,Nama_Lengkap,Mulai_Bekerja,Kode_Departemen,Kode_StatusKerja,Nama_Jabatan,Kode_Golongan,Kode_Perusahaan,Kode_OU,Email) values ('$nik','tambahan_pa_2023','$nama','$mulai','$dept','','$jabatan','$gol','$pt','$unit','$email')";
+		$stmt = $koneksi->prepare($sql);
+		
+		$stmt->execute();
 		
 		if($gol>'GL011'){
-			$ins=mysqli_query($koneksi, "insert into user_pa (pic,username,password) values ('$nama','$nik','ec028a30c5d949fe8548cf244639584c')");
+			$cek_id = "select id from $karyawan where NIK='$nik' order by id desc limit 1";
+			
+			$scek_id = $koneksi->prepare($cek_id);
+			$scek_id->execute();
+			$scek_id = $scek_id->fetch(PDO::FETCH_ASSOC);
+			
+			$sql = "insert into user_pa (id,pic,username,password) values ('$scek_id[id]','$nama','$nik','ec028a30c5d949fe8548cf244639584c')";
+			$stmt = $koneksi->prepare($sql);
+			$stmt->execute();
 		}
 		
-		if($ins){
+		if($stmt){
 			?>
 			<script>alert("Berhasil");</script>
 			<?php
@@ -109,8 +124,11 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 		<select id="dept" name="dept" class="form-control" style="width:50%;">
 		  <option value="">- Pilih -</option>
 		  <?php 
-		  $q_datadept = mysqli_query ($koneksi, "SELECT kode_departemen, Nama_Departemen FROM `daftardepartemen` ORDER BY Nama_Departemen asc;");
-		  while ($r_dept	= mysqli_fetch_array ($q_datadept))
+		  $sql = "SELECT kode_departemen, Nama_Departemen FROM `daftardepartemen` ORDER BY Nama_Departemen asc";
+		  $stmt = $koneksi->prepare($sql);
+		  $stmt->execute();
+		
+		  while($r_dept = $stmt->fetch(PDO::FETCH_ASSOC))
 		  {
 		  ?>
 			<option value="<?php echo $r_dept['kode_departemen']; ?>"><?php echo $r_dept['Nama_Departemen']; ?></option>
@@ -132,8 +150,11 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 		<select id="gol" name="gol" class="form-control" style="width:50%;">
 		  <option value="">- Pilih -</option>
 		  <?php 
-		  $q_datagol = mysqli_query ($koneksi, "SELECT Kode_Golongan, Nama_Golongan FROM `daftargolongan` where active='T' ORDER BY Nama_Golongan asc;");
-		  while ($r_gol	= mysqli_fetch_array ($q_datagol))
+		  $sql = "SELECT Kode_Golongan, Nama_Golongan FROM `daftargolongan` where active='T' ORDER BY Nama_Golongan asc;";
+		  $stmt = $koneksi->prepare($sql);
+		  $stmt->execute();
+		
+		  while($r_gol = $stmt->fetch(PDO::FETCH_ASSOC))
 		  {
 		  ?>
 			<option value="<?php echo $r_gol['Kode_Golongan']; ?>" ><?php echo $r_gol['Nama_Golongan']; ?></option>
@@ -149,8 +170,11 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 		<select id="pt" name="pt" class="form-control" style="width:50%;">
 		  <option value="">- Pilih -</option>
 		  <?php 
-		  $q_datagol = mysqli_query ($koneksi, "SELECT Kode_Perusahaan, Nama_Lkp_Perusahaan FROM `daftarperusahaan` where active='T' ORDER BY Nama_Lkp_Perusahaan asc;");
-		  while ($r_gol	= mysqli_fetch_array ($q_datagol))
+		  $sql = "SELECT Kode_Perusahaan, Nama_Lkp_Perusahaan FROM `daftarperusahaan` where active='T' ORDER BY Nama_Lkp_Perusahaan asc;";
+		  $stmt = $koneksi->prepare($sql);
+		  $stmt->execute();
+		
+		  while($r_gol = $stmt->fetch(PDO::FETCH_ASSOC))
 		  {
 		  ?>
 			<option value="<?php echo $r_gol['Kode_Perusahaan']; ?>" ><?php echo $r_gol['Nama_Lkp_Perusahaan']; ?></option>
@@ -166,8 +190,11 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 		<select id="unit" name="unit" class="form-control" style="width:50%;">
 		  <option value="">- Pilih -</option>
 		  <?php 
-		  $q_datagol = mysqli_query ($koneksi, "SELECT Kode_OU, Nama_OU FROM `daftarou` where aktif='T' ORDER BY Nama_OU asc;");
-		  while ($r_gol	= mysqli_fetch_array ($q_datagol))
+		  $sql = "SELECT Kode_OU, Nama_OU FROM `daftarou` where aktif='T' ORDER BY Nama_OU asc;";
+		  $stmt = $koneksi->prepare($sql);
+		  $stmt->execute();
+		
+		  while($r_gol = $stmt->fetch(PDO::FETCH_ASSOC))
 		  {
 		  ?>
 			<option value="<?php echo $r_gol['Kode_OU']; ?>" ><?php echo $r_gol['Nama_OU']; ?></option>

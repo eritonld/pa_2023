@@ -166,21 +166,42 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 	$pt=$_POST['pt'];
 	$unit=$_POST['unit'];
 	$email=$_POST['email'];
+	$pen_q1=$_POST['pen_q1'];
+	$pen_q2=$_POST['pen_q2'];
+	$pen_q3=$_POST['pen_q3'];
+	$pen_q4=$_POST['pen_q4'];
 	
-	$updatekar=mysqli_query($koneksi, "update $karyawan set Nama_Lengkap='$nama',Mulai_Bekerja='$mulai',Kode_Departemen='$dept',Nama_Jabatan='$jabatan',Kode_Golongan='$gol',Kode_Perusahaan='$pt',Kode_OU='$unit',Email='$email' where NIK='$nik'");
+	$sql = "update $karyawan set Nama_Lengkap='$nama',Mulai_Bekerja='$mulai',Kode_Departemen='$dept',Nama_Jabatan='$jabatan',Kode_Golongan='$gol',Kode_Perusahaan='$pt',Kode_OU='$unit',Email='$email',pen_q1='$pen_q1',pen_q2='$pen_q2',pen_q3='$pen_q3',pen_q4='$pen_q4' where NIK='$nik'";
+	$stmt = $koneksi->prepare($sql);
+	$updatekar =  $stmt->execute();
+	
+
 	
 	if($gol>'GL011'){
 		$username=$_POST['username'];
 		$password=$_POST['password'];
 		
-		if($username<>''){
-			$updateuser=mysqli_query($koneksi, "update user_pa set password='$password' where username='$nik'");
+		$sql = "SELECT * FROM user_pa where username='$username'";
+		$stmt = $koneksi->prepare($sql);
+		$stmt->execute();
+		$scek_user = $stmt->rowCount();
+		// $scek_user = $stmt->fetch(PDO::FETCH_ASSOC);
+		// echo "$scek_user";
+		
+		if($scek_user>0){
+			$sql = "update user_pa set password='$password' where username='$nik'";
+			$stmt = $koneksi->prepare($sql);
+			$stmt->execute();
 			
 		}else{
-			$ceknik=mysqli_query($koneksi, "SELECT NIK, nik_baru, YEAR(Mulai_Bekerja) as tahun FROM $karyawan where nik='$nik'");
-			$sceknik=mysqli_fetch_array($ceknik);
-			
-			$updateuser=mysqli_query($koneksi, "insert into user_pa (pic,jabatan,since,profile,nik_baru,username,password) values ('$nama','user','$sceknik[tahun]','profile.png','$sceknik[nik_baru]','$nik','$password')");
+			$sql = "SELECT id,NIK, nik_baru, YEAR(Mulai_Bekerja) as tahun FROM $karyawan where nik='$nik'";
+			$stmt = $koneksi->prepare($sql);
+			$stmt->execute();
+			$sceknik = $stmt->fetch(PDO::FETCH_ASSOC);
+						
+			$sql = "insert into user_pa (id,pic,jabatan,since,profile,nik_baru,username,password) values ('$sceknik[id]','$nama','user','$sceknik[tahun]','profile.png','$sceknik[nik_baru]','$nik','$password')";
+			$stmt = $koneksi->prepare($sql);
+			$stmt->execute();
 		}
 		
 	}
@@ -237,9 +258,12 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 					<label>Daftar Unit</label><br>
 					<select id="aksesou" name="aksesou[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
+						$sql = "select Kode_OU,Nama_OU from daftarou where aktif='T' and Kode_OU in $scekuser[ou] order by Nama_OU asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
 						
-						$cekou=mysqli_query($koneksi, "select Kode_OU,Nama_OU from daftarou where aktif='T' and Kode_OU in $scekuser[ou] order by Nama_OU asc");
-						while($scekou=mysqli_fetch_array($cekou)){
+						while($scekou = $stmt->fetch(PDO::FETCH_ASSOC)){
+						
 						$selectednya="";
 						if (preg_match('/'.$scekou['Kode_OU'].'/',$d_unit))
 							$selectednya="selected";
@@ -255,8 +279,11 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 					<label>Daftar Perusahaan</label><br>
 					<select id="aksespt" name="aksespt[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
-						$cekpt=mysqli_query($koneksi, "select Kode_Perusahaan,Nama_Perusahaan from daftarperusahaan where active='T' and Kode_Perusahaan in $scekuser[pt] order by Nama_Perusahaan asc");
-						while($scekpt=mysqli_fetch_array($cekpt)){
+						$sql = "select Kode_Perusahaan,Nama_Perusahaan from daftarperusahaan where active='T' and Kode_Perusahaan in $scekuser[pt] order by Nama_Perusahaan asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekpt = $stmt->fetch(PDO::FETCH_ASSOC)){
 						$selectednya="";
 						if (preg_match('/'.$scekpt['Kode_Perusahaan'].'/',$d_pt))
 							$selectednya="selected";
@@ -272,8 +299,12 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 					<label>Daftar Departemen</label><br>
 					<select id="aksesdept" name="aksesdept[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
-						$cekdept=mysqli_query($koneksi, "select kode_departemen,Nama_Departemen from daftardepartemen where active='T' and kode_departemen in $scekuser[dept] order by Nama_Departemen asc");
-						while($scekdept=mysqli_fetch_array($cekdept)){
+						$sql = "select kode_departemen,Nama_Departemen from daftardepartemen where active='T' and kode_departemen in $scekuser[dept] order by Nama_Departemen asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekdept = $stmt->fetch(PDO::FETCH_ASSOC)){
+						
 						$selectednya="";
 						if (preg_match('/'.$scekdept['kode_departemen'].'/',$d_dept))
 							$selectednya="selected";
@@ -289,8 +320,12 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 					<label>Daftar Grade</label><br>
 					<select id="akseslevel" name="akseslevel[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
-						$cekgrade=mysqli_query($koneksi, "select Kode_Golongan,Nama_Golongan from daftargolongan where active='T' and Kode_Golongan in $scekuser[gol] order by Kode_Golongan asc");
-						while($scekgrade=mysqli_fetch_array($cekgrade)){
+						$sql = "select Kode_Golongan,Nama_Golongan from daftargolongan where active='T' and Kode_Golongan in $scekuser[gol] order by Kode_Golongan asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekgrade = $stmt->fetch(PDO::FETCH_ASSOC)){
+						
 						$selectednya="";
 						if (preg_match('/'.$scekgrade['Kode_Golongan'].'/',$d_grade))
 							$selectednya="selected";
@@ -308,8 +343,12 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 					<label>Daftar Bisnis</label><br>
 					<select id="aksesbisnis" name="aksesbisnis[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
-						$cekbisnis=mysqli_query($koneksi, "select kode_bisnis,nama_bisnis from daftarbisnis where kode_bisnis in $scekuser[bisnis] order by nama_bisnis asc");
-						while($scekbisnis=mysqli_fetch_array($cekbisnis)){
+						$sql = "select kode_bisnis,nama_bisnis from daftarbisnis where kode_bisnis in $scekuser[bisnis] order by nama_bisnis asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekbisnis = $stmt->fetch(PDO::FETCH_ASSOC)){
+						
 						$selectednya="";
 						if (preg_match('/'.$scekbisnis['kode_bisnis'].'/',$d_bisnis))
 							$selectednya="selected";
@@ -378,16 +417,17 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 				<tbody>
 					<?php					
 					$no = 1;
-					$cekkar = mysqli_query($koneksi, "Select k.*, dpt.Nama_Departemen, do.Nama_OU, dg.Nama_Golongan, k.Nama_Jabatan, dp.Nama_Perusahaan from $karyawan k 
+					$sql = "Select k.*, dpt.Nama_Departemen, do.Nama_OU, dg.Nama_Golongan, k.Nama_Jabatan, dp.Nama_Perusahaan from $karyawan k 
 					left join daftardepartemen dpt on k.Kode_Departemen = dpt.Kode_Departemen 
 					left join daftarou do on k.Kode_OU = do.Kode_OU
 					left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
 					left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan 
 					left join daftarjabatan dj on k.Kode_Jabatan = dj.Kode_Jabatan 
-					where k.Kode_StatusKerja<>'SKH05' $where order by k.Nama_Lengkap ASC");
+					where k.Kode_StatusKerja<>'SKH05' $where order by k.Nama_Lengkap ASC";
+					$stmt = $koneksi->prepare($sql);
+					$stmt->execute();
 					
-					
-					while($scekkar = mysqli_fetch_array($cekkar)){
+					while($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)){
 					?>
 					<tr>
 						<td><?php echo "$no"; ?></td>

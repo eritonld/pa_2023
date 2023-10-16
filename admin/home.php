@@ -15,13 +15,22 @@ if ($idmaster_pa_admin=="")
 	?>
 	<script>
 		alert('Login First');
-		window.location="http://172.30.1.38:8080/pa/admin/";
+		window.location="http://localhost/pa_2023/admin/";
 	</script>
 	<?php
 }
 
-$cekuser=mysqli_query($koneksi,"select * from user_pa_admin where id='$idmaster_pa_admin'");
-$scekuser=mysqli_fetch_array($cekuser);
+// $cekuser=mysqli_query($koneksi,"select * from user_pa_admin where id='$idmaster_pa_admin'");
+// $scekuser=mysqli_fetch_array($cekuser);
+try {
+	$sql = "SELECT * FROM user_pa_admin WHERE id = :id";
+	$stmt = $koneksi->prepare($sql);
+	$stmt->bindParam(':id', $idmaster_pa_admin, PDO::PARAM_INT);
+	$stmt->execute();
+	$scekuser = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+  echo "Error: " . $e->getMessage();
+}
 
 $link = $_GET['link'];
 
@@ -72,11 +81,23 @@ else if ($link=="input_karyawan")
   $menudatainemp		= "active";	
   $linkmark			= " > Tambah Karyawan";
 }
+else if ($link=="update_sup")
+{
+  $includefile		= "update_superior.php";
+  $menudataupdsup		= "active";	
+  $linkmark			= " > Update";
+}
 else if ($link=="preview_pdf")
 {
   $includefile		= "preview_pdf.php";
   $menudataapp		= "active";	
-  $linkmark			= " > Tambah Karyawan";
+  $linkmark			= " > view";
+}
+else if ($link=="fu_superior")
+{
+  $includefile		= "form_update_superior.php";
+  $menudataapp		= "active";	
+  $linkmark			= " > view";
 }
 else 
 {
@@ -109,10 +130,18 @@ else
     <link href="../plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
     <link href="../plugins/morris/morris.css" rel="stylesheet" type="text/css" />
 	
+	
+	
 	<link rel="stylesheet" href="../plugins/select2/multiple-select.css"/>
+	<script src="../plugins/jQuery/jQuery-2.1.3.min.js"></script>
+	
+    <script src="../bootstrap/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 	
 	<!--
-	
+	<link rel="stylesheet" href="../plugins/select2/multiple-select.css"/>
+	<link href="../dist/js/select2.min.css" rel="stylesheet" />
+	<script src="../dist/js/select2.min.js"></script>
 	-->
   </head>
   <body class="skin-black">
@@ -169,6 +198,7 @@ else
 				$menu4="Stastical Report";
 				$menu5="Logout";
 				$menu6="Input Employee";
+				$menu7="Review Superior";
 			}else{
 				$menu1="Data Penilaian";
 				$menu2="Karyawan Belum dinilai";
@@ -176,6 +206,7 @@ else
 				$menu4="Laporan Statistik";
 				$menu5="Keluar";
 				$menu6="Tambah Karyawan";
+				$menu7="Ubah Atasan";
 			}
 			?>
           <ul class="sidebar-menu" >
@@ -208,6 +239,11 @@ else
 				<li class="<?php echo $menudatainemp?>">
 				  <a href="?link=input_karyawan">
 					<i class="fa fa-dashboard"></i><span><?php echo "$menu6"; ?></span>
+				  </a>
+				</li>
+				<li class="<?php echo $menudataupdsup?>">
+				  <a href="?link=update_sup">
+					<i class="fa fa-dashboard"></i><span><?php echo "$menu7"; ?></span>
 				  </a>
 				</li>
 			<?php } ?>
@@ -247,9 +283,7 @@ else
         </footer>
     </div>
 
-    <script src="../plugins/jQuery/jQuery-2.1.3.min.js"></script>
-    <script src="../bootstrap/js/jquery-ui.min.js" type="text/javascript"></script>
-	<script src="../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    
     <script>
       $.widget.bridge('uibutton', $.ui.button);
     </script>
@@ -284,7 +318,7 @@ else
       });
     </script>
 	<?php
-	if($link == "dataemp" || $link == "dataapp" || $link == "notassessed" || $link == "datareport"){
+	if($link == "dataemp" || $link == "dataapp" || $link == "notassessed" || $link == "datareport" || $link == "update_sup"){
 	?>
 	<!-- <script src="../libs/jquery.min.js"></script> -->
 	<script src="../libs/jquery.multiple.select.js"></script>
@@ -316,6 +350,12 @@ else
 		$(document).ready(function(){
 			$('#aksesbisnis').multipleSelect({
 				placeholder: "Pilih Bisnis Unit",
+				filter:true
+			});
+		});
+		$(document).ready(function(){
+			$('#superior').multipleSelect({
+				placeholder: "Pilih Superior",
 				filter:true
 			});
 		});
