@@ -146,7 +146,6 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 							<th>Unit</th>
 							<th>Department</th>
 							<th>Input Date</th>
-							<th style="background-color: yellow;">Final Total Score</th>
 							<th>Review</th>
 						</tr>
 					</thead>
@@ -211,7 +210,7 @@ $(document).ready(function () {
                 {
                  
 					form = data.idkar == data.created_by ? "formpa_review" : "formpa_edit";
-					if(data.rating_a1!=0 && data.rating_a2==null){
+					if(data.rating_a1!=0 && data.rating_a2!=null){
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_a1 + '\')" class="btn btn-sm btn-default">Reviewed by L1</a>';
 					}
 					if(data.rating_a2!=null && data.rating_a3==null){
@@ -262,7 +261,7 @@ $(document).ready(function () {
                 {
                  
 					form = data.idkar == data.created_by ? "formpa_review" : "formpa_edit";
-					if(data.rating_a1!=0 && data.rating_a2==null){
+					if(data.rating_a1!=0 && data.rating_a2!=null){
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_a1 + '\')" class="btn btn-sm btn-default">Reviewed by L1</a>';
 					}
 					if(data.rating_a2!=null && data.rating_a3==null){
@@ -392,7 +391,6 @@ $(document).ready(function () {
 			  { "data": 'Nama_OU' },
 			  { "data": 'Nama_Departemen' },
 			  { "data": 'created_date' },
-			  { "data": 'total_score' },
 			  { 
                 data: null,
                 render:function(data, type, row)

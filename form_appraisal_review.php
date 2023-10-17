@@ -355,6 +355,7 @@ if ($response === false) {
 		<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
 		<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
 		<input type="hidden" id="idkar" name="idkar" value="<?="$idkar";?>">
+		<input type="hidden" id="fortable" value="<?="$fortable";?>">
 	<div class="box box-danger">
         <div class="box-header with-border">
           <h3 class="box-title"><?="<b>$a1</b>";?></h3>
@@ -627,7 +628,7 @@ if ($response === false) {
 </section>
 </div>
 <script>
-	function checkSelfReview(value) {
+		function checkSelfReview(value) {
             // Loop through the textareas
 			let emptyFieldFound = false;
 			let textValue = document.getElementById('value1').value;
@@ -687,6 +688,7 @@ if ($response === false) {
 			let selectPeers = peersContainer.querySelectorAll('select');
 			let leadershipEmpty = false;
 			let peersEmpty = false;
+			let managerCheck = document.getElementById('fortable').value;
 
 			for (let i = 0; i < selectElements.length; i++) {
 				let selectElement = selectElements[i];
@@ -698,7 +700,8 @@ if ($response === false) {
 					break; // Exit the loop after displaying the first alert
 				}
 			}
-			if(!leadershipEmpty){
+
+			if(managerCheck=='managerial'&&!leadershipEmpty){
 				for (let i = 0; i < selectPeers.length; i++) {
 					let selectPeer = selectPeers[i];
 	
