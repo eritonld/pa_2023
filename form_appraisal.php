@@ -119,55 +119,6 @@ try {
 }
 
 
-
-if($bahasa=='eng')
-{
-	$tabel_prosedure="prosedure_english";
-	$a0='Employee Detail';
-	$a1='Performance Appraisal';
-	$a2='Employee Name';
-	$a3='Company / Location';
-	$a4='Employee ID';
-	$a5='Division / Department';
-	$a6='Designation';
-	$a7='Section / SubSection';
-	$a8='Join Date';
-	$a9='Period of Assessment';
-	$a10='Grade';
-	$a11='SP/period';
-	$a12='Rating';
-	$a13='On Rating';
-	$title_a='Work Results';
-	$title_aa='Work Objectives';
-	$add_btn_name='Objective';
-	$title_comment='Direct Manager Comment';
-	$comment_placeholder='input your comment';
-}
-else
-{	
-	$tabel_prosedure="prosedure";
-	$a0='Detail Karyawan';
-	$a1='Penilaian Kinerja Karyawan';
-	$a2='Nama Karyawan';
-	$a3='Nama PT / Lokasi';
-	$a4='NIK';
-	$a5='Divisi / Departemen';
-	$a6='Jabatan';
-	$a7='Seksi / SubSeksi';
-	$a8='TMK';
-	$a9='Periode Penilaian';
-	$a10='Golongan';
-	$a11='SP/Periode';
-	$a12='Bobot';
-	$a13='Pembobotan';
-	$title_a='Hasil Kerja';
-	$title_aa='Objektif Kerja';
-	$add_btn_name='Objektif';
-	$title_comment='Komentar Atasan Langsung';
-	$comment_placeholder='masukkan komentar anda';
-}
-
-
 try {
     $sql = "SELECT statussp, periode FROM sp_2022 WHERE `id` = :id";
     
@@ -260,6 +211,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 	<input type="hidden" id="idkar" name="idkar" value="<?="$ckaryawan[idkar]";?>">
 	<input type="hidden" name="id_atasan1" value="<?="$ckaryawan[id_atasan1]";?>" readonly />
 	<input type="hidden" name="email_atasan1" value="<?="$ckaryawan[email_atasan1]";?>" readonly />
+	<input type="hidden" name="fortable" id="fortable" value="<?="$fortable";?>" readonly />
 	<div class="box box-danger">
         <div class="box-header with-border">
           <h3 class="box-title"><?="<b>$a1</b>";?></h3>

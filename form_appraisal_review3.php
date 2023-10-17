@@ -119,60 +119,6 @@ try {
 }
 
 
-
-if($bahasa=='eng')
-{
-	$tabel_prosedure="prosedure_english";
-	$a0='Employee Detail';
-	$a1='Performance Appraisal';
-	$a2='Employee Name';
-	$a3='Company / Location';
-	$a4='Employee ID';
-	$a5='Division / Department';
-	$a6='Designation';
-	$a7='Section / SubSection';
-	$a8='Join Date';
-	$a9='Period of Assessment';
-	$a10='Grade';
-	$a11='SP/period';
-	$a12='Rating';
-	$a13='On Rating';
-	$title_a='Work Results';
-	$title_aa='Work Objectives';
-	$add_btn_name='Objective';
-	$title_comment='Comment';
-	$comment_placeholder='input your comment';
-	$title_rating='Give Rating :';
-	$title_review_a1='Rating L1';
-	$title_review_a2='Rating L2';
-}
-else
-{	
-	$tabel_prosedure="prosedure";
-	$a0='Detail Karyawan';
-	$a1='Penilaian Kinerja Karyawan';
-	$a2='Nama Karyawan';
-	$a3='Nama PT / Lokasi';
-	$a4='NIK';
-	$a5='Divisi / Departemen';
-	$a6='Jabatan';
-	$a7='Seksi / SubSeksi';
-	$a8='TMK';
-	$a9='Periode Penilaian';
-	$a10='Golongan';
-	$a11='SP/Periode';
-	$a12='Bobot';
-	$a13='Pembobotan';
-	$title_a='Hasil Kerja';
-	$title_aa='Objektif Kerja';
-	$add_btn_name='Objektif';
-	$title_comment='Komentar';
-	$comment_placeholder='masukkan komentar anda';
-	$title_rating='Berikan Rating :';
-	$title_review_a1='Rating L1';
-	$title_review_a2='Rating L2';
-}
-
 // try {
 //     $sql = "SELECT statussp, periode FROM sp_2022 WHERE nik = :nik";
     
@@ -195,7 +141,9 @@ else
 // $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 
 
-$api_url = 'http://localhost/pa_2023/apiController.php?code=getDataReview&id='.$id; // Replace with your API endpoint URL
+
+$api_url = $base_url.'/apiController.php?code=getDataReview&id='.$id; // Replace with your API endpoint URL
+
 
 // Make an HTTP GET request to the API
 $response = file_get_contents($api_url);
@@ -250,6 +198,9 @@ if ($response === false) {
                 $nama_a3 = $item['nama_a3'];
                 $jabatan_a3 = $item['jabatan_a3'];
                 $updated_by = $item['updated_by'];
+				$promotion_a1 = $item['promotion_a1'];
+                $promotion_a2 = $item['promotion_a2'];
+                $promotion_a3 = $item['promotion_a3'];
             }
 				$fortable = $fortable != "staff" ? $fortable : ($jumlah_subo > 0 ? "staffb" : "staff");
 		
@@ -348,15 +299,16 @@ if ($response === false) {
 			</div>
         </div>
     </div>
-	<form name="updateAppraisal" id="updateAppraisal" method="POST" action="apiController.php?code=submitReviewA3" onsubmit="return cekEmptyValue()">
-		<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
-		<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
-		<input type="hidden" id="idkar" name="idkar" value="<?="$idkar";?>">
-	<div class="box box-danger">
-        <div class="box-header with-border">
-          <h3 class="box-title"><?="<b>$a1</b>";?></h3>
-        </div>
-        <div class="box-body">
+<form name="updateAppraisal" id="updateAppraisal" method="POST" action="apiController.php?code=submitReviewA3" onsubmit="return cekEmptyValue()">
+	<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
+	<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
+	<input type="hidden" id="idkar" name="idkar" value="<?="$idkar";?>">
+	<input type="hidden" name="fortable" id="fortable" value="<?="$fortable";?>" readonly />
+<div class="box box-danger">
+	<div class="box-header with-border">
+		<h3 class="box-title"><?="<b>$a1</b>";?></h3>
+	</div>
+	<div class="box-body">
 			<!-- start stepper -->
 <section class="signup-step-container">
   <div class="container-fluid">
@@ -430,10 +382,20 @@ if ($response === false) {
 						<div class="row" style="margin-top: 50px;">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
-									<h1 class="h4"><?= $title_review_a1; ?> <i class="fa fa-info-circle" style="color: #D4E6FF;" data-toggle="tooltip" data-placement="top" title="<?= $nama_a1.' - '.$jabatan_a1; ?>"></i></h1>
+									<h1 class="h4"><?= $title_review_a1; ?> <i class="fa fa-info-circle" style="color: #D4E6FF;" data-toggle="tooltip" data-placement="top" title="<?= $nama_a1; ?>"></i></h1>
 								</div>
 								<div class="col-md-2" style="padding-right: 0;">
                                     <input type="text" class="form-control text-center" value="<?= convertRating($rating_a1); ?>" readonly>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 50px;">
+							<div class="form-horizontal">
+								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
+									<h1 class="h4"><?= $title_promotion; ?></h1>
+								</div>
+								<div class="col-md-2" style="padding-right: 0;">
+                                    <input type="text" class="form-control text-center" value="<?= promotion($promotion_a1); ?>" readonly>
 								</div>
 							</div>
 						</div>
@@ -448,10 +410,23 @@ if ($response === false) {
 						<div class="row" style="margin-top: 70px;">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
-									<h1 class="h4"><?= $title_review_a2; ?> <i class="fa fa-info-circle" style="color: #D4E6FF;" data-toggle="tooltip" data-placement="top" title="<?= $nama_a2.' - '.$jabatan_a2; ?>"></i></h1>
+									<h1 class="h4"><?= $title_review_a2; ?> <i class="fa fa-info-circle" style="color: #D4E6FF;" data-toggle="tooltip" data-placement="top" title="<?= $nama_a2; ?>"></i></h1>
 								</div>
 								<div class="col-md-2" style="padding-right: 0;">
                                     <input type="text" class="form-control text-center" value="<?= convertRating($rating_a2); ?>" readonly>
+								</div>
+								<div class="col-md-2" style="padding-right: 0;">
+                                    <input type="text" class="form-control text-center" value="<?= $promotion_a2; ?>" readonly>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 50px;">
+							<div class="form-horizontal">
+								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
+									<h1 class="h4"><?= $title_promotion; ?></h1>
+								</div>
+								<div class="col-md-2" style="padding-right: 0;">
+                                    <input type="text" class="form-control text-center" value="<?= promotion($promotion_a2); ?>" readonly>
 								</div>
 							</div>
 						</div>
@@ -476,6 +451,20 @@ if ($response === false) {
 										<option value="3" <?= convertRating($rating_a3) == "C" ? "selected" : ""; ?>>C</option>
 										<option value="2" <?= convertRating($rating_a3) == "D" ? "selected" : ""; ?>>D</option>
 										<option value="1" <?= convertRating($rating_a3) == "E" ? "selected" : ""; ?>>E</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
+							<div class="form-horizontal">
+								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
+									<h1 class="h4"><?= $title_promotion; ?></h1>
+								</div>
+								<div class="col-md-2" style="padding-right: 0;">
+									<select class="form-control text-center" name="promotion" id="promotion" style="background: #FFFFCC;">
+										<option value="">- pilih -</option>
+										<option value="Y" <?= $promotion_a3 == "Y" ? "selected" : ""; ?>>Yes</option>
+										<option value="N" <?= $promotion_a3 == "N" ? "selected" : ""; ?>>No</option>
 									</select>
 								</div>
 							</div>
