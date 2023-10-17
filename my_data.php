@@ -312,11 +312,9 @@ $(document).ready(function () {
                 data: null,
                 render:function(data, type, row)
                 {
-                 
+					
 					if(data.rating_a3!=null){
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_a3 + '\')" class="btn btn-sm btn-default">Reviewed</a>';
-					}else{
-						return '<a id="edit" href="home.php?link='+form+'&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
 					}
 					return '<a id="edit" href="home.php?link=formpa_review2&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
                      

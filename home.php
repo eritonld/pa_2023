@@ -18,13 +18,8 @@ if ($idmaster_pa=="")
 {
 	?>
 	<script>
-<<<<<<< HEAD
 		alert('Login First');
 		window.location="http://localhost/pa_2023/";
-=======
-		// alert('Login First');
-		// window.location="http://localhost:8080/hcis-pa-2023/";
->>>>>>> 268b1eb4de80917f6e2121e3b1ff4e7cf3fdd416
 	</script>
 	<?php
 }

@@ -380,10 +380,7 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					<th>Golongan</th>
 					<th>PT</th>
 					<th>Lokasi Unit</th>
-					<th>Input Date</th>
-					<th>Input by</th>
-					<th>Review Atasan 1</th>
-					<th>Review Atasan 2</th>
+					
 					<th style="background:#ffffaa;">Final Total Score</th>
 					<th>Action</th>
 				  </tr>
@@ -430,12 +427,7 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 						<td><?php echo "$scekpa[Nama_Golongan]"; ?></td>
 						<td><?php echo "$scekpa[Nama_Perusahaan]"; ?></td>
 						<td><?php echo "$scekpa[Nama_OU]"; ?></td>
-						<td><?php echo "$scekpa[date_input]"; ?></td>
-						<td><?php echo "-"; ?></td>
 						
-						<td><?php echo "-"; ?></td>
-						
-						<td><?php echo "-"; ?></td>
 						
 						<td><?php echo "<b>".$scekpa['total']." (".getGrade($scekpa['total']).")</b>"; ?></td>
 						<td>

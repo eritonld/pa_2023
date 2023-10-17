@@ -29,10 +29,10 @@ try {
         if ($updateStmt->execute()) {
             echo "1";
         } else {
-            echo "01";
+            echo "0";
         }
     } else {
-        echo "**";
+        echo "0";
     }
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();

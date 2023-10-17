@@ -1,6 +1,6 @@
 <?php
 include("../conf/conf.php");
-include("../tabel_setting.php");
+include("tabel_setting.php");
 
 session_start();
 

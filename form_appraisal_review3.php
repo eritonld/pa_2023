@@ -195,7 +195,7 @@ else
 // $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 
 
-$api_url = 'http://localhost:8080/hcis-pa-2023/apiController.php?code=getDataReview&id='.$id; // Replace with your API endpoint URL
+$api_url = 'http://localhost/pa_2023/apiController.php?code=getDataReview&id='.$id; // Replace with your API endpoint URL
 
 // Make an HTTP GET request to the API
 $response = file_get_contents($api_url);
