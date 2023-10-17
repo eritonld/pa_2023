@@ -1,10 +1,10 @@
 <?php
 set_time_limit(0);
 
-require("../conf/conf.php");
+require("conf_report.php");
 include("../tabel_setting.php");
 
-require '../vendor/autoload.php';
+require '../vendor1/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
@@ -234,16 +234,17 @@ $objPHPExcel->getActiveSheet()->SetCellValue('H4', 'Departemen');
 
 $yearnow	= Date('Y');
 $cutoff		= $yearnow."-07-01";
-$q_data = mysqli_query ($koneksi, "select k.NIK,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan, do.Nama_OU,
-(Select Nama_Lengkap from $karyawan where nik = (select nik_atasan1 from atasan where nik = k.nik))as atasan1,
-(Select Nama_Lengkap from $karyawan where nik = (select nik_atasan2 from atasan where nik = k.nik))as atasan2
+$q_data = mysqli_query ($koneksi, "select k.nik_baru,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan, do.Nama_OU,
+(Select Nama_Lengkap from $karyawan where id = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
+(Select Nama_Lengkap from $karyawan where id = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
+(Select Nama_Lengkap from $karyawan where id = (select id_atasan3 from atasan where idkar = k.id))as atasan3
 from $karyawan as k 
 left join daftarou as do on k.Kode_OU = do.Kode_OU 
 left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
 left join daftardepartemen as dep on k.Kode_Departemen=dep.Kode_Departemen 
 left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan 
 left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan 
-where k.Kode_StatusKerja<>'SKH05' $where and k.Mulai_Bekerja <= '$cutoff' and k.NIK not in (select nik from $transaksi_pa where input_by<>'') order by k.kode_ou asc, k.Nama_Lengkap ASC");
+where k.Kode_StatusKerja<>'SKH05' $where and k.Mulai_Bekerja <= '$cutoff' and k.id not in (select idkar from $transaksi_pa where created_by<>'') order by k.kode_ou asc, k.Nama_Lengkap ASC");
 
 $no 	= 1;
 $row 	= 5;
@@ -260,7 +261,7 @@ while ($r_data = mysqli_fetch_array ($q_data))
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	
-	$nik="'$r_data[NIK]";
+	$nik="'$r_data[nik_baru]";
 	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $nik);
 	$cell = 'B'.$row;
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);	

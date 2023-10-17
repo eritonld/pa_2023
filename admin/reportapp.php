@@ -17,6 +17,7 @@ else
 
 
 $where="";
+$where_for="";
 if(isset($_GET['generate']) && $_GET['generate']=='T'){
 
 	//data unit
@@ -134,16 +135,40 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 			$bisnis = $scekuser['bisnis'];
 			$where=$where." and do.BU in $bisnis";
 		}
+	
+	if(isset($_GET['fortable'])){
+		$values_fortable=$_GET['fortable'];
+		if ($values_fortable <> ''){
+				$xx=0;
+				$bisnis = "";
+				$d_bisnis = "";
+				foreach ($values_fortable as $kfortab)
+				{
+					if($xx==0)
+						$d_fortab = $kfortab;
+					else
+						$d_fortab = $d_fortab.",".$kfortab;
+					$xx++;
+				}
+				$fortab="('".str_replace(",","','",$d_fortab)."')";
+			$where_for=$where_for." and tp.fortable in $fortab";
+		}
+	}else{
+			
+		}
 }
 
 function getGrade($nilai)
 {
 	include("../conf/conf.php");
 	$tahun=date('Y');
-	$cekkriteria=mysqli_query($koneksi, "select ranges,grade,kesimpulan,warna,icon,bermasalah from kriteria where tahun='$tahun' order by id asc");
+	
+	$sql = "select ranges,grade,kesimpulan,warna,icon,bermasalah from kriteria where tahun='$tahun' order by id asc";
+	$stmt = $koneksi->prepare($sql);
+	$stmt->execute();
 	$ak=0;
-	while($ccekkriteria=mysqli_fetch_array($cekkriteria))
-	{
+	while($ccekkriteria = $stmt->fetch(PDO::FETCH_ASSOC)){
+	
 		$rngs[$ak]=$ccekkriteria['ranges'];
 		$g[$ak]=$ccekkriteria['grade'];
 		$ak++;
@@ -176,9 +201,11 @@ function getGrade($nilai)
 					<label>Daftar Unit</label><br>
 					<select id="aksesou" name="aksesou[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
+						$sql = "select Kode_OU,Nama_OU from daftarou where aktif='T' and Kode_OU in $scekuser[ou] order by Nama_OU asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
 						
-						$cekou=mysqli_query($koneksi, "select Kode_OU,Nama_OU from daftarou where aktif='T' and Kode_OU in $scekuser[ou] order by Nama_OU asc");
-						while($scekou=mysqli_fetch_array($cekou)){
+						while($scekou = $stmt->fetch(PDO::FETCH_ASSOC)){
 						$selectednya="";
 						if (preg_match('/'.$scekou['Kode_OU'].'/',$d_unit))
 							$selectednya="selected";
@@ -194,8 +221,11 @@ function getGrade($nilai)
 					<label>Daftar Perusahaan</label><br>
 					<select id="aksespt" name="aksespt[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
-						$cekpt=mysqli_query($koneksi, "select Kode_Perusahaan,Nama_Perusahaan from daftarperusahaan where active='T' and Kode_Perusahaan in $scekuser[pt] order by Nama_Perusahaan asc");
-						while($scekpt=mysqli_fetch_array($cekpt)){
+						$sql = "select Kode_Perusahaan,Nama_Perusahaan from daftarperusahaan where active='T' and Kode_Perusahaan in $scekuser[pt] order by Nama_Perusahaan asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekpt = $stmt->fetch(PDO::FETCH_ASSOC)){
 						$selectednya="";
 						if (preg_match('/'.$scekpt['Kode_Perusahaan'].'/',$d_pt))
 							$selectednya="selected";
@@ -211,8 +241,12 @@ function getGrade($nilai)
 					<label>Daftar Departemen</label><br>
 					<select id="aksesdept" name="aksesdept[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
-						$cekdept=mysqli_query($koneksi, "select kode_departemen,Nama_Departemen from daftardepartemen where active='T' and kode_departemen in $scekuser[dept] order by Nama_Departemen asc");
-						while($scekdept=mysqli_fetch_array($cekdept)){
+						$sql = "select kode_departemen,Nama_Departemen from daftardepartemen where active='T' and kode_departemen in $scekuser[dept] order by Nama_Departemen asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekdept = $stmt->fetch(PDO::FETCH_ASSOC)){
+						
 						$selectednya="";
 						if (preg_match('/'.$scekdept['kode_departemen'].'/',$d_dept))
 							$selectednya="selected";
@@ -228,8 +262,11 @@ function getGrade($nilai)
 					<label>Daftar Grade</label><br>
 					<select id="akseslevel" name="akseslevel[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
-						$cekgrade=mysqli_query($koneksi, "select Kode_Golongan,Nama_Golongan from daftargolongan where active='T' and Kode_Golongan in $scekuser[gol] order by Kode_Golongan asc");
-						while($scekgrade=mysqli_fetch_array($cekgrade)){
+						$sql = "select Kode_Golongan,Nama_Golongan from daftargolongan where active='T' and Kode_Golongan in $scekuser[gol] order by Kode_Golongan asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekgrade = $stmt->fetch(PDO::FETCH_ASSOC)){
 						$selectednya="";
 						if (preg_match('/'.$scekgrade['Kode_Golongan'].'/',$d_grade))
 							$selectednya="selected";
@@ -247,8 +284,11 @@ function getGrade($nilai)
 					<label>Daftar Bisnis</label><br>
 					<select id="aksesbisnis" name="aksesbisnis[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
-						$cekbisnis=mysqli_query($koneksi, "select kode_bisnis,nama_bisnis from daftarbisnis where kode_bisnis in $scekuser[bisnis] order by nama_bisnis asc");
-						while($scekbisnis=mysqli_fetch_array($cekbisnis)){
+						$sql = "select kode_bisnis,nama_bisnis from daftarbisnis where kode_bisnis in $scekuser[bisnis] order by nama_bisnis asc";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekbisnis = $stmt->fetch(PDO::FETCH_ASSOC)){
 						$selectednya="";
 						if (preg_match('/'.$scekbisnis['kode_bisnis'].'/',$d_bisnis))
 							$selectednya="selected";
@@ -260,6 +300,25 @@ function getGrade($nilai)
 					</select>
 				</td>
 				<td style="width:1%"></td>
+				<td>
+					<label>Fortable</label><br>
+					<select id="fortable" name="fortable[]" class="form-control" multiple="multiple" style="width:26%">
+						<?php
+						$sql = "SELECT fortable, nama_fortable FROM `daftarfortable`";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekfortable = $stmt->fetch(PDO::FETCH_ASSOC)){
+						$selectednya="";
+						if (preg_match('/'.$scekfortable['fortable'].'/',$d_fortab))
+							$selectednya="selected";
+						?>
+							<option value="<?php echo "$scekfortable[fortable]"; ?>" <?php echo"$selectednya";?>> <?php echo "$scekfortable[nama_fortable]"; ?> </option>
+						<?php
+						}
+						?>
+					</select>
+				</td>
 			</tr>
 			<?php } ?>
 			<tr>
@@ -274,6 +333,7 @@ function getGrade($nilai)
 </div>
 <?php
 if(isset($_GET['generate']) && $_GET['generate']=='T'){
+$kpi_unit = "B";
 ?>
 <div class="row">
 <section class="col-lg-12 connectedSortable">
@@ -282,87 +342,195 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
         <div class="box-header with-border">
           <h3 class="box-title"><?php echo"<b>$a1</b>";?></h3>
         </div>
+		
         <div class="box-body">
-			<table class="table table-bordered table-striped" style="width:40%">
-				<thead>
-					<tr>
-						<th align="center">Nilai Mutu</th>	
-						<th align="center">Jumlah</th>
-						<th align="center">%</th>
-					</tr>
-				</thead>
-				<tbody>
-				<?php
-				set_time_limit(0);
-				$yearnow	= Date('Y');
-				$cutoff		= $yearnow."-07-01";
-				
-				$q_grade = mysqli_query($koneksi, "select * from kriteria 
-				where tahun='$yearnow' order by grade asc");
-				while($r_grade = mysqli_fetch_array($q_grade))
-				{
-				?>
-					<tr>
-						<td ><?php echo $r_grade['grade'] ?></td>
-						<td >
-							<?php  
-								$yearnow	= Date('Y');
-								$cutoff		= $yearnow."-07-01";
-								$q_cekdata = mysqli_query($koneksi, "select k.*,tp.edit_by, tp.edit_by2,k.NIK,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan, tp.date_input, do.Nama_OU, tp.total,
-								(Select Nama_Lengkap from $karyawan where nik = (select username from user_pa where id = tp.input_by))as inputby,
-								(Select Nama_Lengkap from $karyawan where nik = (select username from user_pa where id = tp.edit_by))as editby,
-								(Select Nama_Lengkap from $karyawan where nik = (select username from user_pa where id = tp.edit_by2))as editby2,
-								(Select Nama_Lengkap from $karyawan where nik = (select nik_atasan1 from atasan where nik = k.nik))as atasan1,
-								(Select Nama_Lengkap from $karyawan where nik = (select nik_atasan2 from atasan where nik = k.nik))as atasan2,
-								tp.date_edit, tp.date_edit2
-								from $karyawan as k 
-								left join daftarou as do on k.Kode_OU = do.Kode_OU 
-								left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
-								left join daftardepartemen as dep on k.Kode_Departemen=dep.Kode_Departemen 
-								left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan 
-								left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan 
-								left join $transaksi_pa as tp on k.NIK = tp.NIK 
-								where tp.input_by <>'' $where and k.Mulai_Bekerja <= '$cutoff' and k.Kode_StatusKerja<>'SKH05' order by k.Nama_Lengkap ASC");
+		<table class="table table-bordered table-striped" style="width:100%">
+			<tr>
+				<td><b>KPI Unit : <?php echo "$kpi_unit"; ?></b></td>
+			</tr>
+		</table>
+		<br>
+		<table style="width:100%">
+			<tr>
+				<td style="width:40%">
+					<table class="table table-bordered table-striped" style="width:100%">
+						<thead>
+							<tr>
+								<th align="center" colspan=3 style="background-color:#FAFAD2">Saat ini</th>	
+							</tr>
+							<tr>
+								<th align="center">Nilai Mutu</th>	
+								<th align="center">Jumlah</th>
+								<th align="center">%</th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php
+						set_time_limit(0);
+						$yearnow	= Date('Y');
+						$cutoff		= $yearnow."-07-01";
+						$nilai_saat_ini ="";
+						
+						
+						$sql = "select * from kriteria 
+						where tahun='$yearnow' order by grade asc";
+						$stmt_kriteria = $koneksi->prepare($sql);
+						$stmt_kriteria->execute();
+						
+						while($r_grade = $stmt_kriteria->fetch(PDO::FETCH_ASSOC)){
+						?>
+							<tr>
+								<td ><?php echo $r_grade['grade'] ?></td>
+								<td >
+									<?php  
+										$yearnow	= Date('Y');
+										$cutoff		= $yearnow."-07-01";
+										
+										$sql = "select k.*,k.NIK,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan, do.Nama_OU, tp.total_score,
+										(Select Nama_Lengkap from $karyawan where id = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
+										(Select Nama_Lengkap from $karyawan where id = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
+										(Select Nama_Lengkap from $karyawan where id = (select id_atasan3 from atasan where idkar = k.id))as atasan3
+										from $karyawan as k 
+										left join daftarou as do on k.Kode_OU = do.Kode_OU 
+										left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
+										left join daftardepartemen as dep on k.Kode_Departemen=dep.Kode_Departemen 
+										left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan 
+										left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan 
+										left join $transaksi_pa as tp on k.id = tp.idkar 
+										where tp.created_by <>'' $where $where_for and k.Mulai_Bekerja <= '$cutoff' and k.Kode_StatusKerja<>'SKH05' order by k.Nama_Lengkap ASC";
+										
+										
+										$stmt = $koneksi->prepare($sql);
+										$stmt->execute();
+										
+										$cekcount	= 0;
+										// $j_cekdata	= mysqli_num_rows($q_cekdata); 
+										$j_cekdata = $stmt->rowCount();
+										while($r_cekdata = $stmt->fetch(PDO::FETCH_ASSOC)){
+											$getgrade = getGrade($r_cekdata['total_score']);
+											
+											if ($getgrade == $r_grade['grade'])
+											{
+												$cekcount++;
+											}
+										}
+										$totalgrade = $cekcount;
+										$nilai_saat_ini =$nilai_saat_ini."|".$totalgrade;
+										
+										echo $totalgrade;
+										
+									?>
+								</td>
+								<td>
+									<?php
+										if($j_cekdata==0){
+											echo number_format(0,1)." %";
+										}else{
+											echo number_format((($totalgrade/$j_cekdata)*100),1)." %";
+										}
+									?>
+								</td>
 								
-								
-								//and k.Mulai_Bekerja <= '$cutoff'
-								
-								$cekcount	= 0;
-								$j_cekdata	= mysqli_num_rows($q_cekdata); 
-								while ($r_cekdata = mysqli_fetch_array($q_cekdata))
-								{
-									$getgrade = getGrade($r_cekdata['total']);
-									
-									if ($getgrade == $r_grade['grade'])
-									{
-										$cekcount++;
-									}
-								}
-								$totalgrade = $cekcount;
-								echo $totalgrade;
-								
-							?>
-						</td>
-						<td>
+							</tr>
+						<?php
+						}
+						?>
+						<tr>
+							<td>Total</td>
+							<td colspan = "2" align="center"><?php echo $j_cekdata ?></td>
+							
+						</tr>
+						</tbody>
+					</table>
+				</td>
+				<td style="width:3%"></td>
+				<td style="width:40%">
+					<table class="table table-bordered table-striped" style="width:100%">
+						<thead>
+							<tr>
+								<th align="center" colspan=3 style="background-color:#7FFF00">Distribusi Normal</th>	
+							</tr>
+							<tr>
+								<th align="center">Nilai Mutu</th>	
+								<th align="center">Jumlah</th>
+								<th align="center">%</th>
+							</tr>
+						</thead>
+						<tbody>
 							<?php
-								if($j_cekdata==0){
-									echo number_format(0,1)." %";
-								}else{
-									echo number_format((($totalgrade/$j_cekdata)*100),1)." %";
-								}
+							set_time_limit(0);
+							$yearnow	= Date('Y');
+							$cutoff		= $yearnow."-07-01";
+							
+							$sql = "select * from kriteria 
+							where tahun='$yearnow' order by grade asc";
+							$stmt_kriteria = $koneksi->prepare($sql);
+							$stmt_kriteria->execute();
+							$variable_kpi ="";
+							$total_kar = explode ("|",$nilai_saat_ini);
+							$array_nilai =1;
+							$t_cekdata=0;
+							$nilai_distribusi = "";
+							//$total_kar[$array_nilai]
+							
+							while($r_grade = $stmt_kriteria->fetch(PDO::FETCH_ASSOC)){
+							if($kpi_unit=="A"){$variable_kpi=$r_grade['persen_a'];}
+							else if($kpi_unit=="B"){$variable_kpi=$r_grade['persen_b'];}
+							else if($kpi_unit=="C"){$variable_kpi=$r_grade['persen_c'];}
+							else if($kpi_unit=="D"){$variable_kpi=$r_grade['persen_d'];}
+							else if($kpi_unit=="E"){$variable_kpi=$r_grade['persen_e'];}
+							else{$variable_kpi ="";}
 							?>
-						</td>
-					</tr>
-				<?php
-				}
-				?>
-				<tr>
-					<td>Total</td>
-					<td colspan = "2" align="center"><?php echo $j_cekdata ?></td>
+								<tr>
+									<td ><?php echo $r_grade['grade'] ?></td>
+									<td ><?php echo round(($j_cekdata*$variable_kpi)/100); ?></td>
+									<td ><?php echo $variable_kpi."%" ?></td>
+								</tr>
+							<?php 
+							$nilai_distribusi=$nilai_distribusi."|".round(($j_cekdata*$variable_kpi)/100);
+							$t_cekdata=$t_cekdata+round(($j_cekdata*$variable_kpi)/100);
+							$array_nilai++;
+							} ?>
+							<tr>
+								<td>Total</td>
+								<td colspan = "2" align="center"><?php echo $t_cekdata ?></td>
+								
+							</tr>
+						</tbody>
+					</table>
+				</td>
+				<td style="width:3%"></td>
+				<td>
+					<table class="table table-bordered table-striped" style="width:100%">
+					<?php 
+					$total_kar_saat_ini = explode ("|",$nilai_saat_ini);
+					$total_kar_distribusi = explode ("|",$nilai_distribusi);
+					$selisih_a = $total_kar_distribusi[1]-$total_kar_saat_ini[1];
+					$selisih_b = $total_kar_distribusi[2]-$total_kar_saat_ini[2];
+					$selisih_c = $total_kar_distribusi[3]-$total_kar_saat_ini[3];
+					$selisih_d = $total_kar_distribusi[4]-$total_kar_saat_ini[4];
+					$selisih_e = $total_kar_distribusi[5]-$total_kar_saat_ini[5];
 					
-				</tr>
-				</tbody>
-			</table>
+					?>
+						<thead>
+							<tr><td><b>Selisih dengan</b></td></tr>
+							<tr><td><b>Rekomendasi HR</b></td></tr>
+						</thead>
+						<tbody>
+							<tr><td><?php echo "$selisih_a"; ?></td></tr>
+							<tr><td><?php echo "$selisih_b"; ?></td></tr>
+							<tr><td><?php echo "$selisih_c"; ?></td></tr>
+							<tr><td><?php echo "$selisih_d"; ?></td></tr>
+							<tr><td><?php echo "$selisih_e"; ?></td></tr>
+							<tr><td><?php echo "-"; ?></td></tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</table>
+			
+			
+			<?php //echo $nilai_saat_ini $nilai_distribusi; ?>
 			<br><br>
 			<table id="daftar_table" class="table table-bordered table-striped" style="width:40%">
 				<thead>
@@ -376,15 +544,18 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 				<?php
 				$yearnow	= Date('Y');
 				$cutoff		= $yearnow."-07-01";
-				$q_data = mysqli_query ($koneksi, "Select k.*, dpt.Nama_Departemen, do.Nama_OU, dg.Nama_Golongan, k.Nama_Jabatan, dp.Nama_Perusahaan from $karyawan k 
-										left join daftardepartemen dpt on k.Kode_Departemen = dpt.Kode_Departemen 
-										left join daftarou do on k.Kode_OU = do.Kode_OU
-										left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
-										left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan 
-										left join daftarjabatan dj on k.Kode_Jabatan = dj.Kode_Jabatan 
-										where nik <> '' $where and k.Mulai_Bekerja <= '$cutoff' and k.Kode_StatusKerja<>'SKH05' order by k.Nama_Lengkap ASC
-										");	
-				$j_data = mysqli_num_rows($q_data);
+				
+				$sql = "Select k.*, dpt.Nama_Departemen, do.Nama_OU, dg.Nama_Golongan, k.Nama_Jabatan, dp.Nama_Perusahaan from $karyawan k 
+				left join daftardepartemen dpt on k.Kode_Departemen = dpt.Kode_Departemen 
+				left join daftarou do on k.Kode_OU = do.Kode_OU
+				left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
+				left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan 
+				left join daftarjabatan dj on k.Kode_Jabatan = dj.Kode_Jabatan 
+				where nik <> '' $where and k.Mulai_Bekerja <= '$cutoff' and k.Kode_StatusKerja<>'SKH05' order by k.Nama_Lengkap ASC";
+				$stmt = $koneksi->prepare($sql);
+				$stmt->execute();
+
+				$j_data = $stmt->rowCount();
 				?>
 				<tr>
 					<td >Karyawan yang sudah dinilai</td>	
@@ -403,6 +574,9 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 				</tr>
 				</tbody>
 			</table>
+			<br>
+			<button type="" class="btn btn-success"><i class="fa fa-save"></i> Submit </button>
+			
         </div>
     </div>
   </div>

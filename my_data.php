@@ -311,7 +311,7 @@ $(document).ready(function () {
                 data: null,
                 render:function(data, type, row)
                 {
-                 
+  
 					if(data.rating_a2!=null && data.rating_a3==null){
 						return '<a id="edit" href="home.php?link=formpa_review2&id='+data.idkar+'" class="btn btn-sm btn-success">Reviewed <i class="fa fa-check"></i></a>';
 					}
