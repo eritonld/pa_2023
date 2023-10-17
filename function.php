@@ -32,4 +32,11 @@ function convertCulture($value) {
 	$total_rating = $roundedValue == 0 ? "" : ($roundedValue == 1 ? "Basic" : ($roundedValue == 2 ? "Comprehension" : ($roundedValue == 3 ? "Practitioner" : ($roundedValue == 4 ? "Advanced" : "Expert"))));
 	return $total_rating;
 }
+
+function promotion($value) {
+
+	$result = $value === "Y" ? "Yes" : "No" ;
+
+	return $result;
+}
 ?>

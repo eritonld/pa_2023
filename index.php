@@ -121,22 +121,23 @@ if 	($nambrow=="Ie")
 				http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
 				http.onreadystatechange = function() {//Call a function when the state changes.
-					if(http.readyState == 4 && http.status == 200) {
-						// alert(http.responseText);
-						var result = http.responseText;
+					if((http.readyState == 4) && (http.status == 200)) {
+						let data = JSON.parse(http.response);
 						
-						if (result==0)
+						if (data.code == 200)
 						{
-							alert("Login Failed xx");
-							window.location='';
+							alert(data.message);
+							window.location='home.php?link=mydata';
 						}	
 						else
 						{
-							alert("WELCOME!");
-							window.location='home.php?link=mydata';
+							alert(data.message);
+							window.location='';
 						}
 					}
+					return false;
 				}
+				// xmlhttp.send(null);   
 				http.send(params);
 			}
 			else

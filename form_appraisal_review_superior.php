@@ -256,6 +256,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 	<input type="hidden" id="idkar" name="idkar" value="<?="$ckaryawan[idkar]";?>">
 	<input type="hidden" name="id_atasan1" value="<?="$ckaryawan[id_atasan1]";?>" readonly />
 	<input type="hidden" name="email_atasan1" value="<?="$ckaryawan[email_atasan1]";?>" readonly />
+	<input type="hidden" name="fortable" id="fortable" value="<?="$fortable";?>" readonly />
 	<div class="box box-danger">
         <div class="box-header with-border">
           <h3 class="box-title"><?="<b>$a1</b>";?></h3>

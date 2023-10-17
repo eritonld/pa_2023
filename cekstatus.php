@@ -58,7 +58,7 @@ if($scekstatus['fortable']=='staff'){
 			<label><?php echo "$atasan1"; ?></label>
 			<input type="hidden" class="form-control" id ="id_atasan1" name="id_atasan1" value="<?php echo "$scekstatus[id_atasan1]"; ?>">
 			<div class="input-group">
-				<input type="text" class="form-control" id ="nama_atasan1" name="nama_atasan1" value="<?php echo "$scekstatus[nama_atasan1]"; ?>" readonly>
+				<input type="text" class="form-control" id ="nama_atasan1" name="nama_atasan1" style="background-color: white;" value="<?php echo "$scekstatus[nama_atasan1]"; ?>" readonly>
 				<span class="input-group-addon">
 					<input type="checkbox" id="check_atasan1" aria-label="...">
 				</span>
@@ -72,7 +72,7 @@ if($scekstatus['fortable']=='staff'){
 			<label><?php echo "$atasan2"; ?></label>
 			<input type="hidden" class="form-control" id ="id_atasan2" name="id_atasan2" value="<?php echo "$scekstatus[id_atasan2]"; ?>">
 			<div class="input-group">
-				<input type="text" class="form-control" id ="nama_atasan2" name="nama_atasan2" value="<?php echo "$scekstatus[nama_atasan2]"; ?>" readonly>
+				<input type="text" class="form-control" id ="nama_atasan2" name="nama_atasan2" style="background-color: white;" value="<?php echo "$scekstatus[nama_atasan2]"; ?>" readonly>
 				<span class="input-group-addon">
 					<input type="checkbox" id="check_atasan2" aria-label="...">
 				</span>
@@ -86,7 +86,7 @@ if($scekstatus['fortable']=='staff'){
 			<label><?php echo "$atasan3"; ?></label>
 			<input type="hidden" class="form-control" id ="id_atasan3" name="id_atasan3" value="<?php echo "$scekstatus[id_atasan3]"; ?>">
 			<div class="input-group">
-				<input type="text" class="form-control" id ="nama_atasan3" name="nama_atasan3" value="<?php echo "$scekstatus[nama_atasan3]"; ?>" readonly>
+				<input type="text" class="form-control" id ="nama_atasan3" name="nama_atasan3" style="background-color: white;" value="<?php echo "$scekstatus[nama_atasan3]"; ?>" readonly>
 				<span class="input-group-addon">
 					<input type="checkbox" id="check_atasan3" aria-label="...">
 				</span>

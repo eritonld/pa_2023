@@ -92,7 +92,7 @@ if($code == 'getPenilaian') {
 }else if($code == 'getPenilaianA2') {
 
     try {
-        $sql = "SELECT a.id, a.idkar, a.total_score, a.rating_a3, f.id_atasan2, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, g.Nama_Lengkap AS nama_a3
+        $sql = "SELECT a.id, a.idkar, a.total_score, a.rating_a1, a.rating_a2, a.rating_a3, f.id_atasan2, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, g.Nama_Lengkap AS nama_a3
                 FROM transaksi_2023 AS a 
                 LEFT JOIN $karyawan AS b ON b.id = a.idkar 
                 LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
@@ -129,7 +129,7 @@ if($code == 'getPenilaian') {
 }else if($code == 'getPenilaianA3') {
 
     try {
-        $sql = "SELECT a.id, a.idkar, a.total_score, f.id_atasan3, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date 
+        $sql = "SELECT a.id, a.idkar, a.total_score, a.rating_a1, a.rating_a2, a.rating_a3, f.id_atasan3, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date 
                 FROM transaksi_2023 AS a 
                 LEFT JOIN $karyawan AS b ON b.id = a.idkar 
                 LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
@@ -254,6 +254,7 @@ if($code == 'getPenilaian') {
     $score4 = $_POST["score4"];
     $score5 = $_POST["score5"];
     $total_score = $_POST["total_score"];
+    $fortable = $_POST["fortable"];
     $periode = 2023;
     $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
     $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
@@ -277,6 +278,7 @@ if($code == 'getPenilaian') {
     $leadership5 = floatval(isset($_POST["leadership5"]) ? $_POST["leadership5"] : 0);
     $leadership6 = floatval(isset($_POST["leadership6"]) ? $_POST["leadership6"] : 0);
     $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
+    $promotion = isset($_POST["promotion"]) ? $_POST["promotion"] : "";
     $total_culture = number_format(($synergized1 + $synergized2 + $synergized3 + $integrity1 + $integrity2 + $integrity3 + $growth1 + $growth2 + $growth3 + $adaptive1 + $adaptive2 + $adaptive3 + $passion1 + $passion2 + $passion3) / 15 , 2);
     $avg = $leadership6 == 0 ? 5 : 6;
     $total_leadership = number_format(($leadership1 + $leadership2 + $leadership3 + $leadership4 + $leadership5 + $leadership6) / $avg , 2);
@@ -325,8 +327,8 @@ if($code == 'getPenilaian') {
         if ($ckaryawan) {
             // Process the data here
             // Define the common SQL INSERT statement
-        $queryInsert = "INSERT INTO %s (`id`, idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, created_by, periode, total_culture, total_leadership, rating_a1, comment_a1, created_date) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $queryInsert = "INSERT INTO %s (`id`, idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, created_by, periode, total_culture, total_leadership, rating_a1, comment_a1, created_date, fortable, promotion) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($idpic == $idkar) {
             $tableNames = ['transaksi_2023', 'transaksi_2023_awal'];
@@ -388,6 +390,8 @@ if($code == 'getPenilaian') {
                 $stmtInsert->bindParam(39, $rating);
                 $stmtInsert->bindParam(40, $comment);
                 $stmtInsert->bindParam(41, $datetime);
+                $stmtInsert->bindParam(42, $fortable);
+                $stmtInsert->bindParam(43, $promotion);
 
                 // Execute the INSERT statement for the current table
                 if (!$stmtInsert->execute()) {
@@ -526,6 +530,7 @@ if($code == 'getPenilaian') {
     $score4 = $_POST["score4"];
     $score5 = $_POST["score5"];
     $total_score = $_POST["total_score"];
+    $fortable = $_POST["fortable"];
     $periode = 2023;
     $synergized1 = isset($_POST["synergized1"]) ? $_POST["synergized1"] : null;
     $synergized2 = isset($_POST["synergized2"]) ? $_POST["synergized2"] : null;
@@ -549,6 +554,7 @@ if($code == 'getPenilaian') {
     $leadership5 = isset($_POST["leadership5"]) ? $_POST["leadership5"] : null;
     $leadership6 = isset($_POST["leadership6"]) ? $_POST["leadership6"] : null;
     $comment = isset($_POST["comment_a1"]) ? $_POST["comment_a1"] : null;
+    $promotion = isset($_POST["promotion"]) ? $_POST["promotion"] : "";
     $errors = false;
     try {
         $koneksi->beginTransaction();
@@ -589,6 +595,7 @@ if($code == 'getPenilaian') {
                     leadership4 = :leadership4,
                     leadership5 = :leadership5,
                     leadership6 = :leadership6,
+                    promotion = :promotion,
                     comment_a1 = :comment
                     WHERE idkar = :idkar";
         
@@ -637,6 +644,7 @@ if($code == 'getPenilaian') {
             $stmt->bindParam(':leadership4', $leadership4);
             $stmt->bindParam(':leadership5', $leadership5);
             $stmt->bindParam(':leadership6', $leadership6);
+            $stmt->bindParam(':promotion', $promotion);
             $stmt->bindParam(':comment', $comment);
        
             if (!$stmt->execute()) {
@@ -681,6 +689,7 @@ if($code == 'getPenilaian') {
     $score4 = $_POST["score4"];
     $score5 = $_POST["score5"];
     $total_score = $_POST["total_score"];
+    $fortable = $_POST["fortable"];
     $periode = 2023;
     $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
     $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
@@ -708,6 +717,7 @@ if($code == 'getPenilaian') {
     $total_leadership = number_format(($leadership1 + $leadership2 + $leadership3 + $leadership4 + $leadership5 + $leadership6) / $avg , 2);
     $rating = isset($_POST["rating"]) ? $_POST["rating"] : null;
     $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
+    $promotion = isset($_POST["promotion"]) ? $_POST["promotion"] : "";
 
     try {
         $sql = "SELECT a.id, a.idkar, a.total_score FROM transaksi_2023_a1 AS a WHERE a.idkar='$idkar'";
@@ -767,6 +777,7 @@ if($code == 'getPenilaian') {
                     total_culture = :total_culture,
                     total_leadership = :total_leadership,
                     rating_a1 = :rating,
+                    promotion = :promotion,
                     comment_a1 = :comment
                     WHERE idkar = :idkar";
 
@@ -815,6 +826,7 @@ if($code == 'getPenilaian') {
             $stmtUpdate->bindParam(':total_leadership', $total_leadership);
             $stmtUpdate->bindParam(':rating', $rating);
             $stmtUpdate->bindParam(':comment', $comment);
+            $stmtUpdate->bindParam(':promotion', $promotion);
 
             $stmtUpdate->execute();
             }
@@ -864,12 +876,13 @@ if($code == 'getPenilaian') {
         $stmtUpdate->bindParam(':total_leadership', $total_leadership);
         $stmtUpdate->bindParam(':rating', $rating);
         $stmtUpdate->bindParam(':comment', $comment);
+        $stmtUpdate->bindParam(':promotion', $promotion);
         
         $stmtUpdate->execute();
         }
 
-        $insertQuery = "INSERT INTO transaksi_2023_a1 (idkar, created_by, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, total_culture, total_leadership, rating_a1, comment_a1, periode, created_date) 
-        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertQuery = "INSERT INTO transaksi_2023_a1 (idkar, created_by, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, total_culture, total_leadership, rating_a1, comment_a1, periode, created_date, fortable, promotion) 
+        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
             // Create a prepared statement with the table name
             $stmtInsert = $koneksi->prepare($insertQuery);
@@ -915,6 +928,8 @@ if($code == 'getPenilaian') {
             $stmtInsert->bindParam( 38, $comment);  // Use the correct name
             $stmtInsert->bindParam( 39, $periode);
             $stmtInsert->bindParam( 40, $datetime);
+            $stmtInsert->bindParam( 41, $fortable);
+            $stmtInsert->bindParam( 42, $promotion);
 
             $stmtInsert->execute();
         }
@@ -942,6 +957,7 @@ if($code == 'getPenilaian') {
     $score4 = $_POST["score4"];
     $score5 = $_POST["score5"];
     $total_score = $_POST["total_score"];
+    $fortable = $_POST["fortable"];
     $periode = 2023;
     $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
     $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
@@ -975,6 +991,7 @@ if($code == 'getPenilaian') {
     $total_leadership = number_format(($leadership1 + $leadership2 + $leadership3 + $leadership4 + $leadership5 + $leadership6) / $avg , 2);
     $rating = isset($_POST["rating"]) ? $_POST["rating"] : null;
     $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
+    $promotion = isset($_POST["promotion"]) ? $_POST["promotion"] : "";
 
     try {
         $sql = "SELECT a.id, a.idkar, a.total_score FROM transaksi_2023_a1 AS a WHERE a.idkar='$idkar'";
@@ -1034,6 +1051,7 @@ if($code == 'getPenilaian') {
                     total_culture = :total_culture,
                     total_leadership = :total_leadership,
                     rating_a1 = :rating,
+                    promotion = :promotion,
                     comment_a1 = :comment
                     WHERE idkar = :idkar";
 
@@ -1082,6 +1100,7 @@ if($code == 'getPenilaian') {
             $stmtUpdate->bindParam(':total_leadership', $total_leadership);
             $stmtUpdate->bindParam(':rating', $rating);
             $stmtUpdate->bindParam(':comment', $comment);
+            $stmtUpdate->bindParam(':promotion', $promotion);
 
             $stmtUpdate->execute();
             }
@@ -1149,12 +1168,13 @@ if($code == 'getPenilaian') {
         $stmtUpdate->bindParam(':total_leadership', $total_leadership);
         $stmtUpdate->bindParam(':rating', $rating);
         $stmtUpdate->bindParam(':comment', $comment);
+        $stmtUpdate->bindParam(':promotion', $promotion);
         
         $stmtUpdate->execute();
         }
 
-        $insertQuery = "INSERT INTO transaksi_2023_a1 (idkar, created_by, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, total_culture, total_leadership, rating_a1, comment_a1, periode, created_date) 
-        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertQuery = "INSERT INTO transaksi_2023_a1 (idkar, created_by, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, total_culture, total_leadership, rating_a1, comment_a1, periode, created_date, fortable, promotion) 
+        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
             // Create a prepared statement with the table name
             $stmtInsert = $koneksi->prepare($insertQuery);
@@ -1200,10 +1220,12 @@ if($code == 'getPenilaian') {
             $stmtInsert->bindParam( 38, $comment);  // Use the correct name
             $stmtInsert->bindParam( 39, $periode);
             $stmtInsert->bindParam( 40, $datetime);
+            $stmtInsert->bindParam( 41, $fortable);
+            $stmtInsert->bindParam( 42, $promotion);
 
             $stmtInsert->execute();
 
-            $InsertPeersQuery = "INSERT INTO transaksi_2023_peers (created_by, created_date, peers, periode, idkar) VALUES (?, ?, ?, ?, ?)";
+            $InsertPeersQuery = "INSERT INTO transaksi_2023_peers (created_by, created_date, peers, periode, idkar, fortable) VALUES (?, ?, ?, ?, ?, ?)";
 
             foreach ($peersArray as $peers) {
                 $stmtInsertPeers = $koneksi->prepare($InsertPeersQuery);
@@ -1212,6 +1234,7 @@ if($code == 'getPenilaian') {
                 $stmtInsertPeers->bindParam( 3, $peers);
                 $stmtInsertPeers->bindParam( 4, $periode);
                 $stmtInsertPeers->bindParam( 5, $idkar);
+                $stmtInsertPeers->bindParam( 6, $fortable);
 
                 // Execute the query for each peer
                 $stmtInsertPeers->execute();
@@ -1242,6 +1265,7 @@ if($code == 'getPenilaian') {
     $score4 = $_POST["score4"];
     $score5 = $_POST["score5"];
     $total_score = $_POST["total_score"];
+    $fortable = $_POST["fortable"];
     $periode = 2023;
     $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
     $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
@@ -1267,6 +1291,7 @@ if($code == 'getPenilaian') {
    
     $rating = isset($_POST["rating"]) ? $_POST["rating"] : null;
     $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
+    $promotion = isset($_POST["promotion"]) ? $_POST["promotion"] : "";
 
     try {
         $sql = "SELECT a.id, a.idkar, a.total_score FROM transaksi_2023_a2 AS a WHERE a.idkar='$idkar'";
@@ -1324,6 +1349,7 @@ if($code == 'getPenilaian') {
                     leadership5 = :leadership5,
                     leadership6 = :leadership6,
                     rating_a2 = :rating,
+                    promotion = :promotion,
                     comment_a2 = :comment
                     WHERE idkar = :idkar";
 
@@ -1370,6 +1396,7 @@ if($code == 'getPenilaian') {
             $stmtUpdate->bindParam(':leadership6', $leadership6);
             $stmtUpdate->bindParam(':rating', $rating);
             $stmtUpdate->bindParam(':comment', $comment);
+            $stmtUpdate->bindParam(':promotion', $promotion);
 
             $stmtUpdate->execute();
             }
@@ -1417,12 +1444,13 @@ if($code == 'getPenilaian') {
         $stmtUpdate->bindParam(':leadership6', $leadership6);
         $stmtUpdate->bindParam(':rating', $rating);
         $stmtUpdate->bindParam(':comment', $comment);
+        $stmtUpdate->bindParam(':promotion', $promotion);
         
         $stmtUpdate->execute();
         }
 
-        $insertQuery = "INSERT INTO transaksi_2023_a2 (idkar, created_by, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, rating_a2, comment_a2, periode, created_date) 
-        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertQuery = "INSERT INTO transaksi_2023_a2 (idkar, created_by, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, rating_a2, comment_a2, periode, created_date, fortable, promotion) 
+        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
             // Create a prepared statement with the table name
             $stmtInsert = $koneksi->prepare($insertQuery);
@@ -1466,6 +1494,8 @@ if($code == 'getPenilaian') {
             $stmtInsert->bindParam( 36, $comment);  // Use the correct name
             $stmtInsert->bindParam( 37, $periode);
             $stmtInsert->bindParam( 38, $datetime);
+            $stmtInsert->bindParam( 39, $fortable);
+            $stmtInsert->bindParam( 40, $promotion);
 
             $stmtInsert->execute();
         }
@@ -1493,6 +1523,7 @@ if($code == 'getPenilaian') {
     $score4 = $_POST["score4"];
     $score5 = $_POST["score5"];
     $total_score = $_POST["total_score"];
+    $fortable = $_POST["fortable"];
     $periode = 2023;
     $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
     $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
@@ -1518,6 +1549,7 @@ if($code == 'getPenilaian') {
    
     $rating = isset($_POST["rating"]) ? $_POST["rating"] : null;
     $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
+    $promotion = isset($_POST["promotion"]) ? $_POST["promotion"] : "";
 
     try {
         $sql = "SELECT a.id, a.idkar, a.total_score FROM transaksi_2023_a3 AS a WHERE a.idkar='$idkar'";
@@ -1575,6 +1607,7 @@ if($code == 'getPenilaian') {
                     leadership5 = :leadership5,
                     leadership6 = :leadership6,
                     rating_a3 = :rating,
+                    promotion = :promotion,
                     comment_a3 = :comment
                     WHERE idkar = :idkar";
 
@@ -1621,6 +1654,7 @@ if($code == 'getPenilaian') {
             $stmtUpdate->bindParam(':leadership6', $leadership6);
             $stmtUpdate->bindParam(':rating', $rating);
             $stmtUpdate->bindParam(':comment', $comment);
+            $stmtUpdate->bindParam(':promotion', $promotion);
 
             $stmtUpdate->execute();
             }
@@ -1668,12 +1702,13 @@ if($code == 'getPenilaian') {
         $stmtUpdate->bindParam(':leadership6', $leadership6);
         $stmtUpdate->bindParam(':rating', $rating);
         $stmtUpdate->bindParam(':comment', $comment);
+        $stmtUpdate->bindParam(':promotion', $promotion);
         
         $stmtUpdate->execute();
         }
 
-        $insertQuery = "INSERT INTO transaksi_2023_a3 (idkar, created_by, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, rating_a3, comment_a3, periode, created_date) 
-        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $insertQuery = "INSERT INTO transaksi_2023_a3 (idkar, created_by, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, rating_a3, comment_a3, periode, created_date, fortable, promotion) 
+        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
             // Create a prepared statement with the table name
             $stmtInsert = $koneksi->prepare($insertQuery);
@@ -1717,6 +1752,8 @@ if($code == 'getPenilaian') {
             $stmtInsert->bindParam( 36, $comment);  // Use the correct name
             $stmtInsert->bindParam( 37, $periode);
             $stmtInsert->bindParam( 38, $datetime);
+            $stmtInsert->bindParam( 39, $fortable);
+            $stmtInsert->bindParam( 40, $promotion);
 
             $stmtInsert->execute();
         }
@@ -1839,8 +1876,11 @@ if($code == 'getPenilaian') {
             $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // Example query: Select all data from a table named 'your_table'
-            $query = "SELECT a.*, DATE_FORMAT(b.mulai_bekerja, '%d-%m-%Y') AS tmk, b.NIK, b.nik_baru, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, c.fortable, d.Nama_OU, e.Nama_Departemen, f.Nama_Perusahaan, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo, g.id_atasan1, g.id_atasan2, g.id_atasan3, h.Nama_Lengkap as nama_a1, i.Nama_Lengkap as nama_a2, j.Nama_Lengkap as nama_a3, h.Nama_Jabatan as jabatan_a1, i.Nama_Jabatan as jabatan_a2, j.Nama_Jabatan as jabatan_a3
+            $query = "SELECT a.*, a1.promotion AS promotion_a1, a2.promotion AS promotion_a2, a3.promotion AS promotion_a3, DATE_FORMAT(b.mulai_bekerja, '%d-%m-%Y') AS tmk, b.NIK, b.nik_baru, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, c.fortable, d.Nama_OU, e.Nama_Departemen, f.Nama_Perusahaan, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo, g.id_atasan1, g.id_atasan2, g.id_atasan3, h.Nama_Lengkap as nama_a1, i.Nama_Lengkap as nama_a2, j.Nama_Lengkap as nama_a3, h.Nama_Jabatan as jabatan_a1, i.Nama_Jabatan as jabatan_a2, j.Nama_Jabatan as jabatan_a3
             FROM transaksi_2023 AS a 
+            LEFT JOIN transaksi_2023_a1 AS a1 ON a1.idkar=a.idkar
+            LEFT JOIN transaksi_2023_a2 AS a2 ON a2.idkar=a.idkar
+            LEFT JOIN transaksi_2023_a3 AS a3 ON a3.idkar=a.idkar
             LEFT JOIN $karyawan AS b ON b.id = a.idkar 
             LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
             LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU 
@@ -1850,7 +1890,7 @@ if($code == 'getPenilaian') {
             LEFT JOIN $karyawan AS h ON h.id=g.id_atasan1
             LEFT JOIN $karyawan AS i ON i.id=g.id_atasan2
             LEFT JOIN $karyawan AS j ON j.id=g.id_atasan3
-            WHERE a.idkar= :id";
+            WHERE a.idkar= :id GROUP BY a.idkar";
             $stmt = $koneksi->prepare($query);
             $stmt->bindParam(':id', $id, PDO::PARAM_STR);
             $stmt->execute();
@@ -1893,6 +1933,9 @@ if($code == 'getPenilaian') {
                     'nama_a3' => $item['nama_a3'],
                     'jabatan_a3' => $item['jabatan_a3'],
                     'updated_by' => $item['updated_by'],
+                    'promotion_a1' => $item['promotion_a1'],
+                    'promotion_a2' => $item['promotion_a2'],
+                    'promotion_a3' => $item['promotion_a3'],
                     'objective' => array(
                         'value1' => $item['value_1'],
                         'value2' => $item['value_2'],
@@ -1962,6 +2005,7 @@ if($code == 'getPenilaian') {
     $score4 = isset($_POST["score4"]) ? $_POST["score4"] : 0;
     $score5 = isset($_POST["score5"]) ? $_POST["score5"] : 0;
     $total_score = isset($_POST["total_score"]) ? $_POST["total_score"] : 0;
+    $fortable = $_POST["fortable"];
     $periode = 2023;
     $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
     $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
@@ -2011,8 +2055,8 @@ if($code == 'getPenilaian') {
         if (!$employee_available) {
             // Process the data here
             // Define the common SQL INSERT statement
-        $queryInsert = "INSERT INTO transaksi_2023_subo (idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, created_by, periode, total_culture, total_leadership, rating, `comment`, created_date) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $queryInsert = "INSERT INTO transaksi_2023_subo (idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, created_by, periode, total_culture, total_leadership, rating, `comment`, created_date, fortable) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $koneksi->beginTransaction();
 
@@ -2060,6 +2104,7 @@ if($code == 'getPenilaian') {
             $stmtInsert->bindParam(38, $rating);
             $stmtInsert->bindParam(39, $comment);
             $stmtInsert->bindParam(40, $datetime);
+            $stmtInsert->bindParam(41, $fortable);
 
             // Execute the INSERT statement for the current table
             if ($stmtInsert->execute()) {
