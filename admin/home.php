@@ -1,6 +1,6 @@
 <?php
 include("../conf/conf.php");
-include("tabel_setting.php");
+include("../tabel_setting.php");
 
 session_start();
 
@@ -356,6 +356,12 @@ else
 		$(document).ready(function(){
 			$('#superior').multipleSelect({
 				placeholder: "Pilih Superior",
+				filter:true
+			});
+		});
+		$(document).ready(function(){
+			$('#fortable').multipleSelect({
+				placeholder: "Pilih Fortable",
 				filter:true
 			});
 		});

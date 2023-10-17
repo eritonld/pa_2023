@@ -345,9 +345,9 @@ function getGrade($nilai)
 			<tr>
 				<td><br><b>Rekap Penilaian :</b> <img src="../img/excel2.png" onClick="reportexcel()" style="padding-top:0px;cursor:pointer;width:15%;" title="Recapitulation on Excel"></img></td>
 			</tr>
-			<tr>
+			<!--<tr>
 				<td><b>Rekap Detail Penilaian :</b> <img src="../img/excel2.png" onClick="reportexceldetail()" style="padding-top:0px;cursor:pointer;width:15%;" title="Recapitulation on Excel"></img></td>
-			</tr>
+			</tr>-->
 			<?php
 			}
 			?>
@@ -380,7 +380,6 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					<th>Golongan</th>
 					<th>PT</th>
 					<th>Lokasi Unit</th>
-					
 					<th style="background:#ffffaa;">Final Total Score</th>
 					<th>Action</th>
 				  </tr>
@@ -391,14 +390,11 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					$yearnow	= Date('Y');
 					$cutoff		= $yearnow."-07-01";
 					
-					$sql = "select tp.edit_by, tp.edit_by2,k.NIK,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen,
-					dg.Nama_Golongan,k.Nama_Jabatan, tp.date_input, do.Nama_OU, tp.total,
-					(Select Nama_Lengkap from $karyawan where nik = (select username from user_pa where id = tp.input_by))as inputby,
-					(Select Nama_Lengkap from $karyawan where nik = (select username from user_pa where id = tp.edit_by))as editby,
-					(Select Nama_Lengkap from $karyawan where nik = (select username from user_pa where id = tp.edit_by2))as editby2,
-					(Select Nama_Lengkap from $karyawan where nik = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
-					(Select Nama_Lengkap from $karyawan where nik = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
-					tp.date_edit, tp.date_edit2
+					$sql = "select k.id,k.nik_baru,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen,
+					dg.Nama_Golongan,k.Nama_Jabatan, tp.created_date, do.Nama_OU, tp.total_score,
+					(Select Nama_Lengkap from $karyawan where id = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
+					(Select Nama_Lengkap from $karyawan where id = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
+					(Select Nama_Lengkap from $karyawan where id = (select id_atasan3 from atasan where idkar = k.id))as atasan3
 					from $karyawan as k 
 					left join daftarou as do on k.Kode_OU = do.Kode_OU 
 					left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
@@ -406,35 +402,31 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan 
 					left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan 
 					left join $transaksi_pa as tp on k.id = tp.idkar 
-					
-					where tp.input_by <>'' and k.Kode_StatusKerja<>'SKH05' $where and k.Mulai_Bekerja <= '$cutoff' order by k.Nama_Lengkap ASC";
+					where tp.created_by<>'' and k.Kode_StatusKerja<>'SKH05' $where and k.Mulai_Bekerja <= '$cutoff' order by k.Nama_Lengkap ASC";
 					
 					$stmt = $koneksi->prepare($sql);
 					$stmt->execute();
-					// left join $transaksi_pa_awal as tpa on k.NIK = tpa.NIK
-					// left join $transaksi_pa_edit1 as tpa1 on k.NIK = tpa1.NIK
-					// left join $transaksi_pa_edit2 as tpa2 on k.NIK = tpa2.NIK
+
 					while($scekpa = $stmt->fetch(PDO::FETCH_ASSOC)){
-					
-					
+
 					?>
 					<tr>
 						<td><?php echo "$no"; ?></td>
-						<td><?php echo "$scekpa[NIK]"; ?></td>
+						<td><?php echo "$scekpa[nik_baru]"; ?></td>
 						<td><?php echo "$scekpa[Nama_Lengkap]"; ?></td>
 						<td><?php echo "$scekpa[Nama_Departemen]"; ?></td>
 						<td><?php echo "$scekpa[Nama_Jabatan]"; ?></td>
 						<td><?php echo "$scekpa[Nama_Golongan]"; ?></td>
 						<td><?php echo "$scekpa[Nama_Perusahaan]"; ?></td>
 						<td><?php echo "$scekpa[Nama_OU]"; ?></td>
-						
-						
-						<td><?php echo "<b>".$scekpa['total']." (".getGrade($scekpa['total']).")</b>"; ?></td>
+						<td><?php echo "<b>".$scekpa['total_score']." (".getGrade($scekpa['total_score']).")</b>"; ?></td>
 						<td>
-							<button class="btn btn-info btn-xs" onclick = "preview_pdf('<?php echo $scekpa['NIK']?>')"><i class="fa fa-search"></i> pdf</button>
+							
+							<button class="label label-primary" data-toggle="modal" data-target="#modalupload1" data-backdrop="static" data-id="<?php echo $scekpa['id'];?>"><i class="fa fa-search"></i>
+							<!--<button class="btn btn-info btn-xs" onclick = "preview_pdf('<?php //echo $scekpa['NIK']?>')"><i class="fa fa-search"></i> pdf</button>-->
 							
 							<?php if($scekuser['level']=="admin"){ ?>
-							<button class="btn btn-danger btn-xs" onclick = "editdata('<?php echo $scekpa['NIK']?>')"><i class="fa fa-pencil"></i></button>
+							<!--<button class="btn btn-danger btn-xs" onclick = "editdata('<?php //echo $scekpa['NIK']?>')"><i class="fa fa-pencil"></i></button>-->
 							<?php } ?>
 						</td>
 						
@@ -458,6 +450,21 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 		<div align="center" class="modal-header">
 		  <button type="button" class="close" data-dismiss="modal">&times;</button>
 		  <label style="padding-left: 10px">Preview PDF</label><br>
+		</div>
+		<div class="modal-body">
+		  <div class="modal-data"></div>
+		</div>
+	  </div>
+	</div>
+</div>
+<div class="modal fade" id="modalupload1" tabindex="-1" class="modal" role="dialog" >
+	<div class="modal-dialog" style="width:60%">
+	  <!-- konten modal-->
+	  <div class="modal-content">
+		<!-- heading modal -->
+		<div align="center" class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal">&times;</button>
+		  <label style="padding-left: 10px">View Detail</label><br>
 		</div>
 		<div class="modal-body">
 		  <div class="modal-data"></div>
@@ -491,4 +498,19 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
             });
          });
     }); 
+	$(document).ready(function(){
+        $('#modalupload1').on('show.bs.modal', function (e) {
+            var id  = $(e.relatedTarget).data('id');
+            //menggunakan fungsi ajax untuk pengambilan data
+            $.ajax({
+                type : 'post',
+                url : 'set_modal.php',
+                data :  'kode=review_atasan&id='+ id,
+                success : function(data){
+                $('.modal-data').html(data);//menampilkan data ke dalam modal
+                // console.log(data);
+                }
+            });
+         });
+    });
 </script>

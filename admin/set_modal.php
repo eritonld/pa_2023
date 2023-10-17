@@ -14,13 +14,6 @@
 include("../conf/conf.php");
 include("../tabel_setting.php");
 
-// session_start();
-// if(session_is_registered('idmaster_hc'))
-// {
-	// $user_tes=unserialize($_SESSION['idmaster_hc']);
-	// $idmaster=$user_tes['mas'];
-// }
-
 $id = $_POST['id']!=''?$_POST['id']:$_GET['id'];
 
 if($_POST['kode']=='update_superior'){
@@ -68,6 +61,7 @@ if($_POST['kode']=='update_superior'){
 				$nik3="";
 				$email3="";
 			}
+			
 	?>
 	<form role="form" method="post" action="">
 		<input type="hidden" class="form-control" name="idkar" id="idkar" value="<?php echo "$id"; ?>">
@@ -234,6 +228,94 @@ if($_POST['kode']=='update_superior'){
 	</form>
 	<?php  
 	}
+}else if($_POST['kode']=="review_atasan"){
+
+	function getGrade($nilai)
+	{
+		include("../conf/conf.php");
+		$tahun=date('Y');
+		
+		$sql_kriteria = "select ranges,grade,kesimpulan,warna,icon,bermasalah from kriteria where tahun='$tahun' order by id asc";
+		$stmt_kriteria = $koneksi->prepare($sql_kriteria);
+		$stmt_kriteria->execute();
+		$ak=0;
+		while($ccekkriteria = $stmt_kriteria->fetch(PDO::FETCH_ASSOC))
+		{
+			$rngs[$ak]=$ccekkriteria['ranges'];
+			$g[$ak]=$ccekkriteria['grade'];
+			$ak++;
+		}
+		$gradenya="E";
+		$warna="000000";
+		for($aa=0;$aa<$ak;$aa++)
+		{		
+			if($nilai >= $rngs[$aa])
+			{
+				$gradenya=$g[$aa];
+				break;
+			}		
+		}
+		return $gradenya;
+	}
+	// echo "$id";
+	$sql = "select k.id,k.nik_baru,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen,
+	dg.Nama_Golongan,k.Nama_Jabatan, tp.created_date, do.Nama_OU, tp.total_score, tp.rating_a1, tp.rating_a2, tp.rating_a3,
+	(Select Nama_Lengkap from $karyawan where id = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
+	(Select Nama_Lengkap from $karyawan where id = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
+	(Select Nama_Lengkap from $karyawan where id = (select id_atasan3 from atasan where idkar = k.id))as atasan3
+	from $karyawan as k 
+	left join daftarou as do on k.Kode_OU = do.Kode_OU 
+	left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
+	left join daftardepartemen as dep on k.Kode_Departemen=dep.Kode_Departemen 
+	left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan 
+	left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan 
+	left join $transaksi_pa as tp on k.id = tp.idkar 
+	where k.id='$id' order by k.Nama_Lengkap ASC";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->execute();
+	
+    $scekatasan1 = $stmt->fetch(PDO::FETCH_ASSOC);
+	
+	$nilai_a1 = "";
+	$nilai_a2 = "";
+	$nilai_a3 = "";
+	
+	if($scekatasan1['rating_a1']<>''){$nilai_a1=" - <b>".$scekatasan1['rating_a1']." (".getGrade($scekatasan1['rating_a1']).")</b>";}
+	if($scekatasan1['rating_a2']<>''){$nilai_a2=" - <b>".$scekatasan1['rating_a2']." (".getGrade($scekatasan1['rating_a2']).")</b>";}
+	if($scekatasan1['rating_a3']<>''){$nilai_a3=" - <b>".$scekatasan1['rating_a3']." (".getGrade($scekatasan1['rating_a3']).")</b>";}
+	?>
+	<table style="width:50%" class="table table-bordered table-striped">
+		<tr>
+			<td>NIK</td>
+			<td><?php echo "$scekatasan1[nik_baru]"; ?></td>
+		</tr>
+		<tr>
+			<td>Nama Karyawan</td>
+			<td><?php echo "$scekatasan1[Nama_Lengkap]"; ?></td>
+		</tr>
+		<tr>
+			<td>Tanggal Input</td>
+			<td><?php echo "$scekatasan1[created_date]"; ?></td>
+		</tr>
+		<tr>
+			<td>Atasan 1</td>
+			<td><?php echo "$scekatasan1[atasan1] $nilai_a1"; ?></td>
+		</tr>
+		<tr>
+			<td>Atasan 2</td>
+			<td><?php echo "$scekatasan1[atasan2] $nilai_a2"; ?></td>
+		</tr>
+		<tr>
+			<td>Atasan 3</td>
+			<td><?php echo "$scekatasan1[atasan3] $nilai_a3"; ?></td>
+		</tr>
+		<tr>
+			<td><b>Final Score</b></td>
+			<td><?php echo "<b>".$scekatasan1['total_score']." (".getGrade($scekatasan1['total_score']).")</b>"; ?></td>
+		</tr>
+	
+	</table>
+	<?php
 }else if($_GET['asal']=="email1"){ //lempar data email superior
 	$ida1 = $_GET['ida1'];
 	

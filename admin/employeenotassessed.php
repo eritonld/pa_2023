@@ -318,7 +318,7 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
 					left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan 
 					left join daftarjabatan dj on k.Kode_Jabatan = dj.Kode_Jabatan 
-					where k.Kode_StatusKerja<>'SKH05' $where and k.Mulai_Bekerja <= '$cutoff' and k.id not in (select idkar from $transaksi_pa where input_by<>'') order by k.Nama_Lengkap ASC";
+					where k.Kode_StatusKerja<>'SKH05' $where and k.Mulai_Bekerja <= '$cutoff' and k.id not in (select idkar from $transaksi_pa where created_by<>'') order by k.Nama_Lengkap ASC";
 					
 					$stmt = $koneksi->prepare($sql);
 					$stmt->execute();

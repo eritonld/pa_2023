@@ -17,6 +17,7 @@ else
 
 
 $where="";
+$where_for="";
 if(isset($_GET['generate']) && $_GET['generate']=='T'){
 
 	//data unit
@@ -133,6 +134,27 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 	}else{
 			$bisnis = $scekuser['bisnis'];
 			$where=$where." and do.BU in $bisnis";
+		}
+	
+	if(isset($_GET['fortable'])){
+		$values_fortable=$_GET['fortable'];
+		if ($values_fortable <> ''){
+				$xx=0;
+				$bisnis = "";
+				$d_bisnis = "";
+				foreach ($values_fortable as $kfortab)
+				{
+					if($xx==0)
+						$d_fortab = $kfortab;
+					else
+						$d_fortab = $d_fortab.",".$kfortab;
+					$xx++;
+				}
+				$fortab="('".str_replace(",","','",$d_fortab)."')";
+			$where_for=$where_for." and tp.fortable in $fortab";
+		}
+	}else{
+			
 		}
 }
 
@@ -278,6 +300,25 @@ function getGrade($nilai)
 					</select>
 				</td>
 				<td style="width:1%"></td>
+				<td>
+					<label>Fortable</label><br>
+					<select id="fortable" name="fortable[]" class="form-control" multiple="multiple" style="width:26%">
+						<?php
+						$sql = "SELECT fortable, nama_fortable FROM `daftarfortable`";
+						$stmt = $koneksi->prepare($sql);
+						$stmt->execute();
+						
+						while($scekfortable = $stmt->fetch(PDO::FETCH_ASSOC)){
+						$selectednya="";
+						if (preg_match('/'.$scekfortable['fortable'].'/',$d_fortab))
+							$selectednya="selected";
+						?>
+							<option value="<?php echo "$scekfortable[fortable]"; ?>" <?php echo"$selectednya";?>> <?php echo "$scekfortable[nama_fortable]"; ?> </option>
+						<?php
+						}
+						?>
+					</select>
+				</td>
 			</tr>
 			<?php } ?>
 			<tr>
@@ -345,13 +386,10 @@ $kpi_unit = "B";
 										$yearnow	= Date('Y');
 										$cutoff		= $yearnow."-07-01";
 										
-										$sql = "select k.*,tp.edit_by, tp.edit_by2,k.NIK,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan, tp.date_input, do.Nama_OU, tp.total,
-										(Select Nama_Lengkap from $karyawan where nik = (select username from user_pa where id = tp.input_by))as inputby,
-										(Select Nama_Lengkap from $karyawan where nik = (select username from user_pa where id = tp.edit_by))as editby,
-										(Select Nama_Lengkap from $karyawan where nik = (select username from user_pa where id = tp.edit_by2))as editby2,
-										(Select Nama_Lengkap from $karyawan where nik = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
-										(Select Nama_Lengkap from $karyawan where nik = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
-										tp.date_edit, tp.date_edit2
+										$sql = "select k.*,k.NIK,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan, do.Nama_OU, tp.total_score,
+										(Select Nama_Lengkap from $karyawan where id = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
+										(Select Nama_Lengkap from $karyawan where id = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
+										(Select Nama_Lengkap from $karyawan where id = (select id_atasan3 from atasan where idkar = k.id))as atasan3
 										from $karyawan as k 
 										left join daftarou as do on k.Kode_OU = do.Kode_OU 
 										left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
@@ -359,8 +397,7 @@ $kpi_unit = "B";
 										left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan 
 										left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan 
 										left join $transaksi_pa as tp on k.id = tp.idkar 
-										
-										where tp.input_by <>'' $where and k.Mulai_Bekerja <= '$cutoff' and k.Kode_StatusKerja<>'SKH05' order by k.Nama_Lengkap ASC";
+										where tp.created_by <>'' $where $where_for and k.Mulai_Bekerja <= '$cutoff' and k.Kode_StatusKerja<>'SKH05' order by k.Nama_Lengkap ASC";
 										
 										
 										$stmt = $koneksi->prepare($sql);
@@ -370,7 +407,7 @@ $kpi_unit = "B";
 										// $j_cekdata	= mysqli_num_rows($q_cekdata); 
 										$j_cekdata = $stmt->rowCount();
 										while($r_cekdata = $stmt->fetch(PDO::FETCH_ASSOC)){
-											$getgrade = getGrade($r_cekdata['total']);
+											$getgrade = getGrade($r_cekdata['total_score']);
 											
 											if ($getgrade == $r_grade['grade'])
 											{
