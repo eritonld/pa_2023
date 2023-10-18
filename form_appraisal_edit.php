@@ -300,6 +300,7 @@ if ($response === false) {
 		<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
 		<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
 		<input type="hidden" id="idkar" name="idkar" value="<?="$idkar";?>">
+		<input type="hidden" name="fortable" id="fortable" value="<?="$fortable";?>" readonly />
 	<div class="box box-danger">
         <div class="box-header with-border">
           <h3 class="box-title"><?="<b>$a1</b>";?></h3>

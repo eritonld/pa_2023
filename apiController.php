@@ -596,6 +596,7 @@ if($code == 'getPenilaian') {
                     leadership5 = :leadership5,
                     leadership6 = :leadership6,
                     promotion = :promotion,
+                    fortable = :fortable,
                     comment_a1 = :comment
                     WHERE idkar = :idkar";
         
@@ -646,6 +647,7 @@ if($code == 'getPenilaian') {
             $stmt->bindParam(':leadership6', $leadership6);
             $stmt->bindParam(':promotion', $promotion);
             $stmt->bindParam(':comment', $comment);
+            $stmt->bindParam(':fortable', $fortable);
        
             if (!$stmt->execute()) {
                 // If an error occurs, set the $errors variable to true
