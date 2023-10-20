@@ -27,17 +27,19 @@ if($id=='')
 exit;
 }
 try {
-    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a1.id_atasan as id_atasan1, a2.id_atasan as id_atasan2, a3.id_atasan as id_atasan3, ka1.email as email_atasan1, ka2.email as email_atasan2, ka3.email as email_atasan3
             FROM $karyawan AS k
             LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
             LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.Kode_Departemen
             LEFT JOIN daftargolongan AS dg ON k.Kode_Golongan = dg.Kode_Golongan
             LEFT JOIN daftarjabatan AS dj ON k.Kode_Jabatan = dj.Kode_Jabatan
             LEFT JOIN daftarou AS du ON k.Kode_OU = du.Kode_OU
-			LEFT JOIN atasan AS a ON a.idkar= k.id
-			LEFT JOIN $karyawan AS a1 ON a1.id= a.id_atasan1
-			LEFT JOIN $karyawan AS a2 ON a2.id= a.id_atasan2
-			LEFT JOIN $karyawan AS a3 ON a3.id= a.id_atasan3
+			LEFT JOIN atasan AS a1 ON a1.idkar= k.id AND a1.layer='L1'
+			LEFT JOIN atasan AS a2 ON a2.idkar= k.id AND a2.layer='L2'
+			LEFT JOIN atasan AS a3 ON a3.idkar= k.id AND a3.layer='L3'
+			LEFT JOIN $karyawan AS ka1 ON ka1.id= a1.id_atasan
+			LEFT JOIN $karyawan AS ka2 ON ka2.id= a2.id_atasan
+			LEFT JOIN $karyawan AS ka3 ON ka3.id= a3.id_atasan
             WHERE k.id = :id";
 
     $stmt = $koneksi->prepare($sql);
@@ -160,7 +162,7 @@ else
 // $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 
 
-$api_url = 'http://localhost:8080/hcis-pa-2023/apiController.php?code=getDataEditAwal&id='.$id; // Replace with your API endpoint URL
+$api_url = $base_url.'/apiController.php?code=getDataEditAwal&id='.$id; // Replace with your API endpoint URL
 
 // Make an HTTP GET request to the API
 $response = file_get_contents($api_url);
@@ -182,6 +184,7 @@ if ($response === false) {
                 // Access individual data elements
                 $id = $item['id'];
                 $idkar = $item['idkar'];
+                $created_by = $item['created_by'];
                 $name = $item['Nama_Lengkap'];
                 $total_score = $item['total_score'];
                 $periode = $item['periode'];
@@ -199,8 +202,8 @@ if ($response === false) {
                 $leadership = $item['leadership'];
                 $jumlah_subo = $item['jumlah_subo'];
                 $fortable = $item['fortable'];
-                $comment_a1 = $item['comment_a1'];
-                $rating_a1 = $item['rating_a1']==0 ? $total_score : $item['rating_a1'];
+                $comment = $item['comment'];
+                $rating = $item['rating']==0 ? $total_score : $item['rating'];
             }
 				$fortable = $fortable != "staff" ? $fortable : ($jumlah_subo > 0 ? "staffb" : "staff");
 		
@@ -377,16 +380,16 @@ if ($response === false) {
 								<div class="col-md-2" style="padding-left: 0;">
 									<input type="text" name="total_score" id="total_score" class="form-control text-center text-bold" style="background: #FFFFCC;" value="<?= $total_score; ?>" readonly>
 								</div>
-								<div class="col-md-2" style="padding-left: 0;">
-									<input type="text" name="rating" id="rating" class="form-control text-center text-bold" value="<?= convertRating($rating_a1); ?>" readonly>
+								<div class="col-md-2" style="padding-left: 0; display: <?= $scekuser['id']==$idkar ? 'none' : '';?>">
+									<input type="text" name="rating" id="rating" class="form-control text-center text-bold" value="<?= convertRating($rating); ?>" readonly>
 								</div>
 							</div>
 						</div>
-						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
+						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']==$idkar ? 'none' : '';?>">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-6" style="padding-right: 0;">
 									<h1 class="h5 text-bold"><?= $title_comment; ?> : </h1>
-									<textarea class="form-control" name="comment" id="comment" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."><?= $comment_a1; ?></textarea>
+									<textarea class="form-control" name="comment" id="comment" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."><?= $comment; ?></textarea>
 								</div>
 							</div>
 						</div>

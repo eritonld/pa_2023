@@ -12,14 +12,14 @@ session_start();
 
 // $operators['id']=$_SESSION["idmaster_pa"];
 
-$idmaster_pa=$_SESSION["idmaster_pa"];
+$idmaster_pa=isset($_SESSION["idmaster_pa"])? $_SESSION["idmaster_pa"]: "";
 
 if ($idmaster_pa=="")
 {
 	?>
 	<script>
 		alert('Login First');
-		window.location="http://localhost/pa_2023/";
+		window.location= '<?= "$base_url"; ?>';
 	</script>
 	<?php
 }
@@ -39,72 +39,91 @@ $menumydata			= "deactive";
 $menuaddapp			= "deactive";
 $menugantipas		= "deactive";
 $menulogout			= "deactive";
+$menurating			= "deactive";
 
 if ($link=="mydata")
 {
   $includefile		= "my_data.php";
   $menumydata		= "active";
   $linkmark			= " > My Data";
+  $title			= "Performance Appraisal";
 }
 else if ($link=="addapp")
 {
   $includefile		= "add_appraisal.php";
   $menuaddapp		= "active";	
   $linkmark			= " > Add Appraisal";
+  $title			= "Performance Appraisal";
 }
 else if ($link=="formpa")
 {
   $includefile		= "form_appraisal.php";
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
+  $title			= "Performance Appraisal";
 }
 else if ($link=="formpa_edit")
 {
   $includefile		= "form_appraisal_edit.php";
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
+  $title			= "Performance Appraisal";
 }
 else if ($link=="formpa_review")
 {
   $includefile		= "form_appraisal_review.php";
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
+  $title			= "Performance Appraisal";
 }
 else if ($link=="formpa_review2")
 {
   $includefile		= "form_appraisal_review2.php";
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
+  $title			= "Performance Appraisal";
 }
 else if ($link=="formpa_review3")
 {
   $includefile		= "form_appraisal_review3.php";
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
+  $title			= "Performance Appraisal";
 }
 else if ($link=="formpa_review_superior")
 {
   $includefile		= "form_appraisal_review_superior.php";
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
+  $title			= "Performance Appraisal";
 }
 else if ($link=="formpa_review_peers")
 {
   $includefile		= "form_appraisal_review_peers.php";
   $menuaddapp		= "active";	
   $linkmark			= " > Form Appraisal";
+  $title			= "Performance Appraisal";
+}
+else if ($link=="rating")
+{
+  $includefile		= "rating.php";
+  $menurating		= "active";	
+  $linkmark			= " > My Ratings";
+  $title			= "Rating";
 }
 else if ($link=="gantipas")
 {
   $includefile		= "ubah_password.php";
   $menugantipas		= "active";	
   $linkmark			= " > Change Password";
+  $title			= "Performance Appraisal";
 }
 else 
 {
 	$includefile		= "my_data.php";
 	$menumydata			= "active";
 	$linkmark       	= " > My Data";
+  $title			= "Performance Appraisal";
 }
 
 ?>
@@ -190,12 +209,15 @@ else
 				$menu2="Add Appraisal";
 				$menu3="Change Password";
 				$menu4="Logout";
-				$mydata1="My Appraisal";
+				$menu5="Ratings";
+				$mydata1="My Tasks";
 				$mydata2="My Subordinate (one-level) Appraisal";
 				$mydata3="My Subordinate (two-level) Appraisal";
 				$mydata4="My Subordinate (three-level) Appraisal";
 				$mydata5="My Superior (L1) Appraisal";
 				$mydata6="Peers Appraisal";
+				$myrating1="My Ratings";
+				$myrating2="My Ratings";
 				$unitlokasi="Work Location";
 				$karyawandinilai="Employee to be Assessed";
 				$pilihunit="Chosee";
@@ -213,12 +235,15 @@ else
 				$menu2="Tambah Penilaian";
 				$menu3="Ubah Password";
 				$menu4="Keluar";
-				$mydata1="Penilaian Saya";
+        $menu5="Rating";
+				$mydata1="Tugas Saya";
 				$mydata2="Nilai Bawahan Saya (1 Level)";
 				$mydata3="Nilai Bawahan Saya (2 Level)";
 				$mydata4="Nilai Bawahan Saya (3 Level)";
         $mydata5="Nilai Atasan Saya (L1)";
         $mydata6="Nilai Peers";
+        $myrating1="Rating Saya";
+        $myrating2="Rating Saya";
 				$unitlokasi="Unit/Lokasi Kerja";
 				$karyawandinilai="Karyawan dinilai";
 				$pilihunit="Pilih Unit";
@@ -240,11 +265,16 @@ else
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu1"; ?></span>
               </a>
             </li>
-			<li class="<?php echo $menuaddapp?>">
+			<li class="<?php echo $menurating?>">
+              <a href="?link=rating">
+                <i class="fa fa-dashboard"></i><span><?php echo "$menu5"; ?></span>
+              </a>
+            </li>
+			<!-- <li class="<?php echo $menuaddapp?>">
               <a href="?link=addapp">
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu2"; ?></span>
               </a>
-            </li>
+            </li> -->
 			<li class="<?php echo $menugantipas?>">
               <a href="?link=gantipas">
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu3"; ?></span>
@@ -262,7 +292,7 @@ else
       <div class="content-wrapper">
         <section class="content-header">
           <h1>
-            Performance Appraisal 
+            <?= $title; ?> 
             <small><?php echo $linkmark; ?></small>
           </h1>
           <ol class="breadcrumb" style="padding-right: 66px">
@@ -282,7 +312,7 @@ else
           <div class="pull-right hidden-xs">
             <b>Version</b> 2.0
           </div>
-          <strong><i class="fa fa-copyright"></i> 2023 - KPN Corporation</strong>
+          <strong>Copyrights <i class="fa fa-copyright"></i> 2023 - KPN Corporation</strong>
         </footer>
     </div>
 
