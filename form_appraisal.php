@@ -208,6 +208,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 	<input type="hidden" name="id_atasan" value="<?="$ckaryawan[id_atasan1]";?>" readonly />
 	<input type="hidden" name="email_atasan" value="<?="$ckaryawan[email_atasan1]";?>" readonly />
 	<input type="hidden" name="fortable" id="fortable" value="<?="$fortable";?>" readonly />
+	<input type="hidden" name="layer" id="layer" value="L1" readonly />
 	<div class="box box-danger">
         <div class="box-header with-border">
           <h3 class="box-title"><?="<b>$a1</b>";?></h3>
@@ -597,17 +598,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
         // Calculate the average
         let average = count === 0 ? 0 : total / count;
 		let decimalValue = average.toFixed(2);
-		if (decimalValue >= 4.50) {
-			var roundValue = Math.ceil(decimalValue);
-		} else if (decimalValue >= 3.50) {
-			roundValue = 4;
-		} else if (decimalValue >= 2.50) {
-			roundValue = 3;
-		} else if (decimalValue >= 1.50) {
-			roundValue = 2;
-		} else {
 			roundValue = Math.floor(decimalValue);
-		}
 		let rating = roundValue == 0 ? "" : (roundValue == 1 ? "E" : (roundValue == 2 ? "D" : (roundValue == 3 ? "C" : (roundValue == 4 ? "B" : "A"))));
 
         // Update the input element with the result

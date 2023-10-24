@@ -212,24 +212,14 @@ $(document).ready(function () {
 					let style;
 					if (!data.created_by) {
 						style = ["formpa", "success", "plus"];
-					} else if (data.id_atasan1 != data.created_by) {
+					} else if (data.layer === 'L1' && data.updated_by!=data.id_atasanview) {
 						style = ["formpa_review", "primary", "edit"];
-					} else if (data.layer === 'L2') {
-						style = ["formpa_review2", "primary", "edit"];
-					} else if (data.layer === 'L3') {
-						style = ["formpa_review3", "primary", "edit"];
 					} else {
 						style = ["formpa_edit", "primary", "edit"];
 					}
 					
-					if(data.rating!=0 && data.layer=="L1"){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L1</a>';
-					}
-					if(data.rating!=0 && data.layer=="L2"){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L2</a>';
-					}
-					if(data.rating!=0 && data.layer=="L3"){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
+					if(data.rating!=0 && data.layer!=data.layerview && data.updated_by==data.id_atasanview){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.review_name + '\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
 						return '<a href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><i class="fa fa-'+style[2]+'"></i></a>';
                      

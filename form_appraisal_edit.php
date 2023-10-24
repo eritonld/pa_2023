@@ -57,40 +57,6 @@ try {
     echo "Error: " . $e->getMessage();
 }
 
-try {
-    $queryCultureTitle = "SELECT title FROM question_pa WHERE `group` = 'culture' GROUP BY title ORDER BY `id` ASC";
-
-    $stmtCultureTitle = $koneksi->prepare($queryCultureTitle);
-    $stmtCultureTitle->execute();
-
-	$cultureTitles = array(); // Create an empty array to store titles
-
-    while ($row = $stmtCultureTitle->fetch(PDO::FETCH_ASSOC)) {
-        $cultureTitles[] = $row['title']; // Store each title in the array
-    }
-
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-
-$role='spv'; 
-
-try {
-    $queryLeadershipTitle = "SELECT title FROM question_pa WHERE `group` = 'leadership' AND `role`='$role' GROUP BY title ORDER BY `id` ASC";
-
-    $stmtLeadershipTitle = $koneksi->prepare($queryLeadershipTitle);
-    $stmtLeadershipTitle->execute();
-
-	$leadershipTitles = array(); // Create an empty array to store titles
-
-    while ($row = $stmtLeadershipTitle->fetch(PDO::FETCH_ASSOC)) {
-        $leadershipTitles[] = $row['title']; // Store each title in the array
-    }
-
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-
 
 
 if($bahasa=='eng')
@@ -213,15 +179,15 @@ if ($response === false) {
 				}
 				else if($fortable=='staff')
 				{
-					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 2;
+					$step = 2;
 				}
 				else if($fortable=='staffb')
 				{
-					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+					$step = 3;
 				}
 				else if($fortable=='managerial')
 				{
-					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+					$step = 3;
 				}
 
 				if($step==1){
@@ -239,6 +205,41 @@ if ($response === false) {
         }
     }
 }
+
+
+try {
+    $queryCultureTitle = "SELECT title FROM question_pa WHERE `group` = 'culture' GROUP BY title ORDER BY `id` ASC";
+
+    $stmtCultureTitle = $koneksi->prepare($queryCultureTitle);
+    $stmtCultureTitle->execute();
+
+	$cultureTitles = array(); // Create an empty array to store titles
+
+    while ($row = $stmtCultureTitle->fetch(PDO::FETCH_ASSOC)) {
+        $cultureTitles[] = $row['title']; // Store each title in the array
+    }
+
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+
+
+try {
+    $queryLeadershipTitle = "SELECT title FROM question_pa WHERE `group` = 'leadership' AND `role`='$fortable' GROUP BY title ORDER BY `id` ASC";
+
+    $stmtLeadershipTitle = $koneksi->prepare($queryLeadershipTitle);
+    $stmtLeadershipTitle->execute();
+
+	$leadershipTitles = array(); // Create an empty array to store titles
+
+    while ($row = $stmtLeadershipTitle->fetch(PDO::FETCH_ASSOC)) {
+        $leadershipTitles[] = $row['title']; // Store each title in the array
+    }
+
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+
 
 ?>
 <style type="text/css">
@@ -462,6 +463,7 @@ if ($response === false) {
 					<div class="container-fluid container-leadership">
 							<!-- // Process the data here -->
 							<?php 
+							
 							$y = 1;
 							foreach ($leadershipTitles as $title) {
 							$lNumber = $y++;
@@ -471,7 +473,8 @@ if ($response === false) {
 							</div>
 							<?php
 							try {
-								$queryLeadership = "SELECT * FROM question_pa WHERE `group` = 'leadership' AND title='$title' AND `role`='$role' ORDER BY `id` ASC";
+								$queryLeadership = "SELECT * FROM question_pa WHERE `group` = 'leadership' AND title='$title' AND `role`='$fortable' ORDER BY `id` ASC";
+								
 								$stmtLeadership = $koneksi->prepare($queryLeadership);
 								$stmtLeadership->execute();
 							
@@ -508,7 +511,7 @@ if ($response === false) {
                 </div>
                 <ul class="list-inline pull-right">
                   <li><button type="button" class="btn btn-default prev-step">Back</button></li>
-				  <li><button type="button" class="btn btn-success final-step">Update</button></li>                
+				  <li><button type="button" class="btn btn-success final-step-3">Update</button></li>                
 				</ul>
               </div>
               <div class="clearfix"></div>

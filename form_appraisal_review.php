@@ -219,18 +219,19 @@ if ($response === false) {
 				}
 				else if($fortable=='staff')
 				{
-					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 2;
+					$step = 2;
 					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='staffb')
 				{
-					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+					$step = 3;
 					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='managerial')
 				{
-					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
-					$submitReview = 'submitReviewA1Manager';
+					$step = 3;
+					// $submitReview = 'submitReviewA1Manager';
+					$submitReview = 'submitReviewA1';
 				}
 
 				if($step==1){
@@ -313,6 +314,7 @@ if ($response === false) {
 		<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
 		<input type="hidden" id="idkar" name="idkar" value="<?="$idkar";?>">
 		<input type="hidden" name="fortable" id="fortable" value="<?="$fortable";?>" readonly />
+		<input type="hidden" name="layer" id="layer" value="L2" readonly />
 	<div class="box box-danger">
         <div class="box-header with-border">
           <h3 class="box-title"><?="<b>$a1</b>";?></h3>
@@ -381,41 +383,10 @@ if ($response === false) {
 								<div class="col-md-2" style="padding-left: 0;">
 									<input type="text" name="total_score" id="total_score" class="form-control text-center" style="background: #FFFFCC;" value="<?= $total_score; ?>" readonly>
 								</div>
-								<div class="col-md-1" style="padding-left: 0;">
+								<div class="col-md-1" style="padding-left: 0; display: none;">
 									<span class="form-control text-center text-bold">
 										<?= convertRating($total_score); ?>
 									</span>
-								</div>
-							</div>
-						</div>
-						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
-							<div class="form-horizontal">
-								<div class="col-md-offset-1 col-md-3" style="padding-right: 0;">
-									<h1 class="h4"><?= $title_rating; ?></h1>
-								</div>
-								<div class="col-md-2" style="padding-right: 0;">
-									<select class="form-control text-center" name="rating" id="rating" style="background: #FFFFCC;">
-										<option value="">- rating -</option>
-										<option value="5" <?= convertRating($rating) == "A" ? "selected" : ""; ?>>A</option>
-										<option value="4" <?= convertRating($rating) == "B" ? "selected" : ""; ?>>B</option>
-										<option value="3" <?= convertRating($rating) == "C" ? "selected" : ""; ?>>C</option>
-										<option value="2" <?= convertRating($rating) == "D" ? "selected" : ""; ?>>D</option>
-										<option value="1" <?= convertRating($rating) == "E" ? "selected" : ""; ?>>E</option>
-									</select>
-								</div>
-							</div>
-						</div>
-						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
-							<div class="form-horizontal">
-								<div class="col-md-offset-1 col-md-3" style="padding-right: 0;">
-									<h1 class="h4"><?= $title_promotion; ?></h1>
-								</div>
-								<div class="col-md-2" style="padding-right: 0;">
-									<select class="form-control text-center" name="promotion" id="promotion" style="background: #FFFFCC;">
-										<option value="">- pilih -</option>
-										<option value="Y" <?= $promotion == "Y" ? "selected" : ""; ?>>Yes</option>
-										<option value="N" <?= $promotion == "N" ? "selected" : ""; ?>>No</option>
-									</select>
 								</div>
 							</div>
 						</div>
@@ -540,7 +511,8 @@ if ($response === false) {
 							?>
 					</div>
                 </div>
-				<div class="row" style="display: <?= $fortable=='managerial' ? "":"none"; ?>; margin-top: 60px;">
+				<!-- <div class="row" style="display: <?= $fortable=='managerial' ? "":"none"; ?>; margin-top: 60px;"> -->
+				<div class="row" style="display: none; margin-top: 60px;">
 					<div class="container-fluid container-peers">
 						<?php 
 						for ($i=1; $i <= 3 ; $i++) { 
@@ -605,19 +577,7 @@ if ($response === false) {
 			let textValue = document.getElementById('value1').value;
 			let idPic = document.getElementById('idpic').value;
 			let idKar = document.getElementById('idkar').value;
-			let ratingA1 = document.getElementById('rating');
-			let commentA1 = document.getElementById('comment');
-
-			if (!ratingA1.value){
-				alert('Please give Rating.');
-				ratingA1.focus();
-				return false;
-			}
-			if (!commentA1.value){
-				alert('Please fill Komentar.');
-				commentA1.focus();
-				return false;
-			}
+			
             if(value=='final'){
 				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
@@ -672,20 +632,20 @@ if ($response === false) {
 				}
 			}
 
-			if(managerCheck=='managerial'&&!leadershipEmpty){
-				for (let i = 0; i < selectPeers.length; i++) {
-					let selectPeer = selectPeers[i];
+			// if(managerCheck=='managerial'&&!leadershipEmpty){
+			// 	for (let i = 0; i < selectPeers.length; i++) {
+			// 		let selectPeer = selectPeers[i];
 	
-					if (selectPeer.value === "") {
-						peersEmpty = true;
-						alert("Please select a value for " + selectPeer.name);
-						selectPeer.focus();
-						break; // Exit the loop after displaying the first alert
-					}
-				}
-			}
+			// 		if (selectPeer.value === "") {
+			// 			peersEmpty = true;
+			// 			alert("Please select a value for " + selectPeer.name);
+			// 			selectPeer.focus();
+			// 			break; // Exit the loop after displaying the first alert
+			// 		}
+			// 	}
+			// }
 
-			if (!leadershipEmpty&&!peersEmpty) {
+			if (!leadershipEmpty) {
 				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
 					document.getElementById('updateAppraisal').submit();

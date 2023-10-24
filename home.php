@@ -216,8 +216,10 @@ else
 				$mydata4="My Subordinate (three-level) Appraisal";
 				$mydata5="My Superior (L1) Appraisal";
 				$mydata6="Peers Appraisal";
-				$myrating1="My Ratings";
-				$myrating2="My Ratings";
+				$myrating1="Grade 2-3";
+        $myrating2="Grade 4-5";
+        $myrating3="Grade 6-7";
+        $myrating4="Grade 8-9";
 				$unitlokasi="Work Location";
 				$karyawandinilai="Employee to be Assessed";
 				$pilihunit="Chosee";
@@ -242,8 +244,10 @@ else
 				$mydata4="Nilai Bawahan Saya (3 Level)";
         $mydata5="Nilai Atasan Saya (L1)";
         $mydata6="Nilai Peers";
-        $myrating1="Rating Saya";
-        $myrating2="Rating Saya";
+        $myrating1="Grade 2-3";
+        $myrating2="Grade 4-5";
+        $myrating3="Grade 6-7";
+        $myrating4="Grade 8-9";
 				$unitlokasi="Unit/Lokasi Kerja";
 				$karyawandinilai="Karyawan dinilai";
 				$pilihunit="Pilih Unit";
