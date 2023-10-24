@@ -101,7 +101,7 @@ $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
 $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(30);
 $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(30);
 $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(30);
-$objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(15);
+$objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(30);
 $objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(15);
 $objPHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(55);
 $objPHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(15);
@@ -136,7 +136,7 @@ $objPHPExcel->getActiveSheet()->getStyle('A4')->getBorders()->getLeft()->setBord
 $objPHPExcel->getActiveSheet()->getStyle('A4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->SetCellValue('A4', 'No');
 
-//header kolom NIK
+//header kolom ID Karyawan
 $objPHPExcel->getActiveSheet()->getRowDimension('4')->setRowHeight(15);					  
 $objPHPExcel->getActiveSheet()->getStyle('B4')->getFont()->setBold(true);
 $objPHPExcel->getActiveSheet()->getStyle('B4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
@@ -148,9 +148,9 @@ $objPHPExcel->getActiveSheet()->getStyle('B4')->getBorders()->getLeft()->setBord
 $objPHPExcel->getActiveSheet()->getStyle('B4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('B4')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('B4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-$objPHPExcel->getActiveSheet()->SetCellValue('B4', 'NIK');
+$objPHPExcel->getActiveSheet()->SetCellValue('B4', 'ID Karyawan');
 
-//header kolom Nama
+//header kolom NIK
 $objPHPExcel->getActiveSheet()->getRowDimension('4')->setRowHeight(15);					  
 $objPHPExcel->getActiveSheet()->getStyle('C4')->getFont()->setBold(true);
 $objPHPExcel->getActiveSheet()->getStyle('C4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
@@ -162,9 +162,9 @@ $objPHPExcel->getActiveSheet()->getStyle('C4')->getBorders()->getLeft()->setBord
 $objPHPExcel->getActiveSheet()->getStyle('C4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('C4')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('C4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-$objPHPExcel->getActiveSheet()->SetCellValue('C4', 'Nama');
+$objPHPExcel->getActiveSheet()->SetCellValue('C4', 'NIK');
 
-//header kolom jabatan
+//header kolom Nama
 $objPHPExcel->getActiveSheet()->getRowDimension('4')->setRowHeight(15);					  
 $objPHPExcel->getActiveSheet()->getStyle('D4')->getFont()->setBold(true);
 $objPHPExcel->getActiveSheet()->getStyle('D4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
@@ -176,9 +176,9 @@ $objPHPExcel->getActiveSheet()->getStyle('D4')->getBorders()->getLeft()->setBord
 $objPHPExcel->getActiveSheet()->getStyle('D4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('D4')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('D4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-$objPHPExcel->getActiveSheet()->SetCellValue('D4', 'Jabatan');
+$objPHPExcel->getActiveSheet()->SetCellValue('D4', 'Nama');
 
-//header kolom golongan
+//header kolom Jabatan
 $objPHPExcel->getActiveSheet()->getRowDimension('4')->setRowHeight(15);					  
 $objPHPExcel->getActiveSheet()->getStyle('E4')->getFont()->setBold(true);
 $objPHPExcel->getActiveSheet()->getStyle('E4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
@@ -190,9 +190,9 @@ $objPHPExcel->getActiveSheet()->getStyle('E4')->getBorders()->getLeft()->setBord
 $objPHPExcel->getActiveSheet()->getStyle('E4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('E4')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('E4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-$objPHPExcel->getActiveSheet()->SetCellValue('E4', 'Golongan');
+$objPHPExcel->getActiveSheet()->SetCellValue('E4', 'Jabatan');
 
-//header kolom PT
+//header kolom Golongan
 $objPHPExcel->getActiveSheet()->getRowDimension('4')->setRowHeight(15);					  
 $objPHPExcel->getActiveSheet()->getStyle('F4')->getFont()->setBold(true);
 $objPHPExcel->getActiveSheet()->getStyle('F4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
@@ -204,9 +204,9 @@ $objPHPExcel->getActiveSheet()->getStyle('F4')->getBorders()->getLeft()->setBord
 $objPHPExcel->getActiveSheet()->getStyle('F4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('F4')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('F4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-$objPHPExcel->getActiveSheet()->SetCellValue('F4', 'PT');
+$objPHPExcel->getActiveSheet()->SetCellValue('F4', 'Golongan');
 
-//header kolom unit
+//header kolom PT
 $objPHPExcel->getActiveSheet()->getRowDimension('4')->setRowHeight(15);					  
 $objPHPExcel->getActiveSheet()->getStyle('G4')->getFont()->setBold(true);
 $objPHPExcel->getActiveSheet()->getStyle('G4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
@@ -218,9 +218,9 @@ $objPHPExcel->getActiveSheet()->getStyle('G4')->getBorders()->getLeft()->setBord
 $objPHPExcel->getActiveSheet()->getStyle('G4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('G4')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('G4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-$objPHPExcel->getActiveSheet()->SetCellValue('G4', 'Unit');
+$objPHPExcel->getActiveSheet()->SetCellValue('G4', 'PT');
 
-//header kolom Departemen
+//header kolom Unit
 $objPHPExcel->getActiveSheet()->getRowDimension('4')->setRowHeight(15);					  
 $objPHPExcel->getActiveSheet()->getStyle('H4')->getFont()->setBold(true);
 $objPHPExcel->getActiveSheet()->getStyle('H4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
@@ -232,14 +232,25 @@ $objPHPExcel->getActiveSheet()->getStyle('H4')->getBorders()->getLeft()->setBord
 $objPHPExcel->getActiveSheet()->getStyle('H4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('H4')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
 $objPHPExcel->getActiveSheet()->getStyle('H4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-$objPHPExcel->getActiveSheet()->SetCellValue('H4', 'Departemen');
+$objPHPExcel->getActiveSheet()->SetCellValue('H4', 'Unit');
+
+//header kolom Departemen
+$objPHPExcel->getActiveSheet()->getRowDimension('4')->setRowHeight(15);					  
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getFont()->setBold(true);
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
+$objPHPExcel->getActiveSheet()->getStyle('I4')->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
+$objPHPExcel->getActiveSheet()->SetCellValue('I4', 'Departemen');
 
 $yearnow	= Date('Y');
 $cutoff		= $yearnow."-07-01";
-$q_data = mysqli_query ($koneksi, "select k.nik_baru,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan, do.Nama_OU,
-(Select Nama_Lengkap from $karyawan where id = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
-(Select Nama_Lengkap from $karyawan where id = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
-(Select Nama_Lengkap from $karyawan where id = (select id_atasan3 from atasan where idkar = k.id))as atasan3
+$q_data = mysqli_query ($koneksi, "select k.id,k.nik_baru,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan, do.Nama_OU
 from $karyawan as k 
 left join daftarou as do on k.Kode_OU = do.Kode_OU 
 left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
@@ -263,8 +274,7 @@ while ($r_data = mysqli_fetch_array ($q_data))
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	
-	$nik="'$r_data[nik_baru]";
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $nik);
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $r_data['id']);
 	$cell = 'B'.$row;
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);	
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
@@ -272,7 +282,8 @@ while ($r_data = mysqli_fetch_array ($q_data))
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $r_data['Nama_Lengkap']);
+	$nik="$r_data[nik_baru]";
+	$objPHPExcel->getActiveSheet()->setCellValueExplicit('C'.$row, $nik, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 	$cell = 'C'.$row;
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);	
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
@@ -280,7 +291,7 @@ while ($r_data = mysqli_fetch_array ($q_data))
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $r_data['Nama_Jabatan']);
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $row, $r_data['Nama_Lengkap']);
 	$cell = 'D'.$row;
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);	
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
@@ -288,7 +299,7 @@ while ($r_data = mysqli_fetch_array ($q_data))
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);	
 	
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $r_data['Nama_Golongan']);
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $row, $r_data['Nama_Jabatan']);
 	$cell = 'E'.$row;
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);	
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
@@ -296,7 +307,7 @@ while ($r_data = mysqli_fetch_array ($q_data))
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $row, $r_data['Nama_Perusahaan']);
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $row, $r_data['Nama_Golongan']);
 	$cell = 'F'.$row;
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);	
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
@@ -304,7 +315,7 @@ while ($r_data = mysqli_fetch_array ($q_data))
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(7, $row, $r_data['Nama_OU']);
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(7, $row, $r_data['Nama_Perusahaan']);
 	$cell = 'G'.$row;
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);	
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
@@ -312,8 +323,16 @@ while ($r_data = mysqli_fetch_array ($q_data))
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	
-	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(8, $row, $r_data['Nama_Departemen']);
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(8, $row, $r_data['Nama_OU']);
 	$cell = 'H'.$row;
+	$objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);	
+	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
+	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
+	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
+	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
+	
+	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(9, $row, $r_data['Nama_Departemen']);
+	$cell = 'I'.$row;
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);	
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
 	$objPHPExcel->getActiveSheet()->getStyle($cell)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);

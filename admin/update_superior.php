@@ -178,10 +178,10 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					<label>Superior</label><br>
 					<select id="superior" name="superior[]" class="form-control" multiple="multiple" style="width:26%">
 						<?php
-						$sql = "SELECT ats.id_atasan1, k.Nama_Lengkap, k.nik_baru, d.Nama_OU, k.NIK FROM `atasan` as ats 
-						left join $karyawan as k on k.id=ats.id_atasan1
+						$sql = "SELECT ats.id_atasan, k.Nama_Lengkap, k.nik_baru, d.Nama_OU, k.NIK FROM `atasan` as ats 
+						left join $karyawan as k on k.id=ats.id_atasan
 						left join daftarou as d on d.Kode_OU=k.Kode_OU
-						GROUP BY ats.id_atasan1 ORDER BY k.Nama_Lengkap asc";
+						GROUP BY ats.id_atasan ORDER BY k.Nama_Lengkap asc";
 						$stmt = $koneksi->prepare($sql);
 						$stmt->execute();
 						
@@ -259,9 +259,8 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 				    <th>NIK</th>
 				    <th>Nama</th>
 				    <th>Lokasi</th>
-				    <th>Superior 1</th>
-				    <th>Superior 2</th>
-					<th>Superior 3</th>
+					<th>Layer</th>
+				    <th>Superior</th>
 					<th>Action</th>
 				  </tr>
 				</thead>
@@ -271,17 +270,16 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					$yearnow	= Date('Y');
 					$cutoff		= $yearnow."-07-01";
 
-					$sql = "SELECT DISTINCT ats.idkar, ats.id_atasan1, k.nik_baru, k.Nama_Lengkap, ka1.Nama_Lengkap as atasan1, ka2.Nama_Lengkap as atasan2, ka3.Nama_Lengkap as atasan3, do.Nama_OU  FROM `atasan` as ats
+					$sql = "SELECT DISTINCT ats.idkar, ats.id_atasan, k.nik_baru, k.Nama_Lengkap, ka1.Nama_Lengkap as atasan1, ats.layer, do.Nama_OU  FROM `atasan` as ats
 					left join $karyawan as k on k.id=ats.idkar
-					left join $karyawan as ka1 on ka1.id=ats.id_atasan1
-					left join $karyawan as ka2 on ka2.id=ats.id_atasan2
-					left join $karyawan as ka3 on ka3.id=ats.id_atasan3
+					left join $karyawan as ka1 on ka1.id=ats.id_atasan
 					left join daftardepartemen dpt on k.Kode_Departemen = dpt.Kode_Departemen 
 					left join daftarou do on k.Kode_OU = do.Kode_OU
 					left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
 					left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan
 					where 
-					k.Kode_StatusKerja<>'SKH05' $where ORDER BY ats.id_atasan1 asc";
+					k.Kode_StatusKerja<>'SKH05' $where ORDER BY ats.id_atasan asc";
+					
 					$stmt = $koneksi->prepare($sql);
 					$stmt->execute();
 					
@@ -292,9 +290,8 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 						<td><?php echo "$scekkar[nik_baru]"; ?></td>
 						<td><?php echo "$scekkar[Nama_Lengkap]"; ?></td>
 						<td><?php echo "$scekkar[Nama_OU]"; ?></td>
+						<td><?php echo "$scekkar[layer]"; ?></td>
 						<td><?php echo "$scekkar[atasan1]"; ?></td>
-						<td><?php echo "$scekkar[atasan2]"; ?></td>
-						<td><?php echo "$scekkar[atasan3]"; ?></td>
 						<td><button class="label label-primary" data-toggle="modal" data-target="#modalupload" data-backdrop="static" data-id="<?php echo $scekkar['idkar'];?>"><i class="fa fa-pencil"></i></button>
 						</td>
 					</tr>
@@ -329,8 +326,22 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 ?>
 <script src="../plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
 <script src="../plugins/jQuery/jQuery-2.1.3.min.js"></script>
+
 <script src="../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+  $('.noEnterSubmit').keypress(function(e){
+    // if ( e.which == 13 ) return false;
+    //or...
+    if ( e.which === 13 ) {
+      e.preventDefault(),
+      $("#search").click();
+    //   alert('Klik tombol "Kirim" untuk melanjutkan!')
+      return false;
+    };
+  });
+
+</script>
 <script type="text/javascript">
 	$(function () {
 		$("#daftar_table").dataTable();
