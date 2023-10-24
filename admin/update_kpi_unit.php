@@ -156,57 +156,39 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 		$where=$where." and k.Nama_Lengkap like '%$_GET[carinama]%'";
 	}
 }
-if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
-	$nik=$_POST['nik'];
-	$nama=$_POST['nama'];
-	$mulai=$_POST['mulai'];
-	$dept=$_POST['dept'];
-	$jabatan=$_POST['jabatan'];
-	$gol=$_POST['gol'];
-	$pt=$_POST['pt'];
-	$unit=$_POST['unit'];
-	$email=$_POST['email'];
-	$pen_q1=$_POST['pen_q1'];
-	$pen_q2=$_POST['pen_q2'];
-	$pen_q3=$_POST['pen_q3'];
-	$pen_q4=$_POST['pen_q4'];
-	
-	$sql = "update $karyawan set Nama_Lengkap='$nama',Mulai_Bekerja='$mulai',Kode_Departemen='$dept',Nama_Jabatan='$jabatan',Kode_Golongan='$gol',Kode_Perusahaan='$pt',Kode_OU='$unit',Email='$email',pen_q1='$pen_q1',pen_q2='$pen_q2',pen_q3='$pen_q3',pen_q4='$pen_q4' where NIK='$nik'";
-	$stmt = $koneksi->prepare($sql);
-	$updatekar =  $stmt->execute();
-	
 
+if(isset($_POST['status_update_kpi']) && $_POST['status_update_kpi']=='T'){
+
+	$idkar		= $_POST['idkar'];
+	$id_kpi		= $_POST['id_kpi'];
+	$idmaster	= $_POST['idmaster'];
+	$nama_p		= $_POST['nama_p'];
+	$kpi_unit	= $_POST['kpi_unit'];
+	$keterangan	= $_POST['keterangan'];
+	$datetime	= Date('Y-m-d H:i:s');
 	
-	if($gol>'GL011'){
-		$username=$_POST['username'];
-		$password=$_POST['password'];
-		
-		$sql = "SELECT * FROM user_pa where username='$username'";
+	$sql = "SELECT idkar, kpi_unit, keterangan  FROM kpi_unit_2023 where idkar='$idkar' and status_aktif='T'";
+	$stmt = $koneksi->prepare($sql);
+	$cek_kpi =  $stmt->execute();
+	$cek_jumlah_kpi = $stmt->rowCount();
+	
+	if($kpi_unit=='delete'){
+		$sql = "UPDATE kpi_unit_2023 set status_aktif='F', deleteby='$idmaster', deletedate='$datetime' where idkar='$idkar'";
 		$stmt = $koneksi->prepare($sql);
-		$stmt->execute();
-		$scek_user = $stmt->rowCount();
-		// $scek_user = $stmt->fetch(PDO::FETCH_ASSOC);
-		// echo "$scek_user";
-		
-		if($scek_user>0){
-			$sql = "update user_pa set password='$password' where username='$nik'";
+		$trans_kpi =  $stmt->execute();
+	}else{
+		if($cek_jumlah_kpi>0){
+			$sql = "UPDATE kpi_unit_2023 set kpi_unit='$kpi_unit', keterangan='$keterangan', updateby='$idmaster', updatedate='$datetime' where idkar='$idkar' and status_aktif='T'";
 			$stmt = $koneksi->prepare($sql);
-			$stmt->execute();
-			
+			$trans_kpi =  $stmt->execute();
 		}else{
-			$sql = "SELECT id,NIK, nik_baru, YEAR(Mulai_Bekerja) as tahun FROM $karyawan where nik='$nik'";
+			$sql = "INSERT INTO `kpi_unit_2023` (idkar, kpi_unit, keterangan, periode, inputby, inputdate) values ('$idkar','$kpi_unit','$keterangan','2023','$idmaster','$datetime')";
 			$stmt = $koneksi->prepare($sql);
-			$stmt->execute();
-			$sceknik = $stmt->fetch(PDO::FETCH_ASSOC);
-						
-			$sql = "insert into user_pa (id,pic,jabatan,since,profile,nik_baru,username,password) values ('$sceknik[id]','$nama','user','$sceknik[tahun]','profile.png','$sceknik[nik_baru]','$nik','$password')";
-			$stmt = $koneksi->prepare($sql);
-			$stmt->execute();
+			$trans_kpi =  $stmt->execute();
 		}
-		
 	}
 	
-	if($updatekar){
+	if($trans_kpi){
 		?>
 		<script>alert("Berhasil");</script>
 		<?php
@@ -251,7 +233,7 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 		<div class="box-body">
 		<form name="formcek" action="" method="get">
 		<input type="hidden" name="generate" value="T" />
-		<input type="hidden" name="link" value="dataemp" />
+		<input type="hidden" name="link" value="update_kpi" />
 		<table style="width:100%">
 			<tr>
 				<td>
@@ -404,12 +386,11 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					<th>ID Karyawan</th>
 				    <th>NIK</th>
 				    <th>Nama</th>
-				    <th>Mulai Bekerja</th>
-				    <th>Departemen</th>
 				    <th>Jabatan</th>
 					<th>Golongan</th>
-					<th>PT</th>
-					<th>Lokasi Unit</th>
+					<th>Lokasi</th>
+					<th>KPI Unit</th>
+					<th>Keterangan</th>
 					<?php if($scekuser['username']=="adminhomaster"){ ?>
 					<th>Action</th>
 					<?php } ?>
@@ -418,7 +399,8 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 				<tbody>
 					<?php					
 					$no = 1;
-					$sql = "Select k.*, dpt.Nama_Departemen, do.Nama_OU, dg.Nama_Golongan, k.Nama_Jabatan, dp.Nama_Perusahaan from $karyawan k 
+					$sql = "Select k.*, kpu.id as id_kpi, dpt.Nama_Departemen, do.Nama_OU, dg.Nama_Golongan, k.Nama_Jabatan, dp.Nama_Perusahaan, kpu.kpi_unit, kpu.keterangan from  $karyawan k 
+					left join kpi_unit_2023 as kpu on kpu.idkar=k.id and status_aktif='T'
 					left join daftardepartemen dpt on k.Kode_Departemen = dpt.Kode_Departemen 
 					left join daftarou do on k.Kode_OU = do.Kode_OU
 					left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
@@ -435,15 +417,13 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 						<td><?php echo "$scekkar[id]"; ?></td>
 						<td><?php echo "$scekkar[nik_baru]"; ?></td>
 						<td><?php echo "$scekkar[Nama_Lengkap]"; ?></td>
-						<td><?php echo "$scekkar[Mulai_Bekerja]"; ?></td>
-						<td><?php echo "$scekkar[Nama_Departemen]"; ?></td>
 						<td><?php echo "$scekkar[Nama_Jabatan]"; ?></td>
 						<td><?php echo "$scekkar[Nama_Golongan]"; ?></td>
-						<td><?php echo "$scekkar[Nama_Perusahaan]"; ?></td>
 						<td><?php echo "$scekkar[Nama_OU]"; ?></td>
+						<td><?php echo "$scekkar[kpi_unit]"; ?></td>
+						<td><?php echo "$scekkar[keterangan]"; ?></td>
 						<?php if($scekuser['username']=="adminhomaster"){ ?>
-						<td><button class="btn btn-danger btn-xs" onclick = "editdata('<?php echo $scekkar['NIK']; ?>')"><i class="fa fa-pencil"></i></button>
-							<button class="btn btn-warning btn-xs" onclick = "hapusdata('<?php echo $scekkar['NIK']; ?>','<?php echo $scekkar['Nama_Lengkap']?>')"><i class="fa fa-trash"></i></button>
+						<td><button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modalupload" data-backdrop="static" data-id="<?php echo "$scekkar[id]||$scekkar[id_kpi]";?>"><i class="fa fa-pencil"></i></button>
 						</td> 
 						<?php } ?> 
 					</tr>
@@ -458,6 +438,21 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
   </div>
 </section>
 </div>
+<div class="modal fade" id="modalupload" tabindex="-1" class="modal" role="dialog" >
+	<div class="modal-dialog" style="width:40%">
+	  <!-- konten modal-->
+	  <div class="modal-content">
+		<!-- heading modal -->
+		<div align="center" class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal">&times;</button>
+		  <label style="padding-left: 10px">Update KPI</label><br>
+		</div>
+		<div class="modal-body">
+		  <div class="modal-data"></div>
+		</div>
+	  </div>
+	</div>
+</div>
 <?php
 }
 ?>
@@ -469,4 +464,19 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 	$(function () {
 		$("#daftar_table").dataTable();
 	});
+	$(document).ready(function(){
+        $('#modalupload').on('show.bs.modal', function (e) {
+            var id  = $(e.relatedTarget).data('id');
+            //menggunakan fungsi ajax untuk pengambilan data
+            $.ajax({
+                type : 'post',
+                url : 'set_modal.php',
+                data :  'kode=update_kpi&id='+ id +'&idmaster='+ <?php echo $idmaster_pa_admin; ?>,
+                success : function(data){
+                $('.modal-data').html(data);//menampilkan data ke dalam modal
+                // console.log(data);
+                }
+            });
+         });
+    });
 </script>

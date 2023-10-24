@@ -87,6 +87,12 @@ else if ($link=="update_sup")
   $menudataupdsup		= "active";	
   $linkmark			= " > Update";
 }
+else if ($link=="update_kpi")
+{
+  $includefile		= "update_kpi_unit.php";
+  $menudataupdkpi		= "active";	
+  $linkmark			= " > Update";
+}
 else if ($link=="preview_pdf")
 {
   $includefile		= "preview_pdf.php";
@@ -199,6 +205,7 @@ else
 				$menu5="Logout";
 				$menu6="Input Employee";
 				$menu7="Review Superior";
+				$menu8="KPI Unit";
 			}else{
 				$menu1="Data Penilaian";
 				$menu2="Karyawan Belum dinilai";
@@ -207,6 +214,7 @@ else
 				$menu5="Keluar";
 				$menu6="Tambah Karyawan";
 				$menu7="Ubah Atasan";
+				$menu8="KPI Unit";
 			}
 			?>
           <ul class="sidebar-menu" >
@@ -246,6 +254,12 @@ else
 					<i class="fa fa-dashboard"></i><span><?php echo "$menu7"; ?></span>
 				  </a>
 				</li>
+				<li class="<?php echo $menudataupdkpi?>">
+				  <a href="?link=update_kpi">
+					<i class="fa fa-dashboard"></i><span><?php echo "$menu8"; ?></span>
+				  </a>
+				</li>
+				
 			<?php } ?>
 			<li class="<?php echo $menulogout?>">
               <a href="ceklogout.php">
@@ -318,7 +332,7 @@ else
       });
     </script>
 	<?php
-	if($link == "dataemp" || $link == "dataapp" || $link == "notassessed" || $link == "datareport" || $link == "update_sup"){
+	if($link == "dataemp" || $link == "dataapp" || $link == "notassessed" || $link == "datareport" || $link == "update_sup" || $link == "update_kpi"){
 	?>
 	<!-- <script src="../libs/jquery.min.js"></script> -->
 	<script src="../libs/jquery.multiple.select.js"></script>

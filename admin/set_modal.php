@@ -18,209 +18,59 @@ $id = $_POST['id']!=''?$_POST['id']:$_GET['id'];
 
 if($_POST['kode']=='update_superior'){
 	if($id<>'') {
-		$sql = "SELECT di.idkar, k.id, k.NIK, k.Nama_Lengkap, k.Email, k.Kode_OU as Kode_Unit, kk.NIK as nik1, kk.Nama_Lengkap as nama1, kk.Email as email1, kk.Kode_OU as lokasi1, kkk.NIK as nik2, kkk.Nama_Lengkap as nama2, kkk.Email as email2, kkk.Kode_OU as lokasi2, kkkk.NIK as nik3, kkkk.Nama_Lengkap as nama3, kkkk.Email as email3, kkkk.Kode_OU as lokasi3 FROM $karyawan  as k 
-		left join atasan as di on di.idkar=k.id
-		left join $karyawan as kk on kk.id=di.id_atasan1
-		left join daftarou as dd on dd.Kode_OU=kk.Kode_OU
-		left join $karyawan as kkk on kkk.id=di.id_atasan2 
-		left join daftarou as ddd on ddd.Kode_OU=kkk.Kode_OU 
-		left join $karyawan as kkkk on kkkk.id=di.id_atasan3 
-		left join daftarou as dddd on dddd.Kode_OU=kkkk.Kode_OU 
-		where k.id='$id'";
+		$jml_layer = 1;
+		
+		$sql_cek_nama = "select Nama_Lengkap from $karyawan where id='$id'";
+		$ssql_cek_nama = $koneksi->prepare($sql_cek_nama);
+		$ssql_cek_nama->execute();
+		$scek_nama = $ssql_cek_nama->fetch(PDO::FETCH_ASSOC);
+		
+		$sql = "SELECT ats.idkar, k.Nama_Lengkap, ats.layer, ats.id_atasan, kk.Nama_Lengkap as nama_atasan FROM `atasan` as ats 
+		left join $karyawan as k on k.id=ats.idkar
+		left join $karyawan as kk on kk.id=ats.id_atasan
+		where ats.idkar in ('$id') ";
 		$stmt = $koneksi->prepare($sql);
 		$stmt->execute();
-		
-		$scekkaryawan = $stmt->fetch(PDO::FETCH_ASSOC);
-			
-			if($scekkaryawan['nik1']<>''){
-				$lokasi1="$scekkaryawan[lokasi1]";
-				$nik1="$scekkaryawan[nik1]";
-				$email1="$scekkaryawan[email1]";
-			}else{
-				$lokasi1="";
-				$nik1="";
-				$email1="";
-			}
-			
-			if($scekkaryawan['nik2']<>''){
-				$lokasi2="$scekkaryawan[lokasi2]";
-				$nik2="$scekkaryawan[nik2]";
-				$email2="$scekkaryawan[email2]";
-			}else{
-				$lokasi2="";
-				$nik2="";
-				$email2="";
-			}
-			
-			if($scekkaryawan['nik3']<>''){
-				$lokasi3="$scekkaryawan[lokasi3]";
-				$nik3="$scekkaryawan[nik3]";
-				$email3="$scekkaryawan[email3]";
-			}else{
-				$lokasi3="";
-				$nik3="";
-				$email3="";
-			}
-			
+
 	?>
 	<form role="form" method="post" action="">
 		<input type="hidden" class="form-control" name="idkar" id="idkar" value="<?php echo "$id"; ?>">
 		<div class="form-group">
-			<label>Nama</label>
-			<input type="text" class="form-control" name="nama_p" id="nama_p" style="width:50%" value="<?php echo $scekkaryawan['Nama_Lengkap']; ?>" placeholder="Masukkan Nama..." readonly>
+			<label>Nama Karyawan</label>
+			<input type="text" class="form-control" name="namakar" id="namakar" style="width:50%" value="<?php echo $scek_nama['Nama_Lengkap']; ?>" placeholder="Masukkan Nama..." readonly>
 		</div>
-		<div class="form-group">
-		  <table>
-		  <tr>
-		   <td style="width:25%"><label>Unit/Lokasi Kerja</label></td><td style="width:1%"></td>
-		   <td style="width:35%"><label>Atasan 1</label></td><td style="width:1%"></td>
-		   <td style="width:40%; display:none"><label>Email</label></td>
-		  </tr>
-		  <tr>
-		  <td>
-			<select id="kode_ou1" name="kode_ou1" class="form-control" onchange="cmdtampildata(this.value,'unit1')" required>
-				<option value="" > -- Pilih Unit -- </option>
-			  <?php 
-			  $sql = "SELECT Kode_OU, Nama_OU FROM `daftarou` where aktif='T' ORDER BY Nama_OU asc";
-			  $stmt = $koneksi->prepare($sql);
-			  $stmt->execute();
+		<?php
+		while($scekkaryawan = $stmt->fetch(PDO::FETCH_ASSOC)){
+			$layer = "L$jml_layer";
+			?>
+			
+			<div class="input-group margin">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-info" >Layer <?php echo "$jml_layer"; ?></button>
+				</div><!-- /btn-group -->
 				
-			  while($scekunit = $stmt->fetch(PDO::FETCH_ASSOC)){
-			  $selected="";
-			  if($scekkaryawan['lokasi1']==$scekunit['Kode_OU']){$selected="selected";}
-			  ?>
-				<option value="<?php echo $scekunit['Kode_OU']; ?>" <?php echo $selected; ?>><?php echo "$scekunit[Nama_OU]"; ?></option>
-			  <?php
-			  }
-			  ?>
-			</select>
-		  </td><td style="width:1%"></td>
-		  <td>
-			<select id="ida1" name="ida1" class="form-control" onchange="isi_atasan1()" required>
-				<option value="" > -- Pilih -- </option>
-			  <?php 
-			  if($nik1<>''){
-			  $sql = "SELECT id,NIK, Nama_Lengkap FROM $karyawan where Kode_StatusKerja<>'SKH05' and Kode_OU='$scekkaryawan[lokasi1]' and Kode_Golongan>'$scekkaryawan[approval1]' ORDER BY Nama_Lengkap asc";
-			  $stmt = $koneksi->prepare($sql);
-			  $stmt->execute();
-				
-			  while($scekkar1 = $stmt->fetch(PDO::FETCH_ASSOC)){
-			  $selected="";
-			  if($scekkaryawan['nik1']==$scekkar1['NIK']){$selected="selected";}
-			  ?>
-				<option value="<?php echo $scekkar1['id']; ?>" <?php echo $selected; ?>><?php echo "$scekkar1[Nama_Lengkap] ($scekkar1[NIK])"; ?></option>
-			  <?php
-			  } }
-			  ?>
-			</select>
-		  </td><td style="width:1%"></td>
-		  <td style="display:none">
-			<input type="text" class="form-control" id ="email1" name="email1" value="<?php echo $scekkaryawan['email1']; ?>" placeholder="Email Atasan 1" readonly>
-		  </td>
-		  </tr></table>
-		</div>
-		<div class="form-group">
-		  <table>
-		  <tr>
-		   <td style="width:25%"><label>Unit/Lokasi Kerja</label></td><td style="width:1%"></td>
-		   <td style="width:35%"><label>Atasan 2</label></td><td style="width:1%"></td>
-		   <td style="width:40%; display:none"><label>Email</label></td>
-		  </tr>
-		  <tr>
-		  <td>
-			<select id="kode_ou2" name="kode_ou2" class="form-control" onchange="cmdtampildata(this.value,'unit2')" required>
-				<option value="" > -- Pilih Unit -- </option>
-			  <?php 
-			  $sql = "SELECT Kode_OU, Nama_OU FROM `daftarou` where aktif='T' ORDER BY Nama_OU asc";
-			  $stmt = $koneksi->prepare($sql);
-			  $stmt->execute();
-				
-			  while($scekunit = $stmt->fetch(PDO::FETCH_ASSOC)){
-			  $selected="";
-			  if($scekkaryawan['lokasi2']==$scekunit['Kode_OU']){$selected="selected";}
-			  ?>
-				<option value="<?php echo $scekunit['Kode_OU']; ?>" <?php echo $selected; ?>><?php echo "$scekunit[Nama_OU]"; ?></option>
-			  <?php
-			  }
-			  ?>
-			</select>
-		  </td><td style="width:1%"></td>
-		  <td>
-			<select id="ida2" name="ida2" class="form-control" onchange="isi_atasan2()" required>
-				<option value="" > -- Pilih -- </option>
-			  <?php 
-			  if($nik1<>''){
-			  $sql = "SELECT id,NIK, Nama_Lengkap FROM $karyawan where Kode_StatusKerja<>'SKH05' and Kode_OU='$scekkaryawan[lokasi2]' and Kode_Golongan>'$scekkaryawan[approval2]' ORDER BY Nama_Lengkap asc";
-			  $stmt = $koneksi->prepare($sql);
-			  $stmt->execute();
-				
-			  while($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)){
-			   $selected="";
-			  if($scekkaryawan['nik2']==$scekkar['NIK']){$selected="selected";}
-			  ?>
-				<option value="<?php echo $scekkar['id']; ?>" <?php echo $selected; ?>><?php echo "$scekkar[Nama_Lengkap] ($scekkar[NIK])"; ?></option>
-			  <?php
-			  } }
-			  ?>
-			</select>
-		  </td><td style="width:1%"></td>
-		  <td style="display:none">
-			<input type="text" class="form-control" id ="email2" name="email2" value="<?php echo $scekkaryawan['email2']; ?>" placeholder="Email Atasan 2" readonly>
-		  </td>
-		  </tr></table>
-		</div>
-		
-		<div class="form-group">
-		  <table>
-		  <tr>
-		   <td style="width:25%"><label>Unit/Lokasi Kerja</label></td><td style="width:1%"></td>
-		   <td style="width:35%"><label>Atasan 3</label></td><td style="width:1%"></td>
-		   <td style="width:40%; display:none"><label>Email</label></td>
-		  </tr>
-		  <tr>
-		  <td>
-			<select id="kode_ou3" name="kode_ou3" class="form-control" onchange="cmdtampildata(this.value,'unit3')" required>
-				<option value="" > -- Pilih Unit -- </option>
-			  <?php 
-			  $sql = "SELECT Kode_OU, Nama_OU FROM `daftarou` where aktif='T' ORDER BY Nama_OU asc";
-			  $stmt = $koneksi->prepare($sql);
-			  $stmt->execute();
-				
-			  while($scekunit = $stmt->fetch(PDO::FETCH_ASSOC)){
-			  $selected="";
-			  if($scekkaryawan['lokasi3']==$scekunit['Kode_OU']){$selected="selected";}
-			  ?>
-				<option value="<?php echo $scekunit['Kode_OU']; ?>" <?php echo $selected; ?>><?php echo "$scekunit[Nama_OU]"; ?></option>
-			  <?php
-			  }
-			  ?>
-			</select>
-		  </td><td style="width:1%"></td>
-		  <td>
-			<select id="ida3" name="ida3" class="form-control" onchange="isi_atasan3()" required>
-				<option value="" > -- Pilih -- </option>
-			  <?php 
-			  if($nik1<>''){
-			  $sql = "SELECT id,NIK, Nama_Lengkap FROM $karyawan where Kode_StatusKerja<>'SKH05' and Kode_OU='$scekkaryawan[lokasi3]' and Kode_Golongan>'$scekkaryawan[approval3]' ORDER BY Nama_Lengkap asc";
-			  $stmt = $koneksi->prepare($sql);
-			  $stmt->execute();
-				
-			  while($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)){
-			  $selected="";
-			  if($scekkaryawan['nik3']==$scekkar['NIK']){$selected="selected";}
-			  ?>
-				<option value="<?php echo $scekkar['id']; ?>" <?php echo $selected; ?>><?php echo "$scekkar[Nama_Lengkap] ($scekkar[NIK])"; ?></option>
-			  <?php
-			  } }
-			  ?>
-			</select>
-		  </td><td style="width:1%"></td>
-		  <td style="display:none">
-			<input type="text" class="form-control" id ="email3" name="email3" value="<?php echo $scekkaryawan['email3']; ?>" placeholder="Email Atasan 3" readonly>
-		  </td>
-		  
-		  </tr></table>
-		</div>
+				<select id="<?php echo $layer; ?>" name="<?php echo $layer; ?>" style="width:50%" class="form-control noEnterSubmit"  required>
+					<option value="" > Pilih </option>
+					<?php 
+					$cek_sql = "SELECT k.id, k.Nama_Lengkap, d.Nama_OU FROM $karyawan as k 
+					left join daftarou as d on d.Kode_OU=k.Kode_OU
+					where 
+					k.Kode_Golongan>'GL012' and k.Kode_StatusKerja<>'SKH05' ORDER BY k.Nama_Lengkap asc";
+					$scek_sql = $koneksi->prepare($cek_sql);
+					$scek_sql->execute();
+					
+					while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+						$selected="";
+						if($scekkar['id']==$scekkaryawan['id_atasan']){$selected="selected";}
+						?>
+						<option value="<?php echo $scekkar['id']; ?>" <?php echo $selected; ?>><?php echo $scekkar['Nama_Lengkap']; ?></option>
+					<?php } ?>
+				</select>
+			</div>
+			<?php
+			$jml_layer++;
+		}
+		?>
 		<div class="box-footer">
 			<input type="hidden" name="update_superior" value="T" />
 			<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
@@ -228,6 +78,57 @@ if($_POST['kode']=='update_superior'){
 	</form>
 	<?php  
 	}
+}else if($_POST['kode']=="update_kpi"){
+
+	$array_id = explode ("||",$id);
+	$idkar = $array_id[0];
+	$id_kpi = $array_id[1];
+	
+	$idmaster=$_POST['idmaster'];
+	$sql = "Select k.*, dpt.Nama_Departemen, do.Nama_OU, dg.Nama_Golongan, k.Nama_Jabatan, dp.Nama_Perusahaan, kpu.kpi_unit, kpu.keterangan from  $karyawan k 
+	left join kpi_unit_2023 as kpu on kpu.idkar=k.id and status_aktif='T'
+	left join daftardepartemen dpt on k.Kode_Departemen = dpt.Kode_Departemen 
+	left join daftarou do on k.Kode_OU = do.Kode_OU
+	left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
+	left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan 
+	left join daftarjabatan dj on k.Kode_Jabatan = dj.Kode_Jabatan 
+	where k.id='$id' order by k.Nama_Lengkap ASC";
+	$stmt = $koneksi->prepare($sql);
+	$stmt->execute();
+	
+	$scekkar = $stmt->fetch(PDO::FETCH_ASSOC);
+	?>
+	<form role="form" method="post" action="">
+		<input type="hidden" class="form-control" name="idkar" id="idkar" value="<?php echo "$idkar"; ?>">
+		<input type="hidden" class="form-control" name="id_kpi" id="id_kpi" value="<?php echo "$id_kpi"; ?>">
+		<input type="hidden" class="form-control" name="idmaster" id="idmaster" value="<?php echo "$idmaster"; ?>">
+		<div class="form-group">
+			<label>Nama</label>
+			<input type="text" class="form-control" name="nama_p" id="nama_p" style="width:50%" value="<?php echo $scekkar['Nama_Lengkap']; ?>" placeholder="Masukkan Nama..." readonly>
+		</div>
+		<div class="form-group">
+			<label>KPI Unit</label>
+			<select id="kpi_unit" name="kpi_unit" style="width:50%" class="form-control" onchange="isi_atasan3()" required>
+				<option value="delete" > - </option>
+				<option value="A" <?php if($scekkar['kpi_unit']=='A'){echo "selected";} ?>> A </option>
+				<option value="B" <?php if($scekkar['kpi_unit']=='B'){echo "selected";} ?>> B </option>
+				<option value="C" <?php if($scekkar['kpi_unit']=='C'){echo "selected";} ?>> C </option>
+				<option value="D" <?php if($scekkar['kpi_unit']=='D'){echo "selected";} ?>> D </option>
+				<option value="E" <?php if($scekkar['kpi_unit']=='E'){echo "selected";} ?>> E </option>
+				
+			</select>
+			
+		</div>
+		<div class="form-group">
+			<label>Keterangan</label>
+			<input type="text" class="form-control" name="keterangan" id="keterangan" style="width:100%" value="<?php echo $scekkar['keterangan']; ?>" placeholder="Masukkan Nama..." >
+		</div>
+		<div class="box-footer">
+			<input type="hidden" name="status_update_kpi" value="T" />
+			<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
+		</div>
+	</form>
+	<?php
 }else if($_POST['kode']=="review_atasan"){
 
 	function getGrade($nilai)
@@ -374,3 +275,4 @@ if($_POST['kode']=='update_superior'){
 	});
   });
 </script>
+
