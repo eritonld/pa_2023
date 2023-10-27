@@ -22,6 +22,69 @@ $cekPeers =  count($resultPeers);
 $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jumlah_subo'] > 0 ? "staffb" : "staff");
 
 try {
+    $queryView = "SELECT CASE
+    WHEN
+        (SELECT COUNT(a.id) AS total
+         FROM transaksi_2023_final AS a
+         LEFT JOIN atasan AS b ON b.idkar = a.idkar AND b.id_atasan = '$idmaster_pa'
+         WHERE b.id_atasan = '$idmaster_pa' AND a.layer = b.layer) = 
+        (SELECT COUNT(id) 
+         FROM atasan 
+         WHERE id_atasan = '$idmaster_pa')
+    THEN 1
+    ELSE 0
+    END AS result";
+
+    $resultView = $koneksi->query($queryView);
+
+    $view = $resultView->fetch(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    echo $e->getMessage();
+}
+// echo $view['result'];
+
+try {
+    $queryPending = "SELECT a.id, a.Nama_Lengkap, b.layer, 
+    (SELECT id_atasan FROM atasan WHERE idkar=a.id and layer=b.layer) AS layer_atasan,
+    (SELECT Nama_Lengkap FROM atasan LEFT JOIN karyawan_2023 ON karyawan_2023.id=atasan.id_atasan WHERE idkar=a.id and layer=b.layer) AS nama_atasan
+             FROM karyawan_2023 AS a
+             LEFT JOIN transaksi_2023_final AS b ON b.idkar=a.id 
+             LEFT JOIN atasan AS d ON d.idkar=a.id
+             WHERE d.id_atasan = '$idmaster_pa' AND a.id != '$idmaster_pa' AND ((SELECT id_atasan FROM atasan WHERE idkar=a.id and layer=b.layer) != '$idmaster_pa' OR isnull(b.layer)) GROUP BY a.id;";
+
+    $resultPending = $koneksi->query($queryPending);
+
+    $pending = $resultPending->fetchAll(PDO::FETCH_ASSOC);
+
+    $countPending = count($pending);
+
+} catch (PDOException $e) {
+    echo $e->getMessage();
+}
+try {
+    $queryTarget = "SELECT
+    c.ranges,
+    c.grade,
+    ROUND((COUNT(a.idkar) * c.percent_a) / 100) AS target_a,
+    ROUND((COUNT(a.idkar) * c.percent_b) / 100) AS target_b,
+    ROUND((COUNT(a.idkar) * c.percent_c) / 100) AS target_c,
+    ROUND((COUNT(a.idkar) * c.percent_d) / 100) AS target_d,
+    ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e,
+    COUNT(a.idkar) AS total_subo
+FROM atasan AS a
+LEFT JOIN kpi_unit_$tahunperiode AS b ON b.idkar = a.id_atasan
+LEFT JOIN kriteria AS c ON c.grade = b.kpi_unit AND c.tahun = '$tahunperiode'
+WHERE id_atasan = '$idmaster_pa';";
+
+    $resultTarget = $koneksi->query($queryTarget);
+
+    $targetRating = $resultTarget->fetch(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    echo $e->getMessage();
+}
+try {
     $sql = "SELECT
     SUM(CASE WHEN convertRating = 'A' THEN 1 ELSE 0 END) AS A,
     SUM(CASE WHEN convertRating = 'B' THEN 1 ELSE 0 END) AS B,
@@ -189,188 +252,235 @@ try {
 }
 </style>
 <div id="proses" class="proses" style="display: none"></div>
-<div class="row">
-    <div class="col-md-8">
-        <div class="box">
-            <div class="box-body">
-                <table class="table table-bordered text-center">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="info" style="vertical-align: middle;">KPI</th>
-                            <th colspan="2" class="success">Suggested Ratings</th>
-                            <th colspan="2" class="warning">Your Ratings</th>
-                            <th colspan="4" class="warning">Job Grade</th>
-                            
-                        </tr>
-                        <tr>
-                            <th class="success">Employee</th>
-                            <th class="success">%</th>
-                            <th class="warning">Employee</th>
-                            <th class="warning">%</th>
-                            <th style="vertical-align: middle;" class="warning">2-3</th>
-                            <th style="vertical-align: middle;" class="warning">4-5</th>
-                            <th style="vertical-align: middle;" class="warning">6-7</th>
-                            <th style="vertical-align: middle;" class="warning">8-9</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>A</td>
-                            <td><span><?= $rating['A']; ?></span></td>
-                            <td><span><?= number_format($rating['Percent_A'], 1); ?>%</span></td>
-                            <td><span id="rate_a"><?= $rating['A']; ?></span></td>
-                            <td><span id="percent_a"><?= number_format($rating['Percent_A'], 1); ?>%</span></td>
-                            <td><span id="23_a"><?= $rating23['A']; ?></span></td>
-                            <td><span id="45_a"><?= $rating45['A']; ?></span></td>
-                            <td><span id="67_a"><?= $rating67['A']; ?></span></td>
-                            <td><span id="89_a"><?= $rating89['A']; ?></span></td>
-                        </tr>
-                        <tr>
-                            <td>B</td>
-                            <td><span><?= $rating['B']; ?></span></td>
-                            <td><span><?= number_format($rating['Percent_B'], 1); ?>%</span></td>
-                            <td><span id="rate_b"><?= $rating['B']; ?></span></td>
-                            <td><span id="percent_b"><?= number_format($rating['Percent_B'], 1); ?>%</span></td>
-                            <td><span id="23_b"><?= $rating23['B']; ?></span></td>
-                            <td><span id="45_b"><?= $rating45['B']; ?></span></td>
-                            <td><span id="67_b"><?= $rating67['B']; ?></span></td>
-                            <td><span id="89_b"><?= $rating89['B']; ?></span></td>
-                        </tr>
-                        <tr>
-                            <td>C</td>
-                            <td><span><?= $rating['C']; ?></span></td>
-                            <td><span><?= number_format($rating['Percent_C'], 1); ?>%</span></td>
-                            <td><span id="rate_c"><?= $rating['C']; ?></span></td>
-                            <td><span id="percent_c"><?= number_format($rating['Percent_C'], 1); ?>%</span></td>
-                            <td><span id="23_c"><?= $rating23['C']; ?></span></td>
-                            <td><span id="45_c"><?= $rating45['C']; ?></span></td>
-                            <td><span id="67_c"><?= $rating67['C']; ?></span></td>
-                            <td><span id="89_c"><?= $rating89['C']; ?></span></td>
-                        </tr>
-                        <tr>
-                            <td>D</td>
-                            <td><span><?= $rating['D']; ?></span></td>
-                            <td><span><?= number_format($rating['Percent_D'], 1); ?>%</span></td>
-                            <td><span id="rate_d"><?= $rating['D']; ?></span></td>
-                            <td><span id="percent_d"><?= number_format($rating['Percent_D'], 1); ?>%</span></td>
-                            <td><span id="23_d"><?= $rating23['D']; ?></span></td>
-                            <td><span id="45_d"><?= $rating45['D']; ?></span></td>
-                            <td><span id="67_d"><?= $rating67['D']; ?></span></td>
-                            <td><span id="89_d"><?= $rating89['D']; ?></span></td>
-                        </tr>
-                        <tr>
-                            <td>E</td>
-                            <td><span><?= $rating['E']; ?></span></td>
-                            <td><span><?= number_format($rating['Percent_E'], 1); ?>%</span></td>
-                            <td><span id="rate_e"><?= $rating['E']; ?></span></td>
-                            <td><span id="percent_e"><?= number_format($rating['Percent_E'], 1); ?>%</span></td>
-                            <td><span id="23_e"><?= $rating23['E']; ?></span></td>
-                            <td><span id="45_e"><?= $rating45['E']; ?></span></td>
-                            <td><span id="67_e"><?= $rating67['E']; ?></span></td>
-                            <td><span id="89_e"><?= $rating89['E']; ?></span></td>
-                        </tr>
-                        <tr class="text-bold">
-                            <td>Total</td>
-                            <td><?= $rating['Total']; ?></td>
-                            <td><?= number_format($rating['Total_Percent'], 1); ?>%</td>
-                            <td><?= $rating['Total']; ?></td>
-                            <td><?= number_format($rating['Total_Percent'], 1); ?>%</td>
-                        </tr>
-                    </tbody>
-                </table>
+<div class="pending-list-section <?= $view['result'] ? 'hidden' : ''; ?>">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="box">
+                <div class="box-body">
+                    <label for="pending_table">Pending List</label>
+                    <table id="pending_table" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Employee</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $no = 1;
+                            foreach ($pending as $row) {
+                                $layer = $row['layer']==''?'No Data Appraisal' : 'Pending : '.$row['nama_atasan'];
+                                if ($row['layer_atasan'] != $idmaster_pa) {
+                                echo "<tr>";
+                                echo "<td>" . $no . "</td>";
+                                echo "<td>" . $row['Nama_Lengkap'] . "</td>";
+                                echo "<td>" . $layer . "</td>";
+                                echo "</tr>";
+                                $no++;
+                                }
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-2">
-        <button class="btn btn-success" id="submitRating">Submit Ratings</button>
-    </div>
 </div>
-<div class="row">
-<section class="col-lg-12 connectedSortable">
-	<div class="nav-tabs-custom">
-		<ul class="nav nav-tabs">
-			<li class="active">
-				<a data-toggle="tab" href="#TabRating1"><?php echo "$myrating1"; ?></a>
-			</li>
-            <li>
-                <a data-toggle="tab" href="#TabRating2" ><?php echo "$myrating2"; ?></a>
-            </li>
-            <li>
-                <a data-toggle="tab" href="#TabRating3" ><?php echo "$myrating3"; ?></a>
-            </li>
-            <li>
-                <a data-toggle="tab" href="#TabRating4" ><?php echo "$myrating4"; ?></a>
-            </li>
-		</ul>
-		<div class="tab-content">
-			<div id="TabRating1" class="tab-pane active">
-				<table id="tableRating1" class="table table-bordered table-striped table-condensed cf">
-					<thead>
-						<tr>
-							<th>No</th>
-							<th>Name</th>
-							<th>Position</th>
-							<th>Grade</th>
-							<th>Unit</th>
-							<th>Division</th>
-							<th>Suggested Ratings</th>
-							<th style="background-color: yellow;">Your Ratings</th>
-						</tr>
-					</thead>
-				</table>
-			</div>
-			<div id="TabRating2" class="tab-pane">
-				<table id="tableRating2" class="table table-bordered table-striped table-condensed cf">
-					<thead>
-						<tr>
-							<th>No</th>
-							<th>Name</th>
-							<th>Position</th>
-							<th>Grade</th>
-							<th>Unit</th>
-							<th>Division</th>
-							<th>Suggested Ratings</th>
-							<th style="background-color: yellow;">Your Ratings</th>
-						</tr>
-					</thead>
-				</table>
-			</div>
-			<div id="TabRating3" class="tab-pane">
-				<table id="tableRating3" class="table table-bordered table-striped table-condensed cf">
-					<thead>
-						<tr>
-							<th>No</th>
-							<th>Name</th>
-							<th>Position</th>
-							<th>Grade</th>
-							<th>Unit</th>
-							<th>Division</th>
-							<th>Suggested Ratings</th>
-							<th style="background-color: yellow;">Your Ratings</th>
-						</tr>
-					</thead>
-				</table>
-			</div>
-			<div id="TabRating4" class="tab-pane">
-				<table id="tableRating4" class="table table-bordered table-striped table-condensed cf">
-					<thead>
-						<tr>
-							<th>No</th>
-							<th>Name</th>
-							<th>Position</th>
-							<th>Grade</th>
-							<th>Unit</th>
-							<th>Division</th>
-							<th>Suggested Ratings</th>
-							<th style="background-color: yellow;">Your Ratings</th>
-						</tr>
-					</thead>
-				</table>
-			</div>
-		</div>
-	</div>
-    
-</section>
+<div class="rating-section  <?= $view['result'] ? '' : 'hidden'; ?>">
+    <div class="row">
+        <div class="col-md-1">
+            <input id="target_a" type="hidden" class="form-control" value="<?= $targetRating['target_a']; ?>">
+            <input id="target_b" type="hidden" class="form-control" value="<?= $targetRating['target_b']; ?>">
+            <input id="target_c" type="hidden" class="form-control" value="<?= $targetRating['target_c']; ?>">
+            <input id="target_d" type="hidden" class="form-control" value="<?= $targetRating['target_d']; ?>">
+            <input id="target_e" type="hidden" class="form-control" value="<?= $targetRating['target_e']; ?>">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="box">
+                <div class="box-body">
+                    <table class="table table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="info" style="vertical-align: middle;">KPI</th>
+                                <th colspan="2" class="success">Suggested Ratings</th>
+                                <th colspan="2" class="warning">Your Ratings</th>
+                                <th colspan="4" class="warning">Job Grade</th>
+                            </tr>
+                            <tr>
+                                <th class="success">Employee</th>
+                                <th class="success">%</th>
+                                <th class="warning">Employee</th>
+                                <th class="warning">%</th>
+                                <th style="vertical-align: middle;" class="warning">2-3</th>
+                                <th style="vertical-align: middle;" class="warning">4-5</th>
+                                <th style="vertical-align: middle;" class="warning">6-7</th>
+                                <th style="vertical-align: middle;" class="warning">8-9</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>A</td>
+                                <td><span><?= $rating['A']; ?></span></td>
+                                <td><span><?= number_format($rating['Percent_A'], 1); ?>%</span></td>
+                                <td><span id="rate_a"><?= $rating['A']; ?></span></td>
+                                <td><span id="percent_a"><?= number_format($rating['Percent_A'], 1); ?>%</span></td>
+                                <td><span id="23_a"><?= $rating23['A']; ?></span></td>
+                                <td><span id="45_a"><?= $rating45['A']; ?></span></td>
+                                <td><span id="67_a"><?= $rating67['A']; ?></span></td>
+                                <td><span id="89_a"><?= $rating89['A']; ?></span></td>
+                            </tr>
+                            <tr>
+                                <td>B</td>
+                                <td><span><?= $rating['B']; ?></span></td>
+                                <td><span><?= number_format($rating['Percent_B'], 1); ?>%</span></td>
+                                <td><span id="rate_b"><?= $rating['B']; ?></span></td>
+                                <td><span id="percent_b"><?= number_format($rating['Percent_B'], 1); ?>%</span></td>
+                                <td><span id="23_b"><?= $rating23['B']; ?></span></td>
+                                <td><span id="45_b"><?= $rating45['B']; ?></span></td>
+                                <td><span id="67_b"><?= $rating67['B']; ?></span></td>
+                                <td><span id="89_b"><?= $rating89['B']; ?></span></td>
+                            </tr>
+                            <tr>
+                                <td>C</td>
+                                <td><span><?= $rating['C']; ?></span></td>
+                                <td><span><?= number_format($rating['Percent_C'], 1); ?>%</span></td>
+                                <td><span id="rate_c"><?= $rating['C']; ?></span></td>
+                                <td><span id="percent_c"><?= number_format($rating['Percent_C'], 1); ?>%</span></td>
+                                <td><span id="23_c"><?= $rating23['C']; ?></span></td>
+                                <td><span id="45_c"><?= $rating45['C']; ?></span></td>
+                                <td><span id="67_c"><?= $rating67['C']; ?></span></td>
+                                <td><span id="89_c"><?= $rating89['C']; ?></span></td>
+                            </tr>
+                            <tr>
+                                <td>D</td>
+                                <td><span><?= $rating['D']; ?></span></td>
+                                <td><span><?= number_format($rating['Percent_D'], 1); ?>%</span></td>
+                                <td><span id="rate_d"><?= $rating['D']; ?></span></td>
+                                <td><span id="percent_d"><?= number_format($rating['Percent_D'], 1); ?>%</span></td>
+                                <td><span id="23_d"><?= $rating23['D']; ?></span></td>
+                                <td><span id="45_d"><?= $rating45['D']; ?></span></td>
+                                <td><span id="67_d"><?= $rating67['D']; ?></span></td>
+                                <td><span id="89_d"><?= $rating89['D']; ?></span></td>
+                            </tr>
+                            <tr>
+                                <td>E</td>
+                                <td><span><?= $rating['E']; ?></span></td>
+                                <td><span><?= number_format($rating['Percent_E'], 1); ?>%</span></td>
+                                <td><span id="rate_e"><?= $rating['E']; ?></span></td>
+                                <td><span id="percent_e"><?= number_format($rating['Percent_E'], 1); ?>%</span></td>
+                                <td><span id="23_e"><?= $rating23['E']; ?></span></td>
+                                <td><span id="45_e"><?= $rating45['E']; ?></span></td>
+                                <td><span id="67_e"><?= $rating67['E']; ?></span></td>
+                                <td><span id="89_e"><?= $rating89['E']; ?></span></td>
+                            </tr>
+                            <tr class="text-bold">
+                                <td>Total</td>
+                                <td><?= $rating['Total']; ?></td>
+                                <td><?= number_format($rating['Total_Percent'], 1); ?>%</td>
+                                <td><?= $rating['Total']; ?></td>
+                                <td><?= number_format($rating['Total_Percent'], 1); ?>%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success" id="submitRating">Submit Ratings</button>
+        </div>
+    </div>
+    <div class="row">
+    <section class="col-lg-12 connectedSortable">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a data-toggle="tab" href="#TabRating1"><?php echo "$myrating1"; ?></a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#TabRating2" ><?php echo "$myrating2"; ?></a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#TabRating3" ><?php echo "$myrating3"; ?></a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#TabRating4" ><?php echo "$myrating4"; ?></a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="TabRating1" class="tab-pane active">
+                    <table id="tableRating1" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Grade</th>
+                                <th>Unit</th>
+                                <th>Division</th>
+                                <th>Suggested Ratings</th>
+                                <th style="background-color: yellow;">Your Ratings</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="TabRating2" class="tab-pane">
+                    <table id="tableRating2" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Grade</th>
+                                <th>Unit</th>
+                                <th>Division</th>
+                                <th>Suggested Ratings</th>
+                                <th style="background-color: yellow;">Your Ratings</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="TabRating3" class="tab-pane">
+                    <table id="tableRating3" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Grade</th>
+                                <th>Unit</th>
+                                <th>Division</th>
+                                <th>Suggested Ratings</th>
+                                <th style="background-color: yellow;">Your Ratings</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="TabRating4" class="tab-pane">
+                    <table id="tableRating4" class="table table-bordered table-striped table-condensed cf">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Grade</th>
+                                <th>Unit</th>
+                                <th>Division</th>
+                                <th>Suggested Ratings</th>
+                                <th style="background-color: yellow;">Your Ratings</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </section>
+    </div>
+
 </div>
 
 <script>
@@ -800,5 +910,38 @@ try {
             // You can perform any further actions with the selected values and counts here.
         });
 
+        function matchContent() {
+            const elements = ['a', 'b', 'c', 'd', 'e'];
+            let allMatch = true;
+
+            for (const element of elements) {
+                const rateContent = document.getElementById(`rate_${element}`).textContent;
+                const targetValue = document.getElementById(`target_${element}`).value;
+                const tdElement = document.querySelector(`td span#rate_${element}`).parentElement;
+
+                if (rateContent !== targetValue) {
+                    alert(`Rating ( ${element.toUpperCase()} ) alocation must be ${targetValue} employee`);
+                    tdElement.classList.add("danger");
+                    allMatch = false;
+                } else {
+                    tdElement.classList.remove("danger");
+                    tdElement.classList.add("success"); // Add "success" class to <td> with matching rateContent
+                }
+            }
+
+            if (allMatch) {
+                // Add "success" class to <td> elements containing <span> elements with IDs from the array
+                for (const element of elements) {
+                    const tdElement = document.querySelector(`td span#rate_${element}`).parentElement;
+                    tdElement.classList.add("success");
+                }
+                const confirmSubmit = confirm("All ratings match. Do you want to submit?");
+                if (confirmSubmit) {
+                    alert("Rating Submitted");
+                }
+            }
+        }
+        // Add a click event listener to the "match" button
+        document.getElementById("submitRating").addEventListener("click", matchContent);
     })
 </script>

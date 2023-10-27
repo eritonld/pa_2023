@@ -218,7 +218,7 @@ $(document).ready(function () {
 						style = ["formpa_edit", "primary", "edit"];
 					}
 					
-					if(data.rating!=0 && data.layer!=data.layerview && data.updated_by==data.id_atasanview){
+					if(data.updated_date && data.updated_by==data.approver_id || data.updated_by && data.updated_by==data.created_by){
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.review_name + '\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
 						return '<a href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><i class="fa fa-'+style[2]+'"></i></a>';
