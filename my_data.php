@@ -3,7 +3,7 @@ include("tabel_setting.php");
 $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Example query: Select all data from a table named 'your_table'
-$query = "SELECT b.fortable, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo 
+$query = "SELECT b.fortable, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan = :id) as jumlah_subo 
 FROM $karyawan AS a 
 LEFT JOIN daftargolongan AS b ON b.Kode_Golongan=a.Kode_Golongan
 WHERE a.id= :id";
@@ -44,7 +44,7 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 			</li>
 			<?php if($fortable!='staff' && $result['jumlah_subo'] > 0){
 			?>
-				<li>
+				<!-- <li>
 					<a data-toggle="tab" href="#ActivityLog " ><?php echo "$mydata2"; ?></a>
 				</li>
 				<li>
@@ -52,7 +52,7 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 				</li>
 				<li>
 					<a data-toggle="tab" href="#ActivityLog3 " ><?php echo "$mydata4"; ?></a>
-				</li>
+				</li> -->
 			<?php
 			} ?>
 			<li>
@@ -78,13 +78,13 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 							<th>Unit</th>
 							<th>Department</th>
 							<th>Input Date</th>
-							<th style="background-color: yellow;">Final Total Score</th>
+							<th style="background-color: yellow;">Total Score</th>
 							<th>Action</th>
 						</tr>
 					</thead>
 				</table>
 			</div>
-			<div id="ActivityLog" class="tab-pane">
+			<!-- <div id="ActivityLog" class="tab-pane">
 				<table id="tablePenilaianA1" class="table table-bordered table-striped table-condensed cf">
 					<thead>
 						<tr>
@@ -95,7 +95,7 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 							<th>Unit</th>
 							<th>Department</th>
 							<th>Input Date</th>
-							<th style="background-color: yellow;">Final Total Score</th>
+							<th style="background-color: yellow;">Total Score</th>
 							<th>Review</th>
 						</tr>
 					</thead>
@@ -112,7 +112,7 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 							<th>Unit</th>
 							<th>Department</th>
 							<th>Input Date</th>
-							<th style="background-color: yellow;">Final Total Score</th>
+							<th style="background-color: yellow;">Total Score</th>
 							<th>Review</th>
 						</tr>
 					</thead>
@@ -129,12 +129,12 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 							<th>Unit</th>
 							<th>Department</th>
 							<th>Input Date</th>
-							<th style="background-color: yellow;">Final Total Score</th>
+							<th style="background-color: yellow;">Total Score</th>
 							<th>Review</th>
 						</tr>
 					</thead>
 				</table>
-			</div>
+			</div> -->
 			<div id="ActivityLogSuperior" class="tab-pane">
 				<table id="tablePenilaianSuperior" class="table table-bordered table-striped table-condensed cf">
 					<thead>
@@ -209,17 +209,19 @@ $(document).ready(function () {
                 render:function(data, type, row)
                 {
                  
-					form = data.idkar == data.created_by ? "formpa_review" : "formpa_edit";
-					if(data.rating_a1!=0 && data.rating_a2==null){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_a1 + '\')" class="btn btn-sm btn-default">Reviewed by L1</a>';
+					let style;
+					if (!data.created_by) {
+						style = ["formpa", "success", "plus"];
+					} else if (data.layer === 'L1' && data.updated_by!=data.id_atasanview) {
+						style = ["formpa_review", "primary", "edit"];
+					} else {
+						style = ["formpa_edit", "primary", "edit"];
 					}
-					if(data.rating_a2!=null && data.rating_a3==null){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_a2 + '\')" class="btn btn-sm btn-default">Reviewed by L2</a>';
+					
+					if(data.updated_date && data.updated_by==data.approver_id || data.updated_by && data.updated_by==data.created_by){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.review_name + '\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
-					if(data.rating_a3!=null){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_a3 + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
-					}
-						return '<a id="edit" href="home.php?link='+form+'&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
+						return '<a href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><i class="fa fa-'+style[2]+'"></i></a>';
                      
                 }
 			 },
@@ -261,14 +263,11 @@ $(document).ready(function () {
                 {
                  
 					form = data.idkar == data.created_by ? "formpa_review" : "formpa_edit";
-					if(data.rating_a1!=0 && data.rating_a2==null){
-						return '<a id="edit" href="home.php?link='+form+'&id='+data.idkar+'" class="btn btn-sm btn-success">Reviewed <i class="fa fa-check"></i></a>';
+					if(data.rating!=0 && data.layer=="L2"){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L2</a>';
 					}
-					if(data.rating_a2!=null && data.rating_a3==null){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_a2 + '\')" class="btn btn-sm btn-default">Reviewed by L2</a>';
-					}
-					if(data.rating_a3!=null){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_a3 + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
+					if(data.rating!=0 && data.layer=="L3"){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
 					}else{
 						return '<a id="edit" href="home.php?link='+form+'&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
 					}
@@ -312,11 +311,8 @@ $(document).ready(function () {
                 render:function(data, type, row)
                 {
   
-					if(data.rating_a2!=null && data.rating_a3==null){
-						return '<a id="edit" href="home.php?link=formpa_review2&id='+data.idkar+'" class="btn btn-sm btn-success">Reviewed <i class="fa fa-check"></i></a>';
-					}
-					if(data.rating_a3!=null){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_a3 + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
+					if(data.rating!=0 && data.layer=="L3"){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
 					}
 					return '<a id="edit" href="home.php?link=formpa_review2&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
                      

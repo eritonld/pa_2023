@@ -28,18 +28,20 @@ if($id=='')
 exit;
 }
 try {
-    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo
-            FROM $karyawan AS k
-            LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
-            LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.Kode_Departemen
-            LEFT JOIN daftargolongan AS dg ON k.Kode_Golongan = dg.Kode_Golongan
-            LEFT JOIN daftarjabatan AS dj ON k.Kode_Jabatan = dj.Kode_Jabatan
-            LEFT JOIN daftarou AS du ON k.Kode_OU = du.Kode_OU
-			LEFT JOIN atasan AS a ON a.idkar= k.id
-			LEFT JOIN $karyawan AS a1 ON a1.id= a.id_atasan1
-			LEFT JOIN $karyawan AS a2 ON a2.id= a.id_atasan2
-			LEFT JOIN $karyawan AS a3 ON a3.id= a.id_atasan3
-            WHERE k.id = :id";
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a1.id_atasan as id_atasan1, a2.id_atasan as id_atasan2, a3.id_atasan as id_atasan3, ka1.email as email_atasan1, ka2.email as email_atasan2, ka3.email as email_atasan3, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan = :id AND layer = 'L1') as jumlah_subo
+	FROM $karyawan AS k
+	LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
+	LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.Kode_Departemen
+	LEFT JOIN daftargolongan AS dg ON k.Kode_Golongan = dg.Kode_Golongan
+	LEFT JOIN daftarjabatan AS dj ON k.Kode_Jabatan = dj.Kode_Jabatan
+	LEFT JOIN daftarou AS du ON k.Kode_OU = du.Kode_OU
+	LEFT JOIN atasan AS a1 ON a1.idkar= k.id AND a1.layer='L1'
+	LEFT JOIN atasan AS a2 ON a2.idkar= k.id AND a2.layer='L2'
+	LEFT JOIN atasan AS a3 ON a3.idkar= k.id AND a3.layer='L3'
+	LEFT JOIN $karyawan AS ka1 ON ka1.id= a1.id_atasan
+	LEFT JOIN $karyawan AS ka2 ON ka2.id= a2.id_atasan
+	LEFT JOIN $karyawan AS ka3 ON ka3.id= a3.id_atasan
+	WHERE k.id = :id";
 
     $stmt = $koneksi->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_STR);
@@ -196,17 +198,13 @@ if ($response === false) {
                 $leadership = $item['leadership'];
                 $jumlah_subo = $item['jumlah_subo'];
                 $fortable = $item['fortable'];
-                $comment_a1 = $item['comment_a1'];
-                $rating_a1 = $item['rating_a1'];
-                $comment_a2 = $item['comment_a2'];
-                $rating_a2 = $item['rating_a2'];
-                $comment_a3 = $item['comment_a3'];
-                $rating_a3 = $item['rating_a3'];
+                $comment = $item['comment'];
+                $rating = $item['rating'];
                 $id_atasan1 = $item['id_atasan1'];
                 $id_atasan2 = $item['id_atasan2'];
                 $id_atasan3 = $item['id_atasan3'];
                 $updated_by = $item['updated_by'];
-                $promotion_a1 = $item['promotion_a1'];
+                $promotion = $item['promotion'];
             }
 				$fortable = $fortable != "staff" ? $fortable : ($jumlah_subo > 0 ? "staffb" : "staff");
 		
@@ -221,18 +219,19 @@ if ($response === false) {
 				}
 				else if($fortable=='staff')
 				{
-					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 2;
+					$step = 2;
 					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='staffb')
 				{
-					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+					$step = 3;
 					$submitReview = 'submitReviewA1';
 				}
 				else if($fortable=='managerial')
 				{
-					$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
-					$submitReview = 'submitReviewA1Manager';
+					$step = 3;
+					// $submitReview = 'submitReviewA1Manager';
+					$submitReview = 'submitReviewA1';
 				}
 
 				if($step==1){
@@ -315,6 +314,7 @@ if ($response === false) {
 		<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
 		<input type="hidden" id="idkar" name="idkar" value="<?="$idkar";?>">
 		<input type="hidden" name="fortable" id="fortable" value="<?="$fortable";?>" readonly />
+		<input type="hidden" name="layer" id="layer" value="L2" readonly />
 	<div class="box box-danger">
         <div class="box-header with-border">
           <h3 class="box-title"><?="<b>$a1</b>";?></h3>
@@ -383,7 +383,7 @@ if ($response === false) {
 								<div class="col-md-2" style="padding-left: 0;">
 									<input type="text" name="total_score" id="total_score" class="form-control text-center" style="background: #FFFFCC;" value="<?= $total_score; ?>" readonly>
 								</div>
-								<div class="col-md-1" style="padding-left: 0;">
+								<div class="col-md-1" style="padding-left: 0; display: none;">
 									<span class="form-control text-center text-bold">
 										<?= convertRating($total_score); ?>
 									</span>
@@ -392,40 +392,9 @@ if ($response === false) {
 						</div>
 						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
 							<div class="form-horizontal">
-								<div class="col-md-offset-1 col-md-3" style="padding-right: 0;">
-									<h1 class="h4"><?= $title_rating; ?></h1>
-								</div>
-								<div class="col-md-2" style="padding-right: 0;">
-									<select class="form-control text-center" name="rating" id="rating" style="background: #FFFFCC;">
-										<option value="">- rating -</option>
-										<option value="5" <?= convertRating($rating_a1) == "A" ? "selected" : ""; ?>>A</option>
-										<option value="4" <?= convertRating($rating_a1) == "B" ? "selected" : ""; ?>>B</option>
-										<option value="3" <?= convertRating($rating_a1) == "C" ? "selected" : ""; ?>>C</option>
-										<option value="2" <?= convertRating($rating_a1) == "D" ? "selected" : ""; ?>>D</option>
-										<option value="1" <?= convertRating($rating_a1) == "E" ? "selected" : ""; ?>>E</option>
-									</select>
-								</div>
-							</div>
-						</div>
-						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
-							<div class="form-horizontal">
-								<div class="col-md-offset-1 col-md-3" style="padding-right: 0;">
-									<h1 class="h4"><?= $title_promotion; ?></h1>
-								</div>
-								<div class="col-md-2" style="padding-right: 0;">
-									<select class="form-control text-center" name="promotion" id="promotion" style="background: #FFFFCC;">
-										<option value="">- pilih -</option>
-										<option value="Y" <?= $promotion_a1 == "Y" ? "selected" : ""; ?>>Yes</option>
-										<option value="N" <?= $promotion_a1 == "N" ? "selected" : ""; ?>>No</option>
-									</select>
-								</div>
-							</div>
-						</div>
-						<div class="row" style="margin-top: 50px; display: <?= $scekuser['id']===$idkar ? 'none' : '';?>">
-							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-6" style="padding-right: 0;">
 									<h1 class="h4"><?= $title_comment; ?> : </h1>
-									<textarea class="form-control" name="comment" id="comment" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."><?= $comment_a1; ?></textarea>
+									<textarea class="form-control" name="comment" id="comment" style="resize: none; height: 100px; background: #FFFFCC;" placeholder="<?= $comment_placeholder; ?>..."><?= $comment; ?></textarea>
 								</div>
 							</div>
 						</div>
@@ -542,7 +511,8 @@ if ($response === false) {
 							?>
 					</div>
                 </div>
-				<div class="row" style="display: <?= $fortable=='managerial' ? "":"none"; ?>; margin-top: 60px;">
+				<!-- <div class="row" style="display: <?= $fortable=='managerial' ? "":"none"; ?>; margin-top: 60px;"> -->
+				<div class="row" style="display: none; margin-top: 60px;">
 					<div class="container-fluid container-peers">
 						<?php 
 						for ($i=1; $i <= 3 ; $i++) { 
@@ -607,19 +577,7 @@ if ($response === false) {
 			let textValue = document.getElementById('value1').value;
 			let idPic = document.getElementById('idpic').value;
 			let idKar = document.getElementById('idkar').value;
-			let ratingA1 = document.getElementById('rating');
-			let commentA1 = document.getElementById('comment');
-
-			if (!ratingA1.value){
-				alert('Please give Rating.');
-				ratingA1.focus();
-				return false;
-			}
-			if (!commentA1.value){
-				alert('Please fill Komentar.');
-				commentA1.focus();
-				return false;
-			}
+			
             if(value=='final'){
 				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
@@ -674,20 +632,20 @@ if ($response === false) {
 				}
 			}
 
-			if(managerCheck=='managerial'&&!leadershipEmpty){
-				for (let i = 0; i < selectPeers.length; i++) {
-					let selectPeer = selectPeers[i];
+			// if(managerCheck=='managerial'&&!leadershipEmpty){
+			// 	for (let i = 0; i < selectPeers.length; i++) {
+			// 		let selectPeer = selectPeers[i];
 	
-					if (selectPeer.value === "") {
-						peersEmpty = true;
-						alert("Please select a value for " + selectPeer.name);
-						selectPeer.focus();
-						break; // Exit the loop after displaying the first alert
-					}
-				}
-			}
+			// 		if (selectPeer.value === "") {
+			// 			peersEmpty = true;
+			// 			alert("Please select a value for " + selectPeer.name);
+			// 			selectPeer.focus();
+			// 			break; // Exit the loop after displaying the first alert
+			// 		}
+			// 	}
+			// }
 
-			if (!leadershipEmpty&&!peersEmpty) {
+			if (!leadershipEmpty) {
 				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
 					document.getElementById('updateAppraisal').submit();

@@ -10,35 +10,31 @@ if(isset($_COOKIE['bahasa'])){
 }
 
 $id = isset($_GET['id']) ? $_GET['id'] : '';
-$nama_atasan1 = isset($_GET['superior']) ? $_GET['superior'] : '';
-$nama_atasan2 = isset($_GET['headsuperior']) ? $_GET['headsuperior'] : '';
-$email_atasan1 = isset($_GET['superioremail']) ? $_GET['superioremail'] : '';
-$email_atasan2 = isset($_GET['headsuperioremail']) ? $_GET['headsuperioremail'] : '';
-$statbawah = isset($_GET['statbawah']) ? $_GET['statbawah'] : '';
-$statmember = isset($_GET['statmember']) ? $_GET['statmember'] : '';
 
-if($id=='')
-{?>
-	<script language="JavaScript">
-		alert('Dilarang Refresh/Masukan NIK');
-		document.location='home.php?link=dashboard';
-	</script>
-<?php	
-exit;
+if(!$id)
+{
+?>
+<script>
+	document.location='home.php?link=mydata';
+</script>";
+<?php
 }
 try {
-    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.fortable, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo
-            FROM $karyawan AS k
-            LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
-            LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.kode_departemen
-            LEFT JOIN daftargolongan AS dg ON k.Kode_Golongan = dg.Kode_Golongan
-            LEFT JOIN daftarjabatan AS dj ON k.Kode_Jabatan = dj.Kode_Jabatan
-            LEFT JOIN daftarou AS du ON k.Kode_OU = du.Kode_OU
-			LEFT JOIN atasan AS a ON a.idkar= k.id
-			LEFT JOIN $karyawan AS a1 ON a1.id= a.id_atasan1
-			LEFT JOIN $karyawan AS a2 ON a2.id= a.id_atasan2
-			LEFT JOIN $karyawan AS a3 ON a3.id= a.id_atasan3
-            WHERE k.id = :id";
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.fortable, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a1.id_atasan AS id_atasan1, a2.id_atasan AS id_atasan2, ka1.email AS email_atasan1, ka2.email AS email_atasan2, (
+		SELECT COUNT(idkar)
+		FROM atasan
+		WHERE id_atasan = :id AND layer = 'L1') AS jumlah_subo
+		FROM $karyawan AS k
+		LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
+		LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.kode_departemen
+		LEFT JOIN daftargolongan AS dg ON k.Kode_Golongan = dg.Kode_Golongan
+		LEFT JOIN daftarjabatan AS dj ON k.Kode_Jabatan = dj.Kode_Jabatan
+		LEFT JOIN daftarou AS du ON k.Kode_OU = du.Kode_OU
+		LEFT JOIN atasan AS a1 ON a1.idkar= k.id AND a1.layer = 'L1'
+		LEFT JOIN atasan AS a2 ON a2.idkar= k.id AND a2.layer = 'L2'
+		LEFT JOIN $karyawan AS ka1 ON ka1.id= a1.id_atasan
+		LEFT JOIN $karyawan AS ka2 ON ka2.id= a2.id_atasan
+		WHERE k.id = :id";
 			
     $stmt = $koneksi->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_STR);
@@ -56,15 +52,15 @@ try {
 		}
 		else if($fortable=='staff')
 		{
-			$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 2;
+			$step = 2;
 		}
 		else if($fortable=='staffb')
 		{
-			$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+			$step = 3;
 		}
 		else if($fortable=='managerial')
 		{
-			$step = $scekuser['id']==$ckaryawan['idkar'] ? 1 : 3;
+			$step = 3;
 		}
 
 		if($step==1){
@@ -209,9 +205,10 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 	<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
 	<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
 	<input type="hidden" id="idkar" name="idkar" value="<?="$ckaryawan[idkar]";?>">
-	<input type="hidden" name="id_atasan1" value="<?="$ckaryawan[id_atasan1]";?>" readonly />
-	<input type="hidden" name="email_atasan1" value="<?="$ckaryawan[email_atasan1]";?>" readonly />
+	<input type="hidden" name="id_atasan" value="<?="$ckaryawan[id_atasan1]";?>" readonly />
+	<input type="hidden" name="email_atasan" value="<?="$ckaryawan[email_atasan1]";?>" readonly />
 	<input type="hidden" name="fortable" id="fortable" value="<?="$fortable";?>" readonly />
+	<input type="hidden" name="layer" id="layer" value="L1" readonly />
 	<div class="box box-danger">
         <div class="box-header with-border">
           <h3 class="box-title"><?="<b>$a1</b>";?></h3>
@@ -296,7 +293,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 									<input type="text" name="total_score" id="total_score" class="form-control text-center text-bold" style="background: #FFFFCC;" value="-" readonly>
 								</div>
 								<div class="col-md-2" style="padding-left: 0;">
-									<input type="text" name="rating" id="rating" class="form-control text-center text-bold"  value="-" readonly>
+									<input type="hidden" name="rating" id="rating" class="form-control text-center text-bold"  value="-" readonly>
 								</div>
 							</div>
 						</div>
@@ -311,7 +308,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 					</div>
                 </div>
                 <ul class="list-inline pull-right">
-                  <li><button type="button" class="btn btn-success <?= $step==1 ? "final-step-1" : "next-step-1"; ?>"><?= $step==1 ? "Submit" : "Continue to next step"; ?></button></li>
+                  <li><button type="button" class="btn btn-success next-step-1">Continue to next step</button></li>
                 </ul>
               </div>
 			<!-- Self Review End -->
@@ -601,17 +598,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
         // Calculate the average
         let average = count === 0 ? 0 : total / count;
 		let decimalValue = average.toFixed(2);
-		if (decimalValue >= 4.50) {
-			var roundValue = Math.ceil(decimalValue);
-		} else if (decimalValue >= 3.50) {
-			roundValue = 4;
-		} else if (decimalValue >= 2.50) {
-			roundValue = 3;
-		} else if (decimalValue >= 1.50) {
-			roundValue = 2;
-		} else {
 			roundValue = Math.floor(decimalValue);
-		}
 		let rating = roundValue == 0 ? "" : (roundValue == 1 ? "E" : (roundValue == 2 ? "D" : (roundValue == 3 ? "C" : (roundValue == 4 ? "B" : "A"))));
 
         // Update the input element with the result
