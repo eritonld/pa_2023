@@ -37,7 +37,7 @@ if($bahasa=='eng')
 	$a12='Rating';
 	$a13='On Rating';
 	$title_a='Work Results';
-	$title_aa='Work Objectives';
+	$title_aa='Work Achievements';
 	$add_btn_name='Objective';
 	$title_comment='Comment';
 	$comment_placeholder='input your comment';
@@ -66,7 +66,7 @@ else
 	$a12='Bobot';
 	$a13='Pembobotan';
 	$title_a='Hasil Kerja';
-	$title_aa='Objektif Kerja';
+	$title_aa='Pencapaian Kerja';
 	$add_btn_name='Objektif';
 	$title_comment='Komentar';
 	$comment_placeholder='masukkan komentar anda';

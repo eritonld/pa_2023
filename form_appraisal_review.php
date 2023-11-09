@@ -204,7 +204,6 @@ if ($response === false) {
                 $id_atasan2 = $item['id_atasan2'];
                 $id_atasan3 = $item['id_atasan3'];
                 $updated_by = $item['updated_by'];
-                $promotion = $item['promotion'];
             }
 				$fortable = $fortable != "staff" ? $fortable : ($jumlah_subo > 0 ? "staffb" : "staff");
 		
@@ -343,6 +342,7 @@ if ($response === false) {
             <div class="tab-content" id="main_form">
 				<!-- Self Review Start -->
               <div class="tab-pane active" role="tabpanel" id="step1">
+			  	<?php include 'self_review_description.php'; ?>
                 <h4 class="text-center">Self Review</h4>
                 <div class="row">
 					<div class="container-fluid" id="container">
@@ -358,10 +358,18 @@ if ($response === false) {
 							<div class="form-horizontal">
 								<label for="value<?= $i; ?>" class="col-md-1 control-label"><?= $i.'.'; ?></label>
 								<div class="col-md-9">
+									<!-- <input type="test" class="form-control" id="value<?= $i; ?>" placeholder="..."> -->
 									<textarea class="form-control" name="value<?= $i; ?>" id="value<?= $i; ?>" style="resize: none; height: 100px;" placeholder="..." readonly><?= $objective['value'.$i]; ?></textarea>
 								</div>
 								<div class="col-md-2">
-									<input type="text" class="form-control text-center" name="score<?= $i; ?>" id="score<?= $i; ?>" value="<?= $score['score'.$i] ? $score['score'.$i]: ""; ?>" readonly>
+									<select class="form-control" name="score<?= $i; ?>" id="score<?= $i; ?>">
+										<option value="">- score -</option>
+										<option value="5" <?= $score['score'.$i]==5 ? 'selected' : ''; ?>>5</option>
+										<option value="4" <?= $score['score'.$i]==4 ? 'selected' : ''; ?>>4</option>
+										<option value="3" <?= $score['score'.$i]==3 ? 'selected' : ''; ?>>3</option>
+										<option value="2" <?= $score['score'.$i]==2 ? 'selected' : ''; ?>>2</option>
+										<option value="1" <?= $score['score'.$i]==1 ? 'selected' : ''; ?>>1</option>
+									</select>
 								</div>
 							</div>
 						</div>
@@ -375,7 +383,7 @@ if ($response === false) {
 						} ?>
 					</div>
 					<div class="container-fluid" style="margin-bottom: 20px;">
-						<div class="row" style="margin-top: 10px;">
+						<div class="row hidden" style="margin-top: 10px;">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-3" style="padding-right: 0;">
 									<h1 class="h4">Average Score :</h1>
@@ -406,6 +414,7 @@ if ($response === false) {
               </div>
 			<!-- Self Review End -->
               <div class="tab-pane" role="tabpanel" id="step2">
+			  <?php include 'culture_description.php'; ?>
                 <h4 class="text-center">Culture Value of SIGAP</h4>
 				<div class="row">
 					<div class="container-fluid container-culture">
@@ -577,7 +586,27 @@ if ($response === false) {
 			let textValue = document.getElementById('value1').value;
 			let idPic = document.getElementById('idpic').value;
 			let idKar = document.getElementById('idkar').value;
-			
+			if (textValue.trim() === '') {
+				alert('Please fill in the field.');
+				document.getElementById('value1').focus();
+				return false; // Prevent form submission
+			}
+            for (let i = 1; i <= 5; i++) {
+                let textareaValue = document.getElementById('value' + i).value;
+                let scoreValue = document.getElementById('score' + i).value;
+                if (textareaValue.trim() != '' && scoreValue === '' || textareaValue.trim() === '' && scoreValue != '') {
+					if(scoreValue === ''){
+						alert('Please select the score.');
+						document.getElementById('score' + i).focus();
+					}
+					if(textareaValue.trim() === ''){
+						alert('Please fill in the field.');
+						document.getElementById('value' + i).focus();
+					}
+					emptyFieldFound = true;
+                    return false; // Prevent form submission
+                }
+            }
             if(value=='final'){
 				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
@@ -671,8 +700,10 @@ if ($response === false) {
 
         // Calculate the average
         var average = count === 0 ? 0 : total / count;
+		// Round the average down to the nearest integer (floor)
+		average = Math.floor(average);
 
-        // Update the input element with the result
-        document.getElementById('total_score').value = average.toFixed(2); // Displaying the average with 2 decimal places
+		// Update the input element with the result
+		document.getElementById('total_score').value = average;
     }
 </script>

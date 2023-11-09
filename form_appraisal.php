@@ -237,7 +237,8 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
             <div class="tab-content" id="main_form">
 				<!-- Self Review Start -->
               <div class="tab-pane active" role="tabpanel" id="step1">
-                <h4 class="text-center">Self Review</h4>
+			  <?php include 'self_review_description.php'; ?>
+                <h4 class="text-center text-bold">Self Review</h4>
                 <div class="row">
 					<div class="container-fluid" id="container">
 						<div class="row" style="margin-top: 20px;">
@@ -284,7 +285,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 								</div>
 							</div>
 						</div>
-						<div class="row" style="margin-top: 10px;">
+						<div class="row hidden" style="margin-top: 10px;">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
 									<h1 class="h4 text-bold">Average Score :</h1>
@@ -313,6 +314,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
               </div>
 			<!-- Self Review End -->
               <div class="tab-pane" role="tabpanel" id="step2">
+			  <?php include 'culture_description.php'; ?>
 			  <h4 class="text-center">Culture Value of SIGAP</h4>
 				<div class="row">
 					<div class="container-fluid container-culture">
@@ -464,11 +466,11 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
                     return false; // Prevent form submission
                 }
             }
-			if (!commentA1.value&&idPic!=idKar){
-				alert('Please fill Komentar Atasan Langsung.');
-				commentA1.focus();
-				return false;
-			}			
+			// if (!commentA1.value&&idPic!=idKar){
+			// 	alert('Please fill Komentar Atasan Langsung.');
+			// 	commentA1.focus();
+			// 	return false;
+			// }			
 			if(value=='final'){
 				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
@@ -583,12 +585,12 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 </script>
 <script>
     function calculateAverage() {
-        let total = 0;
-        let count = 0;
+		var total = 0;
+        var count = 0;
 
         // Loop through the select elements and calculate the total
-        for (let i = 1; i <= 5; i++) {
-            let score = document.getElementById('score' + i).value;
+        for (var i = 1; i <= 5; i++) {
+            var score = document.getElementById('score' + i).value;
             if (score !== "") {
                 total += parseInt(score);
                 count++;
@@ -596,13 +598,11 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
         }
 
         // Calculate the average
-        let average = count === 0 ? 0 : total / count;
-		let decimalValue = average.toFixed(2);
-			roundValue = Math.floor(decimalValue);
-		let rating = roundValue == 0 ? "" : (roundValue == 1 ? "E" : (roundValue == 2 ? "D" : (roundValue == 3 ? "C" : (roundValue == 4 ? "B" : "A"))));
+        var average = count === 0 ? 0 : total / count;
+		// Round the average down to the nearest integer (floor)
+		average = Math.floor(average);
 
-        // Update the input element with the result
-        document.getElementById('total_score').value = decimalValue; // Displaying the average with 2 decimal places
-        document.getElementById('rating').value = rating; // Displaying the average with 2 decimal places
+		// Update the input element with the result
+		document.getElementById('total_score').value = average;
     }
 </script>
