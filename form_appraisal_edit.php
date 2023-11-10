@@ -333,6 +333,7 @@ try {
             <div class="tab-content" id="main_form">
 				<!-- Self Review Start -->
               <div class="tab-pane active" role="tabpanel" id="step1">
+			  <?php include 'self_review_description.php'; ?>
                 <h4 class="text-center">Self Review</h4>
                 <div class="row">
 					<div class="container-fluid" id="container">
@@ -373,7 +374,7 @@ try {
 						} ?>
 					</div>
 					<div class="container-fluid" style="margin-bottom: 20px;">
-						<div class="row" style="margin-top: 10px;">
+						<div class="row hidden" style="margin-top: 10px;">
 							<div class="form-horizontal">
 								<div class="col-md-offset-1 col-md-2" style="padding-right: 0;">
 									<h1 class="h4 text-bold">Average Score :</h1>
@@ -402,6 +403,7 @@ try {
               </div>
 			<!-- Self Review End -->
               <div class="tab-pane" role="tabpanel" id="step2">
+			  <?php include 'culture_description.php'; ?>
                 <h4 class="text-center">Culture Value of SIGAP</h4>
 				<div class="row">
 					<div class="container-fluid container-culture">
@@ -625,7 +627,7 @@ try {
 
 <script>
     function calculateAverage() {
-        var total = 0;
+		var total = 0;
         var count = 0;
 
         // Loop through the select elements and calculate the total
@@ -637,23 +639,12 @@ try {
             }
         }
 
-        let average = count === 0 ? 0 : total / count;
-		let decimalValue = average.toFixed(2);
-		if (decimalValue >= 4.50) {
-			var roundValue = Math.ceil(decimalValue);
-		} else if (decimalValue >= 3.50) {
-			roundValue = 4;
-		} else if (decimalValue >= 2.50) {
-			roundValue = 3;
-		} else if (decimalValue >= 1.50) {
-			roundValue = 2;
-		} else {
-			roundValue = Math.floor(decimalValue);
-		}
-		let rating = roundValue == 0 ? "" : (roundValue == 1 ? "E" : (roundValue == 2 ? "D" : (roundValue == 3 ? "C" : (roundValue == 4 ? "B" : "A"))));
+        // Calculate the average
+        var average = count === 0 ? 0 : total / count;
+		// Round the average down to the nearest integer (floor)
+		average = Math.floor(average);
 
-        // Update the input element with the result
-        document.getElementById('total_score').value = decimalValue; // Displaying the average with 2 decimal places
-        document.getElementById('rating').value = rating; // Displaying the average with 2 decimal places
+		// Update the input element with the result
+		document.getElementById('total_score').value = average;
     }
 </script>

@@ -104,6 +104,13 @@ else if ($link=="formpa_review_peers")
   $linkmark			= " > Form Appraisal";
   $title			= "Performance Appraisal";
 }
+else if ($link=="test_form")
+{
+  $includefile		= "form_test.php";
+  $menuaddapp		= "active";	
+  $linkmark			= " > Form Appraisal";
+  $title			= "Performance Appraisal";
+}
 else if ($link=="rating")
 {
   $includefile		= "rating.php";

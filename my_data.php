@@ -35,6 +35,7 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 }
 </style>
 <div id="proses" class="proses" style="display: none"></div>
+<input id="idpic" type="hidden" value="<?= $scekuser['id']; ?>">
 <div class="row">
 <section class="col-lg-12 connectedSortable">
 	<div class="nav-tabs-custom">
@@ -174,6 +175,8 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 
 <script>
 $(document).ready(function () {
+	let idpic = $('#idpic').val();
+
 	$("#tablePenilaian").DataTable({
         
 		"bPaginate": true,
@@ -210,18 +213,20 @@ $(document).ready(function () {
                 {
                  
 					let style;
-					if (!data.created_by) {
-						style = ["formpa", "success", "plus"];
-					} else if (data.layer === 'L1' && data.updated_by!=data.id_atasanview) {
-						style = ["formpa_review", "primary", "edit"];
+					if (data.created_by && data.idkar==idpic) {
+						style = ["formpa_edit", "primary", "Edit"];
+					} else if (data.created_by && data.id_L1==idpic) {
+						style = ["formpa_review", "primary", "Review"];
+					} else if (data.created_by && data.approval_status=='Pending') {
+						style = ["formpa_review", "primary", "Review"];
 					} else {
-						style = ["formpa_edit", "primary", "edit"];
+						style = ["formpa", "success", "Create PA"];
 					}
 					
-					if(data.updated_date && data.updated_by==data.approver_id || data.updated_by && data.updated_by==data.created_by){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.review_name + '\')" class="btn btn-sm btn-default">Reviewed</a>';
+					if(data.id && data.approval_status=='Approved'){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
-						return '<a href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><i class="fa fa-'+style[2]+'"></i></a>';
+						return '<a href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
                      
                 }
 			 },
