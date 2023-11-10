@@ -252,7 +252,7 @@ try {
 }
 </style>
 <div id="proses" class="proses" style="display: none"></div>
-<div class="pending-list-section <?= $view['result'] ? 'hidden' : ''; ?>">
+<div class="pending-list-section <?= $view['result'] ? '' : 'hidden'; ?>">
     <div class="row">
         <div class="col-md-8">
             <div class="box">
@@ -288,7 +288,7 @@ try {
         </div>
     </div>
 </div>
-<div class="rating-section  <?= $view['result'] ? '' : 'hidden'; ?>">
+<div class="rating-section  <?= $view['result'] ? 'hidden' : ''; ?>">
     <div class="row">
         <div class="col-md-1">
             <input id="target_a" type="hidden" class="form-control" value="<?= $targetRating['target_a']; ?>">

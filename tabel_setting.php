@@ -15,6 +15,7 @@ $transaksi_pa_edit2="transaksi_".$tahunperiode."_a2";//edit2
 $transaksi_pa_edit2="transaksi_".$tahunperiode."_a3";//edit3
 $transaksi_pa_edit2="transaksi_".$tahunperiode."_subo";//subo
 $transaksi_pa_edit2="transaksi_".$tahunperiode."_peers";//peers
+$transaksi_pa_final="transaksi_".$tahunperiode."_final";//peers
 $tugas_managerial="tugas_managerial";
 $quartal_periode=$tahunperiode;
 $tabel_sp="sp_".$tahunperiode;

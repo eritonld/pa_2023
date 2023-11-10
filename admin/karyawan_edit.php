@@ -22,17 +22,27 @@ if($nik=='')
 <?php	
 exit;
 }
-$sql = "select k.*,dp.Nama_Perusahaan,dep.Nama_Departemen,
-dg.Nama_Golongan,k.Nama_Jabatan,du.Nama_OU from $karyawan as k
-left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan
-left join daftardepartemen as dep on k.Kode_Departemen=dep.Kode_Departemen
-left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan
-left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan
-left join daftarou as du on k.Kode_OU=du.Kode_OU
+$sql = "select tp1.approver_id as p1,tp2.approver_id as p2,tp3.approver_id as p3,sub1.approver_id as sub1,sub2.approver_id as sub2,sub3.approver_id as sub3,k.*,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan,du.Nama_OU from $karyawan as k 
+left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
+left join daftardepartemen as dep on k.Kode_Departemen=dep.Kode_Departemen 
+left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan 
+left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan 
+left join daftarou as du on k.Kode_OU=du.Kode_OU 
+left join $transaksi_pa as tp1 on tp1.idkar=k.id and tp1.layer='p1'
+left join $transaksi_pa as tp2 on tp2.idkar=k.id and tp2.layer='p2'
+left join $transaksi_pa as tp3 on tp3.idkar=k.id and tp3.layer='p3'
+left join $transaksi_pa as sub1 on sub1.idkar=k.id and sub1.layer='sub1'
+left join $transaksi_pa as sub2 on sub2.idkar=k.id and sub2.layer='sub2'
+left join $transaksi_pa as sub3 on sub3.idkar=k.id and sub3.layer='sub3'
 where k.NIK='$nik'";
 $stmt = $koneksi->prepare($sql);
 $stmt->execute();
 $ckaryawan = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$display_quartal="none";
+$display_peers="none";
+if($ckaryawan['pltinds']=='Cement'){$display_quartal="";} //echo $ckaryawan['pltinds']." - $display_quartal <br>";
+if($ckaryawan['Kode_Golongan']>'GL023'){$display_peers="";} //echo $ckaryawan['Kode_Golongan']." - $display_peers <br>";
 
 $sql = "select * from user_pa where username='$nik'";
 $stmt = $koneksi->prepare($sql);
@@ -88,7 +98,8 @@ else
 <table class="table table-bordered">
 	<tr>
 		<td style="width:20%;"><?php echo"NIK";?></td>
-		<td><input class="form-control" style="width:50%;" type="text" name="nik" id="nik" value="<?php echo"$ckaryawan[NIK]";?>" readonly /></td> 
+		<td><input class="form-control" style="width:50%;" type="hidden" name="idkar" id="idkar" value="<?php echo"$ckaryawan[id]";?>" readonly />
+		<input class="form-control" style="width:50%;" type="text" name="nik" id="nik" value="<?php echo"$ckaryawan[NIK]";?>" readonly /></td> 
 	</tr>
 	<tr>
 		<td><?php echo"$a2";?></td>
@@ -201,21 +212,184 @@ else
 	</tr>
 	<?php } ?>
 	
-	<tr>
+	<tr style="display:<?php echo "$display_quartal"; ?>;">
 		<td>Penilaian Q1</td>
-		<td><input class="form-control" style="width:8%;" type="text" name="pen_q1" id="pen_q1" value="<?php echo"$ckaryawan[pen_q1]";?>" /></td> 
+		<td>
+		<select id="pen_q1" name="pen_q1" style="width:10%" class="form-control" >
+			<option value="" > - </option>
+			<option value="A" <?php if($ckaryawan['pen_q1']=='A'){echo "selected";} ?>> A </option>
+			<option value="B" <?php if($ckaryawan['pen_q1']=='B'){echo "selected";} ?>> B </option>
+			<option value="C" <?php if($ckaryawan['pen_q1']=='C'){echo "selected";} ?>> C </option>
+			<option value="D" <?php if($ckaryawan['pen_q1']=='D'){echo "selected";} ?>> D </option>
+			<option value="E" <?php if($ckaryawan['pen_q1']=='E'){echo "selected";} ?>> E </option>
+		</select>
+		</td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo "$display_quartal"; ?>;">
 		<td>Penilaian Q2</td>
-		<td><input class="form-control" style="width:8%;" type="text" name="pen_q2" id="pen_q2" value="<?php echo"$ckaryawan[pen_q2]";?>" /></td> 
+		<td>
+		<select id="pen_q2" name="pen_q2" style="width:10%" class="form-control" >
+			<option value="" > - </option>
+			<option value="A" <?php if($ckaryawan['pen_q2']=='A'){echo "selected";} ?>> A </option>
+			<option value="B" <?php if($ckaryawan['pen_q2']=='B'){echo "selected";} ?>> B </option>
+			<option value="C" <?php if($ckaryawan['pen_q2']=='C'){echo "selected";} ?>> C </option>
+			<option value="D" <?php if($ckaryawan['pen_q2']=='D'){echo "selected";} ?>> D </option>
+			<option value="E" <?php if($ckaryawan['pen_q2']=='E'){echo "selected";} ?>> E </option>
+		</select>
+		</td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo "$display_quartal"; ?>;">
 		<td>Penilaian Q3</td>
-		<td><input class="form-control" style="width:8%;" type="text" name="pen_q3" id="pen_q3" value="<?php echo"$ckaryawan[pen_q3]";?>" /></td> 
+		<td>
+		<select id="pen_q3" name="pen_q3" style="width:10%" class="form-control" >
+			<option value="" > - </option>
+			<option value="A" <?php if($ckaryawan['pen_q3']=='A'){echo "selected";} ?>> A </option>
+			<option value="B" <?php if($ckaryawan['pen_q3']=='B'){echo "selected";} ?>> B </option>
+			<option value="C" <?php if($ckaryawan['pen_q3']=='C'){echo "selected";} ?>> C </option>
+			<option value="D" <?php if($ckaryawan['pen_q3']=='D'){echo "selected";} ?>> D </option>
+			<option value="E" <?php if($ckaryawan['pen_q3']=='E'){echo "selected";} ?>> E </option>
+		</select>
+		</td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo "$display_quartal"; ?>;">
 		<td>Penilaian Q4</td>
-		<td><input class="form-control" style="width:8%;" type="text" name="pen_q4" id="pen_q4" value="<?php echo"$ckaryawan[pen_q4]";?>" /></td> 
+		<td>
+		<select id="pen_q4" name="pen_q4" style="width:10%" class="form-control" >
+			<option value="" > - </option>
+			<option value="A" <?php if($ckaryawan['pen_q4']=='A'){echo "selected";} ?>> A </option>
+			<option value="B" <?php if($ckaryawan['pen_q4']=='B'){echo "selected";} ?>> B </option>
+			<option value="C" <?php if($ckaryawan['pen_q4']=='C'){echo "selected";} ?>> C </option>
+			<option value="D" <?php if($ckaryawan['pen_q4']=='D'){echo "selected";} ?>> D </option>
+			<option value="E" <?php if($ckaryawan['pen_q4']=='E'){echo "selected";} ?>> E </option>
+		</select>
+		</td>
+	</tr>
+	<tr style="display:<?php echo "$display_peers"; ?>;">
+		<td>Peers 1</td>
+		<td>
+			<select id="p1" name="p1" style="width:50%" class="form-control" >
+				<option value="" > Pilih </option>
+				<?php 
+				$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
+				left join $karyawan as k on k.id=ats.idkar
+				where ats.id_atasan=(SELECT id_atasan FROM `atasan` where idkar='$ckaryawan[id]' and layer='L1') and idkar<>'$ckaryawan[id]' ORDER BY k.Nama_Lengkap asc";
+				$scek_sql = $koneksi->prepare($cek_sql);
+				$scek_sql->execute();
+				
+				
+				while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+					$selected="";
+					if($scekkar['idkar']==$ckaryawan['p1']){$selected="selected";}
+					?>
+					<option value="<?php echo $scekkar['idkar']; ?>" <?php echo $selected; ?>><?php echo $scekkar['Nama_Lengkap']; ?></option>
+				<?php } ?>
+			</select>
+		</td> 
+	</tr>
+	<tr style="display:<?php echo "$display_peers"; ?>;">
+		<td>Peers 2</td>
+		<td>
+		<select id="p2" name="p2" style="width:50%" class="form-control" >
+			<option value="" > Pilih </option>
+			<?php 
+			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
+			left join $karyawan as k on k.id=ats.idkar
+			where ats.id_atasan=(SELECT id_atasan FROM `atasan` where idkar='$ckaryawan[id]' and layer='L1') and idkar<>'$ckaryawan[id]' ORDER BY k.Nama_Lengkap asc";
+			$scek_sql = $koneksi->prepare($cek_sql);
+			$scek_sql->execute();
+			
+			while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+				$selected="";
+				if($scekkar['idkar']==$ckaryawan['p2']){$selected="selected";}
+				?>
+				<option value="<?php echo $scekkar['idkar']; ?>" <?php echo $selected; ?>><?php echo $scekkar['Nama_Lengkap']; ?></option>
+			<?php } ?>
+		</select>
+		</td> 
+	</tr>
+	<tr style="display:<?php echo "$display_peers"; ?>;">
+		<td>Peers 3</td>
+		<td>
+		<select id="p3" name="p3" style="width:50%" class="form-control" >
+			<option value="" > Pilih </option>
+			<?php 
+			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
+			left join $karyawan as k on k.id=ats.idkar
+			where ats.id_atasan=(SELECT id_atasan FROM `atasan` where idkar='$ckaryawan[id]' and layer='L1') and idkar<>'$ckaryawan[id]' ORDER BY k.Nama_Lengkap asc";
+			$scek_sql = $koneksi->prepare($cek_sql);
+			$scek_sql->execute();
+			
+			while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+				$selected="";
+				if($scekkar['idkar']==$ckaryawan['p3']){$selected="selected";}
+				?>
+				<option value="<?php echo $scekkar['idkar']; ?>" <?php echo $selected; ?>><?php echo $scekkar['Nama_Lengkap']; ?></option>
+			<?php } ?>
+		</select>
+		</td> 
+	</tr>
+	<tr style="display:<?php echo "$display_peers"; ?>;">
+		<td>Subordinate 1</td>
+		<td>
+		<select id="sub1" name="sub1" style="width:50%" class="form-control" >
+			<option value="" > Pilih </option>
+			<?php 
+			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
+			left join $karyawan as k on k.id=ats.idkar
+			where ats.id_atasan='$ckaryawan[id]' ORDER BY k.Nama_Lengkap asc";
+			$scek_sql = $koneksi->prepare($cek_sql);
+			$scek_sql->execute();
+			
+			while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+				$selected="";
+				if($scekkar['idkar']==$ckaryawan['sub1']){$selected="selected";}
+				?>
+				<option value="<?php echo $scekkar['idkar']; ?>" <?php echo $selected; ?>><?php echo $scekkar['Nama_Lengkap']; ?></option>
+			<?php } ?>
+		</select>
+		</td> 
+	</tr>
+	<tr style="display:<?php echo "$display_peers"; ?>;">
+		<td>Subordinate 2</td>
+		<td>
+		<select id="sub2" name="sub2" style="width:50%" class="form-control" >
+			<option value="" > Pilih </option>
+			<?php 
+			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
+			left join $karyawan as k on k.id=ats.idkar
+			where ats.id_atasan='$ckaryawan[id]' ORDER BY k.Nama_Lengkap asc";
+			$scek_sql = $koneksi->prepare($cek_sql);
+			$scek_sql->execute();
+			
+			while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+				$selected="";
+				if($scekkar['idkar']==$ckaryawan['sub2']){$selected="selected";}
+				?>
+				<option value="<?php echo $scekkar['idkar']; ?>" <?php echo $selected; ?>><?php echo $scekkar['Nama_Lengkap']; ?></option>
+			<?php } ?>
+		</select>
+		</td> 
+	</tr>
+	<tr style="display:<?php echo "$display_peers"; ?>;">
+		<td>Subordinate 3</td>
+		<td>
+		<select id="sub3" name="sub3" style="width:50%" class="form-control" >
+			<option value="" > Pilih </option>
+			<?php 
+			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
+			left join $karyawan as k on k.id=ats.idkar
+			where ats.id_atasan='$ckaryawan[id]' ORDER BY k.Nama_Lengkap asc";
+			$scek_sql = $koneksi->prepare($cek_sql);
+			$scek_sql->execute();
+			
+			while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+				$selected="";
+				if($scekkar['idkar']==$ckaryawan['sub3']){$selected="selected";}
+				?>
+				<option value="<?php echo $scekkar['idkar']; ?>" <?php echo $selected; ?>><?php echo $scekkar['Nama_Lengkap']; ?></option>
+			<?php } ?>
+		</select>
+		</td> 
 	</tr>
 	<tr>
 		<td><button type="submit" name="btnsave" class="btn btn-success">Submit</button></td>
