@@ -31,10 +31,13 @@ if($_POST['kode']=='update_superior'){
 		where ats.idkar in ('$id') ";
 		$stmt = $koneksi->prepare($sql);
 		$stmt->execute();
-
+		
+		$cek_total_layer = $stmt->rowCount();
+		$cek_total_layer = $cek_total_layer+3;
 	?>
 	<form role="form" method="post" action="">
 		<input type="hidden" class="form-control" name="idkar" id="idkar" value="<?php echo "$id"; ?>">
+		<input type="hidden" class="form-control" name="total_layer" id="total_layer" value="<?php echo "$cek_total_layer"; ?>">
 		<div class="form-group">
 			<label>Nama Karyawan</label>
 			<input type="text" class="form-control" name="namakar" id="namakar" style="width:50%" value="<?php echo $scek_nama['Nama_Lengkap']; ?>" placeholder="Masukkan Nama..." readonly>
@@ -49,7 +52,7 @@ if($_POST['kode']=='update_superior'){
 					<button type="button" class="btn btn-info" >Layer <?php echo "$jml_layer"; ?></button>
 				</div><!-- /btn-group -->
 				
-				<select id="<?php echo $layer; ?>" name="<?php echo $layer; ?>" style="width:50%" class="form-control noEnterSubmit"  required>
+				<select id="<?php echo $layer; ?>" name="<?php echo $layer; ?>" style="width:50%" class="form-control noEnterSubmit" >
 					<option value="" > Pilih </option>
 					<?php 
 					$cek_sql = "SELECT k.id, k.Nama_Lengkap, d.Nama_OU FROM $karyawan as k 
@@ -69,10 +72,77 @@ if($_POST['kode']=='update_superior'){
 			</div>
 			<?php
 			$jml_layer++;
+			
+			$layer1 = "L$jml_layer";
 		}
 		?>
+			<div class="input-group margin">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-info" >Layer <?php echo "$jml_layer"; ?></button>
+				</div><!-- /btn-group -->
+				
+				<select id="<?php echo $layer1; ?>" name="<?php echo $layer1; ?>" style="width:50%" class="form-control noEnterSubmit" >
+					<option value="" > Pilih </option>
+					<?php 
+					$cek_sql = "SELECT k.id, k.Nama_Lengkap, d.Nama_OU FROM $karyawan as k 
+					left join daftarou as d on d.Kode_OU=k.Kode_OU
+					where 
+					k.Kode_Golongan>'GL012' and k.Kode_StatusKerja<>'SKH05' ORDER BY k.Nama_Lengkap asc";
+					$scek_sql = $koneksi->prepare($cek_sql);
+					$scek_sql->execute();
+					
+					while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+						?>
+						<option value="<?php echo $scekkar['id']; ?>"><?php echo $scekkar['Nama_Lengkap']; ?></option>
+					<?php } ?>
+				</select>
+			</div>
+			<?php $jml_layer++; $layer2 = "L$jml_layer"; ?>
+			<div class="input-group margin">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-info" >Layer <?php echo "$jml_layer"; ?></button>
+				</div><!-- /btn-group -->
+				
+				<select id="<?php echo $layer2; ?>" name="<?php echo $layer2; ?>" style="width:50%" class="form-control noEnterSubmit" >
+					<option value="" > Pilih </option>
+					<?php 
+					$cek_sql = "SELECT k.id, k.Nama_Lengkap, d.Nama_OU FROM $karyawan as k 
+					left join daftarou as d on d.Kode_OU=k.Kode_OU
+					where 
+					k.Kode_Golongan>'GL012' and k.Kode_StatusKerja<>'SKH05' ORDER BY k.Nama_Lengkap asc";
+					$scek_sql = $koneksi->prepare($cek_sql);
+					$scek_sql->execute();
+					
+					while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+						?>
+						<option value="<?php echo $scekkar['id']; ?>"><?php echo $scekkar['Nama_Lengkap']; ?></option>
+					<?php } ?>
+				</select>
+			</div>
+			<?php $jml_layer++; $layer3 = "L$jml_layer"; ?>
+			<div class="input-group margin">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-info" >Layer <?php echo "$jml_layer"; ?></button>
+				</div><!-- /btn-group -->
+				
+				<select id="<?php echo $layer3; ?>" name="<?php echo $layer3; ?>" style="width:50%" class="form-control noEnterSubmit" >
+					<option value="" > Pilih </option>
+					<?php 
+					$cek_sql = "SELECT k.id, k.Nama_Lengkap, d.Nama_OU FROM $karyawan as k 
+					left join daftarou as d on d.Kode_OU=k.Kode_OU
+					where 
+					k.Kode_Golongan>'GL012' and k.Kode_StatusKerja<>'SKH05' ORDER BY k.Nama_Lengkap asc";
+					$scek_sql = $koneksi->prepare($cek_sql);
+					$scek_sql->execute();
+					
+					while($scekkar = $scek_sql->fetch(PDO::FETCH_ASSOC)){
+						?>
+						<option value="<?php echo $scekkar['id']; ?>"><?php echo $scekkar['Nama_Lengkap']; ?></option>
+					<?php } ?>
+				</select>
+			</div>
 		<div class="box-footer">
-			<input type="hidden" name="update_superior" value="T" />
+			<input type="hidden" name="update_layer_superior" value="T" />
 			<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
 		  </div>
 	</form>
@@ -160,10 +230,7 @@ if($_POST['kode']=='update_superior'){
 	}
 	// echo "$id";
 	$sql = "select k.id,k.nik_baru,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen,
-	dg.Nama_Golongan,k.Nama_Jabatan, tp.created_date, do.Nama_OU, tp.total_score, tp.rating_a1, tp.rating_a2, tp.rating_a3,
-	(Select Nama_Lengkap from $karyawan where id = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
-	(Select Nama_Lengkap from $karyawan where id = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
-	(Select Nama_Lengkap from $karyawan where id = (select id_atasan3 from atasan where idkar = k.id))as atasan3
+	dg.Nama_Golongan,k.Nama_Jabatan, tp.created_date, do.Nama_OU, tp.total_score
 	from $karyawan as k 
 	left join daftarou as do on k.Kode_OU = do.Kode_OU 
 	left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
@@ -181,9 +248,9 @@ if($_POST['kode']=='update_superior'){
 	$nilai_a2 = "";
 	$nilai_a3 = "";
 	
-	if($scekatasan1['rating_a1']<>''){$nilai_a1=" - <b>".$scekatasan1['rating_a1']." (".getGrade($scekatasan1['rating_a1']).")</b>";}
-	if($scekatasan1['rating_a2']<>''){$nilai_a2=" - <b>".$scekatasan1['rating_a2']." (".getGrade($scekatasan1['rating_a2']).")</b>";}
-	if($scekatasan1['rating_a3']<>''){$nilai_a3=" - <b>".$scekatasan1['rating_a3']." (".getGrade($scekatasan1['rating_a3']).")</b>";}
+	// if($scekatasan1['rating_a1']<>''){$nilai_a1=" - <b>".$scekatasan1['rating_a1']." (".getGrade($scekatasan1['rating_a1']).")</b>";}
+	// if($scekatasan1['rating_a2']<>''){$nilai_a2=" - <b>".$scekatasan1['rating_a2']." (".getGrade($scekatasan1['rating_a2']).")</b>";}
+	// if($scekatasan1['rating_a3']<>''){$nilai_a3=" - <b>".$scekatasan1['rating_a3']." (".getGrade($scekatasan1['rating_a3']).")</b>";}
 	?>
 	<table style="width:50%" class="table table-bordered table-striped">
 		<tr>
@@ -198,17 +265,29 @@ if($_POST['kode']=='update_superior'){
 			<td>Tanggal Input</td>
 			<td><?php echo "$scekatasan1[created_date]"; ?></td>
 		</tr>
+		<?php 
+		$cek_atasan = "SELECT t.idkar, k.Nama_Lengkap, t.fortable, t.layer, t.approver_id, t.rating, kt.Nama_Lengkap as nama_atasan, t.approval_status, ku.kpi_unit 
+		FROM `transaksi_2023` as t 
+		left join kpi_unit_2023 as ku on ku.idkar=t.approver_id and status_aktif='T'
+		left join karyawan_2023 as k on k.id=t.idkar
+		left join karyawan_2023 as kt on kt.id=t.approver_id
+		where t.idkar='2935' and layer<>'L0' and ku.kpi_unit<>'' ORDER BY layer asc";
+		$stmt = $koneksi->prepare($cek_atasan);
+		$stmt->execute();
+
+		$scek_atasan = $stmt->fetch(PDO::FETCH_ASSOC);
+		?>
 		<tr>
 			<td>Atasan 1</td>
-			<td><?php echo "$scekatasan1[atasan1] $nilai_a1"; ?></td>
+			<td><?php echo ""; ?></td>
 		</tr>
 		<tr>
 			<td>Atasan 2</td>
-			<td><?php echo "$scekatasan1[atasan2] $nilai_a2"; ?></td>
+			<td><?php echo ""; ?></td>
 		</tr>
 		<tr>
 			<td>Atasan 3</td>
-			<td><?php echo "$scekatasan1[atasan3] $nilai_a3"; ?></td>
+			<td><?php echo ""; ?></td>
 		</tr>
 		<tr>
 			<td><b>Final Score</b></td>

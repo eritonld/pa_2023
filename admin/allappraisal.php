@@ -388,20 +388,17 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					<?php					
 					$no = 1;
 					$yearnow	= Date('Y');
-					$cutoff		= $yearnow."-07-01";
+					$cutoff		= $yearnow."-06-30";
 					
 					$sql = "select k.id,k.nik_baru,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen,
-					dg.Nama_Golongan,k.Nama_Jabatan, tp.created_date, do.Nama_OU, tp.total_score,
-					(Select Nama_Lengkap from $karyawan where id = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
-					(Select Nama_Lengkap from $karyawan where id = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
-					(Select Nama_Lengkap from $karyawan where id = (select id_atasan3 from atasan where idkar = k.id))as atasan3
+					dg.Nama_Golongan,k.Nama_Jabatan, tp.created_date, do.Nama_OU, tp.total_score
 					from $karyawan as k 
 					left join daftarou as do on k.Kode_OU = do.Kode_OU 
 					left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
 					left join daftardepartemen as dep on k.Kode_Departemen=dep.Kode_Departemen 
 					left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan 
 					left join daftarjabatan as dj on k.Kode_Jabatan=dj.Kode_Jabatan 
-					left join $transaksi_pa as tp on k.id = tp.idkar 
+					left join $transaksi_pa_final as tp on k.id = tp.idkar 
 					where tp.created_by<>'' and k.Kode_StatusKerja<>'SKH05' $where and k.Mulai_Bekerja <= '$cutoff' order by k.Nama_Lengkap ASC";
 					
 					$stmt = $koneksi->prepare($sql);

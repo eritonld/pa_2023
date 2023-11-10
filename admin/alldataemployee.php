@@ -157,6 +157,7 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 	}
 }
 if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
+	$idkar=$_POST['idkar'];
 	$nik=$_POST['nik'];
 	$nama=$_POST['nama'];
 	$mulai=$_POST['mulai'];
@@ -170,12 +171,83 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 	$pen_q2=$_POST['pen_q2'];
 	$pen_q3=$_POST['pen_q3'];
 	$pen_q4=$_POST['pen_q4'];
+	$p1=$_POST['p1'];
+	$p2=$_POST['p2'];
+	$p3=$_POST['p3'];
+	$sub1=$_POST['sub1'];
+	$sub2=$_POST['sub2'];
+	$sub3=$_POST['sub3'];
+	$datetime	= Date('Y-m-d H:i:s');
 	
 	$sql = "update $karyawan set Nama_Lengkap='$nama',Mulai_Bekerja='$mulai',Kode_Departemen='$dept',Nama_Jabatan='$jabatan',Kode_Golongan='$gol',Kode_Perusahaan='$pt',Kode_OU='$unit',Email='$email',pen_q1='$pen_q1',pen_q2='$pen_q2',pen_q3='$pen_q3',pen_q4='$pen_q4' where NIK='$nik'";
 	$stmt = $koneksi->prepare($sql);
 	$updatekar =  $stmt->execute();
 	
-
+	//submit ke transaksi PA
+	for($aa=1;$aa<7;$aa++){
+		if($aa==1){$layer="p1"; $id_layer=$p1;}
+		else if($aa==2){$layer="p2"; $id_layer=$p2;}
+		else if($aa==3){$layer="p3"; $id_layer=$p3;}
+		else if($aa==4){$layer="sub1"; $id_layer=$sub1;}
+		else if($aa==5){$layer="sub2"; $id_layer=$sub2;}
+		else if($aa==6){$layer="sub3"; $id_layer=$sub3;}
+		
+		if($id_layer<>""){
+			$cekp1 = "SELECT idkar, approver_id FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
+			$stmt = $koneksi->prepare($cekp1);
+			$scekp1 =  $stmt->execute();
+			$scekp1 = $stmt->rowCount();
+			if($scekp1>0){
+				//edit
+				$pindah_p1 = "INSERT INTO transaksi_2023_delete (SELECT * FROM $transaksi_pa where idkar='$idkar' and layer='$layer')";
+				$stmt = $koneksi->prepare($pindah_p1);
+				$spindah_p1 =  $stmt->execute();
+				
+				$delete_p1 = "DELETE FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
+				$stmt = $koneksi->prepare($delete_p1);
+				$sdelete_p1 =  $stmt->execute();
+				
+				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','fortable','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
+				$stmt = $koneksi->prepare($input_p1);
+				$sinput_p1 =  $stmt->execute();
+			}else{
+				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','fortable','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
+				$stmt = $koneksi->prepare($input_p1);
+				$sinput_p1 =  $stmt->execute();
+			}
+		}else{
+			$cekp1 = "SELECT idkar, approver_id FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
+			$stmt = $koneksi->prepare($cekp1);
+			$scekp1 =  $stmt->execute();
+			$scekp1 = $stmt->rowCount();
+			if($scekp1>0){
+				$delete_p1 = "DELETE FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
+				$stmt = $koneksi->prepare($delete_p1);
+				$sdelete_p1 =  $stmt->execute();
+			}
+		}
+	}
+	
+	
+	// if($p2<>''){
+	
+	// }
+	
+	// if($p3<>''){
+	
+	// }
+	
+	// if($sub1<>''){
+	
+	// }
+	
+	// if($sub2<>''){
+	
+	// }
+	
+	// if($sub3<>''){
+	
+	// }
 	
 	if($gol>'GL011'){
 		$username=$_POST['username'];

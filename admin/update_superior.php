@@ -103,34 +103,37 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 	}
 </script>
 <?php
-	if(isset($_POST['update_superior'])){
+	if(isset($_POST['update_layer_superior'])){
 		$idkar = $_POST['idkar'];
-		$ida1 = $_POST['ida1'];
-		$ida2 = $_POST['ida2'];
-		$ida3 = $_POST['ida3'];
-
+		$total_layer = $_POST['total_layer'];
+		
 		try {
 			$koneksi->beginTransaction();
-
-			$stmt = $koneksi->prepare("SELECT * FROM atasan WHERE idkar = :idkar");
-			$stmt->bindParam(':idkar', $idkar);
-			$stmt->execute();
-			$count_user = $stmt->rowCount();
-
-			if($count_user > 0){
-				$stmt = $koneksi->prepare("UPDATE atasan SET id_atasan1 = :ida1, id_atasan2 = :ida2, id_atasan3 = :ida3 WHERE idkar = :idkar");
-			} else {
-				$stmt = $koneksi->prepare("INSERT INTO atasan (idkar, id_atasan1, id_atasan2, id_atasan3) VALUES (:idkar, :ida1, :ida2, :ida3)");
+			
+			$sql = "DELETE FROM `atasan` where idkar='$idkar';";
+			$stmt = $koneksi->prepare($sql);
+			$delete_idkar =  $stmt->execute();
+			
+			for($a=1;$a<=$total_layer;$a++){
+				$layer = "L$a";
+				$idatasan = $_POST[$layer];
+				
+				if($idatasan<>''){
+					if($a==1){
+						$query = "INSERT INTO atasan (idkar, layer, id_atasan) VALUES ('$idkar', '$layer', '$idatasan');";
+					}else{
+						$query .= "INSERT INTO atasan (idkar, layer, id_atasan) VALUES ('$idkar', '$layer', '$idatasan');";
+					}
+				}
+			}
+			
+			$statements = array_filter(array_map('trim', explode(';', $query)));
+			foreach ($statements as $statement) {
+				$koneksi->exec($statement);
 			}
 
-			$stmt->bindParam(':idkar', $idkar);
-			$stmt->bindParam(':ida1', $ida1);
-			$stmt->bindParam(':ida2', $ida2);
-			$stmt->bindParam(':ida3', $ida3);
-			$stmt->execute();
-
 			$koneksi->commit();
-			// echo "Transaction successful!";
+
 		} catch(PDOException $e) {
 			$koneksi->rollBack();
 			?>
