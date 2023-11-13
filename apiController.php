@@ -573,6 +573,7 @@ if($code == 'getPenilaian') {
                 $stmtInsertL0->bindParam(42, $fortable);
                 $stmtInsertL0->bindParam(43, $L0);
                 $stmtInsertL0->bindParam(44, $idpic);
+                $stmtInsertL0->bindParam(45, $approvalStatus);
 
                 // Execute the INSERT statement for the current table
                 if (!$stmtInsertL0->execute()) {
@@ -794,12 +795,11 @@ if($code == 'getPenilaian') {
             //         echo "<script>console.log('email sended')</script>";
             //     } 
 
-            ?>
-            <script>
-                window.location='home.php?link=mydata';
-                // console.log("Data created successfully!");
-            </script>
-            <?php
+            // Assuming $myDataVariable is the data you want to pass
+            $myDataVariable = "MyData"; // Replace "YourDataHere" with the actual data you want to send
+            // Append the data to the URL using query parameters
+            header('Location: home.php?link=mydata&data=' . urlencode($myDataVariable));
+            exit;
         } else {
             ?>
             <script>

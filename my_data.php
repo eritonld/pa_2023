@@ -12,12 +12,6 @@ $stmt->bindParam(':id', $scekuser['id'], PDO::PARAM_STR);
 $stmt->execute();
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$queryPeers = "SELECT idkar FROM transaksi_2023_peers WHERE peers = '$scekuser[id]'";
-$stmtPeer = $koneksi->prepare($queryPeers);
-$stmtPeer->execute();
-$resultPeers = $stmtPeer->fetchAll(PDO::FETCH_ASSOC);
-$cekPeers =  count($resultPeers);
-// echo $cekPeers;
 // Fetch data as an associative array
 $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jumlah_subo'] > 0 ? "staffb" : "staff");
 
@@ -34,7 +28,14 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
     opacity: .9;
 }
 </style>
-<div id="proses" class="proses" style="display: none"></div>
+<div id="loader" class="proses" style="display: none"></div>
+
+<div class="alert alert-success alert-dismissible text-bold hidden">
+<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+<i class="icon fa fa-check"></i>"Employee Name" Performance Appraisal created successfully!
+</div>
+<button class="btn btn-success" id="success">success</button>
+
 <input id="idpic" type="hidden" value="<?= $scekuser['id']; ?>">
 <div class="row">
 <section class="col-lg-12 connectedSortable">
@@ -59,13 +60,7 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 			<li>
 				<a data-toggle="tab" href="#ActivityLogSuperior " ><?php echo "$mydata5"; ?></a>
 			</li>
-			<?php if($cekPeers>0){
-			?>
-			<li>
-				<a data-toggle="tab" href="#ActivityLogPeers " ><?php echo "$mydata6"; ?></a>
-			</li>
-			<?php
-			} ?>
+			
 		</ul>
 		<div class="tab-content">
 			<div id="AllDocument" class="tab-pane active">
@@ -224,9 +219,9 @@ $(document).ready(function () {
 					}
 					
 					if(data.id && data.approval_status=='Approved'){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
+						return '<a onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
-						return '<a href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
+						return '<a id="edit" href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
                      
                 }
 			 },
@@ -269,10 +264,10 @@ $(document).ready(function () {
                  
 					form = data.idkar == data.created_by ? "formpa_review" : "formpa_edit";
 					if(data.rating!=0 && data.layer=="L2"){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L2</a>';
+						return '<a onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L2</a>';
 					}
 					if(data.rating!=0 && data.layer=="L3"){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
+						return '<a onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
 					}else{
 						return '<a id="edit" href="home.php?link='+form+'&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
 					}
@@ -317,7 +312,7 @@ $(document).ready(function () {
                 {
   
 					if(data.rating!=0 && data.layer=="L3"){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
+						return '<a onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
 					}
 					return '<a id="edit" href="home.php?link=formpa_review2&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
                      
@@ -401,7 +396,7 @@ $(document).ready(function () {
                 {
                  
 					if(data.created_by){
-						return '<a id="edit" onclick="alert(\'You have been reviewed this Appraisal, Thank you for your contributions\')" class="btn btn-sm btn-default">Reviewed</a>';
+						return '<a onclick="alert(\'You have been reviewed this Appraisal, Thank you for your contributions\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
 					return '<a id="edit" href="home.php?link=formpa_review_superior&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
                      
@@ -444,7 +439,7 @@ $(document).ready(function () {
                 {
                  
 					if(data.total_culture&&data.total_leadership){
-						return '<a id="edit" onclick="alert(\'You have been reviewed this Appraisal, Thank you for your contributions\')" class="btn btn-sm btn-default">Reviewed</a>';
+						return '<a onclick="alert(\'You have been reviewed this Appraisal, Thank you for your contributions\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
 					return '<a id="edit" href="home.php?link=formpa_review_peers&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
                      
@@ -452,5 +447,14 @@ $(document).ready(function () {
 			 },
 		  ]
 	})
+
+	$('#tablePenilaian tbody').on('click', '#edit', function () {
+        $('#loader').css('display', 'block');
+    });
+
+	document.getElementById('success').addEventListener('click', function() {
+		$('.alert-success').removeClass('hidden');
+	})
+
 })
 </script>
