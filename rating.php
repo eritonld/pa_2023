@@ -18,11 +18,11 @@ $stmt->bindParam(':id', $scekuser['id'], PDO::PARAM_STR);
 $stmt->execute();
 $results = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$queryPeers = "SELECT idkar FROM transaksi_2023_peers WHERE peers = '$scekuser[id]'";
-$stmtPeer = $koneksi->prepare($queryPeers);
-$stmtPeer->execute();
-$resultPeers = $stmtPeer->fetchAll(PDO::FETCH_ASSOC);
-$cekPeers =  count($resultPeers);
+// $queryPeers = "SELECT idkar FROM transaksi_2023_peers WHERE peers = '$scekuser[id]'";
+// $stmtPeer = $koneksi->prepare($queryPeers);
+// $stmtPeer->execute();
+// $resultPeers = $stmtPeer->fetchAll(PDO::FETCH_ASSOC);
+// $cekPeers =  count($resultPeers);
 // echo $cekPeers;
 // Fetch data as an associative array
 $fortable = $results['fortable'] != "staff" ? $results['fortable'] : ($results['jumlah_subo'] > 0 ? "staffb" : "staff");

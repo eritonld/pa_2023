@@ -12,6 +12,7 @@ $stmt->bindParam(':id', $scekuser['id'], PDO::PARAM_STR);
 $stmt->execute();
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
 // Fetch data as an associative array
 $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jumlah_subo'] > 0 ? "staffb" : "staff");
 
@@ -210,16 +211,19 @@ $(document).ready(function () {
 					let style;
 					if (data.created_by && data.idkar==idpic) {
 						style = ["formpa_edit", "primary", "Edit"];
-					} else if (data.created_by && data.id_L1==idpic) {
+					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending' && data.updated_by==idpic) {
+						style = ["formpa_review", "default", "Review"];
+					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending') {
 						style = ["formpa_review", "primary", "Review"];
-					} else if (data.created_by && data.approval_status=='Pending') {
-						style = ["formpa_review", "primary", "Review"];
-					} else {
+					}else if(data.idkar==idpic){
 						style = ["formpa", "success", "Create PA"];
+					} else {
+						return '<a class="btn btn-sm btn-default">Pending</a>';
 					}
 					
-					if(data.id && data.approval_status=='Approved'){
-						return '<a onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
+
+					if(data.id && data.approval_status=='Approved' && data.updated_by!=idpic && data.updated_by!=null){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
 						return '<a id="edit" href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
                      
@@ -227,234 +231,7 @@ $(document).ready(function () {
 			 },
 		  ]
 	})
-	$("#tablePenilaianA1").DataTable({
-        
-		"bPaginate": true,
-		"bInfo": true,
-		"autoWidth": false, 
-		"processing": true,
-		"language": {
-		"loadingRecords": "<span class='fa-stack fa-lg' style='margin-left: 50%;'>\n\
-							<i class='fa fa-refresh fa-spin fa-fw fast-spin' style='color:rgb(75, 183, 245);'></i>\n\
-						</span>",
-		},
-		"ajax": "apiController.php?code=getPenilaianA1",
-		"type": "GET", // Use POST method
 	
-		
-		  // membuat kolom
-		  "columns": [
-  
-			  //untuk membuat data index / numbering
-			  { "data": 'no', "name":'id', render: function (data, type, row, meta) {
-					return meta.row + meta.settings._iDisplayStart + 1;
-				}},
-  
-			  { "data": 'Nama_Lengkap' },
-			  { "data": 'Nama_Jabatan' },
-			  { "data": 'Nama_Golongan' },
-			  { "data": 'Nama_OU' },
-			  { "data": 'Nama_Departemen' },
-			  { "data": 'created_date' },
-			  { "data": 'total_score' },
-			  { 
-                data: null,
-                render:function(data, type, row)
-                {
-                 
-					form = data.idkar == data.created_by ? "formpa_review" : "formpa_edit";
-					if(data.rating!=0 && data.layer=="L2"){
-						return '<a onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L2</a>';
-					}
-					if(data.rating!=0 && data.layer=="L3"){
-						return '<a onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
-					}else{
-						return '<a id="edit" href="home.php?link='+form+'&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
-					}
-                     
-                }
-			 },
-		  ]
-	})
-	$("#tablePenilaianA2").DataTable({
-        
-		"bPaginate": true,
-		"bInfo": true,
-		"autoWidth": false, 
-		"processing": true,
-		"language": {
-		"loadingRecords": "<span class='fa-stack fa-lg' style='margin-left: 50%;'>\n\
-							<i class='fa fa-refresh fa-spin fa-fw fast-spin' style='color:rgb(75, 183, 245);'></i>\n\
-						</span>",
-		},
-		"ajax": "apiController.php?code=getPenilaianA2",
-		"type": "GET", // Use POST method
 	
-		
-		  // membuat kolom
-		  "columns": [
-  
-			  //untuk membuat data index / numbering
-			  { "data": 'no', "name":'id', render: function (data, type, row, meta) {
-					return meta.row + meta.settings._iDisplayStart + 1;
-				}},
-  
-			  { "data": 'Nama_Lengkap' },
-			  { "data": 'Nama_Jabatan' },
-			  { "data": 'Nama_Golongan' },
-			  { "data": 'Nama_OU' },
-			  { "data": 'Nama_Departemen' },
-			  { "data": 'created_date' },
-			  { "data": 'total_score' },
-			  { 
-                data: null,
-                render:function(data, type, row)
-                {
-  
-					if(data.rating!=0 && data.layer=="L3"){
-						return '<a onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed by ' + data.nama_atasan + '\')" class="btn btn-sm btn-default">Reviewed by L3</a>';
-					}
-					return '<a id="edit" href="home.php?link=formpa_review2&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
-                     
-                }
-			 },
-		  ]
-	})
-	$("#tablePenilaianA3").DataTable({
-        
-		"bPaginate": true,
-		"bInfo": true,
-		"autoWidth": false, 
-		"processing": true,
-		"language": {
-		"loadingRecords": "<span class='fa-stack fa-lg' style='margin-left: 50%;'>\n\
-							<i class='fa fa-refresh fa-spin fa-fw fast-spin' style='color:rgb(75, 183, 245);'></i>\n\
-						</span>",
-		},
-		"ajax": "apiController.php?code=getPenilaianA3",
-		"type": "GET", // Use POST method
-	
-		
-		  // membuat kolom
-		  "columns": [
-  
-			  //untuk membuat data index / numbering
-			  { "data": 'no', "name":'id', render: function (data, type, row, meta) {
-					return meta.row + meta.settings._iDisplayStart + 1;
-				}},
-  
-			  { "data": 'Nama_Lengkap' },
-			  { "data": 'Nama_Jabatan' },
-			  { "data": 'Nama_Golongan' },
-			  { "data": 'Nama_OU' },
-			  { "data": 'Nama_Departemen' },
-			  { "data": 'created_date' },
-			  { "data": 'total_score' },
-			  { 
-                data: null,
-                render:function(data, type, row)
-                {
-                 
-					return '<a id="edit" href="home.php?link=formpa_review3&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
-                     
-                }
-			 },
-		  ]
-	})
-	$("#tablePenilaianSuperior").DataTable({
-        
-		"bPaginate": true,
-		"bInfo": true,
-		"autoWidth": false, 
-		"processing": true,
-		"language": {
-		"loadingRecords": "<span class='fa-stack fa-lg' style='margin-left: 50%;'>\n\
-							<i class='fa fa-refresh fa-spin fa-fw fast-spin' style='color:rgb(75, 183, 245);'></i>\n\
-						</span>",
-		},
-		"ajax": "apiController.php?code=getPenilaianSuperior",
-		"type": "GET", // Use POST method
-	
-		
-		  // membuat kolom
-		  "columns": [
-  
-			  //untuk membuat data index / numbering
-			  { "data": 'no', "name":'id', render: function (data, type, row, meta) {
-					return meta.row + meta.settings._iDisplayStart + 1;
-				}},
-  
-			  { "data": 'Nama_Lengkap' },
-			  { "data": 'Nama_Jabatan' },
-			  { "data": 'Nama_Golongan' },
-			  { "data": 'Nama_OU' },
-			  { "data": 'Nama_Departemen' },
-			  { "data": 'created_date' },
-			  { 
-                data: null,
-                render:function(data, type, row)
-                {
-                 
-					if(data.created_by){
-						return '<a onclick="alert(\'You have been reviewed this Appraisal, Thank you for your contributions\')" class="btn btn-sm btn-default">Reviewed</a>';
-					}
-					return '<a id="edit" href="home.php?link=formpa_review_superior&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
-                     
-                }
-			 },
-		  ]
-	})
-	$("#tablePenilaianPeers").DataTable({
-        
-		"bPaginate": true,
-		"bInfo": true,
-		"autoWidth": false, 
-		"processing": true,
-		"language": {
-		"loadingRecords": "<span class='fa-stack fa-lg' style='margin-left: 50%;'>\n\
-							<i class='fa fa-refresh fa-spin fa-fw fast-spin' style='color:rgb(75, 183, 245);'></i>\n\
-						</span>",
-		},
-		"ajax": "apiController.php?code=getPenilaianPeers",
-		"type": "GET", // Use POST method
-	
-		
-		  // membuat kolom
-		  "columns": [
-  
-			  //untuk membuat data index / numbering
-			  { "data": 'no', "name":'id', render: function (data, type, row, meta) {
-					return meta.row + meta.settings._iDisplayStart + 1;
-				}},
-  
-			  { "data": 'Nama_Lengkap' },
-			  { "data": 'Nama_Jabatan' },
-			  { "data": 'Nama_Golongan' },
-			  { "data": 'Nama_OU' },
-			  { "data": 'Nama_Departemen' },
-			  { "data": 'created_date' },
-			  { 
-                data: null,
-                render:function(data, type, row)
-                {
-                 
-					if(data.total_culture&&data.total_leadership){
-						return '<a onclick="alert(\'You have been reviewed this Appraisal, Thank you for your contributions\')" class="btn btn-sm btn-default">Reviewed</a>';
-					}
-					return '<a id="edit" href="home.php?link=formpa_review_peers&id='+data.idkar+'" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
-                     
-                }
-			 },
-		  ]
-	})
-
-	$('#tablePenilaian tbody').on('click', '#edit', function () {
-        $('#loader').css('display', 'block');
-    });
-
-	document.getElementById('success').addEventListener('click', function() {
-		$('.alert-success').removeClass('hidden');
-	})
-
 })
 </script>
