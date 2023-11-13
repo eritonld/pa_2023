@@ -276,11 +276,20 @@ else
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu1"; ?></span>
               </a>
             </li>
+			<?php 
+			$cekaksesuser = "SELECT idkar, kpi_unit, periode FROM kpi_unit_2023 where idkar='$scekuser[id]' and status_aktif='T'";
+			$stmt = $koneksi->prepare($cekaksesuser);
+			$scekaksesuser =  $stmt->execute();
+			$scekaksesuser = $stmt->rowCount();
+			
+			if($scekaksesuser>0){
+			?>
 			<li class="<?php echo $menurating?>">
               <a href="?link=rating">
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu5"; ?></span>
               </a>
             </li>
+			<?php } ?>
 			<!-- <li class="<?php echo $menuaddapp?>">
               <a href="?link=addapp">
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu2"; ?></span>
