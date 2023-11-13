@@ -61,7 +61,7 @@ if($code == 'getPenilaian') {
 			LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
 			LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
 			LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-			where f.id_atasan='$iduser' GROUP BY a.id";
+			where f.id_atasan='$iduser' AND f.layer='L1' GROUP BY a.id";
         }else{
             // $sql = "SELECT b.id, a.id AS idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.approver_id, b.layer, b2.approval_review, a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b3.approval_status
             // FROM $karyawan AS a
@@ -135,17 +135,14 @@ if($code == 'getPenilaian') {
         WHEN b.rating = 1 THEN 'E'
         ELSE ''
         END AS convertRating, 
-        a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, kf.Nama_Lengkap AS nama_atasan_view, kg.Nama_Lengkap AS nama_a1, f.id_atasan as id_atasan, f.layer as layerUser
+        a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date
         FROM $karyawan AS a
         LEFT JOIN transaksi_2023_final AS b ON b.idkar = a.id
+        LEFT JOIN transaksi_2023 AS b2 ON b2.idkar = a.id
         LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
         LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
         LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
-        LEFT JOIN atasan AS f ON f.idkar=b.idkar
-        LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
-        LEFT JOIN atasan AS g ON g.idkar=b.idkar AND g.layer='L1'
-        LEFT JOIN $karyawan AS kg ON kg.id=g.id_atasan
-        WHERE ( b.created_by='$iduser' OR f.id_atasan='$iduser' ) AND a.id!='$iduser'
+        WHERE ( b.created_by='$iduser' OR b.approver_review_id='$iduser' OR b2.approver_id='$iduser' AND b2.approval_status='Pending') AND a.id!='$iduser'
         AND a.Kode_Golongan IN $jg GROUP BY a.id";
     
         $result = $koneksi->query($sql);
@@ -480,7 +477,7 @@ if($code == 'getPenilaian') {
 
     try {
 
-        $queryLayer = "SELECT id_atasan, layer FROM atasan WHERE idkar = :idkar AND id_atasan != ''";
+        $queryLayer = "SELECT id_atasan, layer FROM atasan WHERE idkar = :idkar AND id_atasan != '' ORDER BY layer ASC";
 
         // Prepare the statement
         $stmtLayer = $koneksi->prepare($queryLayer);
@@ -518,8 +515,7 @@ if($code == 'getPenilaian') {
         $stmtCekL0->bindParam(':id', $idkar, PDO::PARAM_INT);
         $stmtCekL0->execute();
 
-        $resultL0 = $stmtCekL0->fetchAll(PDO::FETCH_ASSOC);
-        $countL0  = count($resultL0);
+        $countL0 = $stmtCekL0->rowCount();
 
         $cekL2 = "SELECT b.idkar, b.kpi_unit FROM atasan a LEFT JOIN kpi_unit_2023 b ON b.idkar=a.id_atasan WHERE layer='L2' AND a.idkar=:id AND b.kpi_unit!=''";
 
@@ -539,7 +535,7 @@ if($code == 'getPenilaian') {
 
         $L0 = 'L0';
         $layerApproval = $countL2 ? 'L1' : 'L2';
-        $atasanReview = $countL2 ? $resultLayer[1]['id_atasan'] : $resultLayer[2]['id_atasan'];
+        $atasanReview = $countL2 ? (!$countL0 ? $resultLayer[0]['id_atasan'] : $resultLayer[1]['id_atasan']) : (!$countL0 ? $resultLayer[1]['id_atasan'] : $resultLayer[2]['id_atasan']);
 
         $nik = $ckaryawan['nik_baru'] ? $ckaryawan['nik_baru'] : $ckaryawan['NIK'];
 
@@ -1152,7 +1148,7 @@ if($code == 'getPenilaian') {
         $resultLevelReviewWithRating = $stmtLevelReviewWithRating->fetch(PDO::FETCH_ASSOC);
 
         $rating = $countKpiAtasan ? $final_score : null;
-        $id_review = $countKpiAtasan ? ($resultKpiAtasan['kpi_unit'] ? $resultKpiAtasan['id_atasan'] : $idpic) : $idpic;
+        $id_review = $countKpiAtasan ? ($resultKpiAtasan['kpi_unit'] ? $idpic : $resultKpiAtasan['id_atasan']) : $idpic;
         $layers = $countKpiAtasan ? ($resultKpiAtasan['kpi_unit'] ? $resultKpiAtasan['layer'] : $layer) : $layer;
         $approval_review = $resultLevelReviewWithRating['id_atasan']==$idpic ? 'Pending' : 'Approved';
 

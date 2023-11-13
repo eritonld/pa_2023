@@ -31,12 +31,6 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 </style>
 <div id="loader" class="proses" style="display: none"></div>
 
-<div class="alert alert-success alert-dismissible text-bold hidden">
-<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-<i class="icon fa fa-check"></i>"Employee Name" Performance Appraisal created successfully!
-</div>
-<button class="btn btn-success" id="success">success</button>
-
 <input id="idpic" type="hidden" value="<?= $scekuser['id']; ?>">
 <div class="row">
 <section class="col-lg-12 connectedSortable">
@@ -209,16 +203,18 @@ $(document).ready(function () {
                 {
                  
 					let style;
-					if (data.created_by && data.idkar==idpic) {
+					if (data.created_by && data.created_by==idpic && data.updated_by==idpic) {
 						style = ["formpa_edit", "primary", "Edit"];
 					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending' && data.updated_by==idpic) {
 						style = ["formpa_review", "default", "Review"];
 					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending') {
 						style = ["formpa_review", "primary", "Review"];
-					}else if(data.idkar==idpic){
+					}else if(data.idkar==idpic || data.id_L1==idpic && data.approval_status=='Pending'){
 						style = ["formpa", "success", "Create PA"];
+					}else if(!data.id){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' performance appraisal has not been created\')" class="btn btn-sm btn-default">Pending</a>';
 					} else {
-						return '<a class="btn btn-sm btn-default">Pending</a>';
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
 					
 

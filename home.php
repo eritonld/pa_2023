@@ -332,7 +332,9 @@ else
           <div class="pull-right hidden-xs">
             <b>Version</b> 2.0
           </div>
-          <strong>Copyrights <i class="fa fa-copyright"></i> 2023 - KPN Corporation</strong>
+          <div class="pull-left hidden-xs">
+            <strong>Copyrights <i class="fa fa-copyright"></i> 2023 - KPN Corporation</strong>
+          </div>
         </footer>
     </div>
 
