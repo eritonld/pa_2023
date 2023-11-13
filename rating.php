@@ -437,8 +437,6 @@ try {
 }
 </style>
 <div id="proses" class="proses" style="display: none"></div>
-<input type="hidden" id="id_atasan" value="<?= $results['id_atasan']; ?>">
-<div class="rating-section">
     <div class="row">
     <section class="col-lg-12 connectedSortable">
         <div class="nav-tabs-custom">

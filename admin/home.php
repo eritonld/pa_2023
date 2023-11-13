@@ -225,23 +225,24 @@ else
 					<i class="fa fa-dashboard"></i><span><?php echo "$menu1"; ?></span>
 				  </a>
 				</li>
+				<li class="<?php echo $menudataemp?>">
+				  <a href="?link=dataemp">
+					<i class="fa fa-dashboard"></i><span><?php echo "$menu3"; ?></span>
+				  </a>
+				</li>
 			<?php } ?>
 			<li class="<?php echo $menunotassessed?>">
               <a href="?link=notassessed">
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu2"; ?></span>
               </a>
             </li>
-			<li class="<?php echo $menudataemp?>">
-              <a href="?link=dataemp">
-                <i class="fa fa-dashboard"></i><span><?php echo "$menu3"; ?></span>
-              </a>
-            </li>
+			
 			<?php if($scekuser['level']=='admin'){?>
-			<li class="<?php echo $menudatareport?>">
+			<!--<li class="<?php //echo $menudatareport?>">
               <a href="?link=datareport">
-                <i class="fa fa-dashboard"></i><span><?php echo "$menu4"; ?></span>
+                <i class="fa fa-dashboard"></i><span><?php //echo "$menu4"; ?></span>
               </a>
-            </li>
+            </li>-->
 			<?php } ?>
 			<?php if($scekuser['username']=='adminhomaster'){?>
 				<li class="<?php echo $menudatainemp?>">
