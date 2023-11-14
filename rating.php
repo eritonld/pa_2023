@@ -1,5 +1,6 @@
 <?php
 include("tabel_setting.php");
+include("function.php");
 $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Example query: Select all data from a table named 'your_table'

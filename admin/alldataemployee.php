@@ -193,12 +193,25 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 		else if($aa==6){$layer="sub3"; $id_layer=$sub3;}
 		
 		if($id_layer<>""){
+			$cek_fortable = "SELECT k.id, if(dg.fortable='staff',if(COUNT(aa.idkar)>0,'staffb','staff'),dg.fortable) as fortable FROM $karyawan as k 
+			left join daftargolongan as dg on dg.Kode_Golongan=k.Kode_Golongan
+			left join atasan as aa on aa.id_atasan=k.id
+			where k.id='$idkar' GROUP BY k.id";
+			$stmt_fortable = $koneksi->prepare($cek_fortable);
+			$scek_fortable =  $stmt_fortable->execute();
+			$scek_fortable = $stmt_fortable->fetch(PDO::FETCH_ASSOC);
+			
 			$cekp1 = "SELECT idkar, approver_id FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
+			
+			// echo "SELECT idkar, approver_id FROM $transaksi_pa where idkar='$idkar' and layer='$layer'<br>";
 			$stmt = $koneksi->prepare($cekp1);
 			$scekp1 =  $stmt->execute();
 			$scekp1 = $stmt->rowCount();
+			$sscekp1 = $stmt->fetch(PDO::FETCH_ASSOC);
+			
 			if($scekp1>0){
 				//edit
+				// echo "INSERT INTO transaksi_2023_delete (SELECT * FROM $transaksi_pa where idkar='$idkar' and layer='$layer')<br>";
 				$pindah_p1 = "INSERT INTO transaksi_2023_delete (SELECT * FROM $transaksi_pa where idkar='$idkar' and layer='$layer')";
 				$stmt = $koneksi->prepare($pindah_p1);
 				$spindah_p1 =  $stmt->execute();
@@ -207,11 +220,11 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 				$stmt = $koneksi->prepare($delete_p1);
 				$sdelete_p1 =  $stmt->execute();
 				
-				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','fortable','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
+				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','$scek_fortable[fortable]','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
 				$stmt = $koneksi->prepare($input_p1);
 				$sinput_p1 =  $stmt->execute();
 			}else{
-				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','fortable','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
+				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','$scek_fortable[fortable]','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
 				$stmt = $koneksi->prepare($input_p1);
 				$sinput_p1 =  $stmt->execute();
 			}
@@ -228,26 +241,6 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 		}
 	}
 	
-	
-	// if($p2<>''){
-	
-	// }
-	
-	// if($p3<>''){
-	
-	// }
-	
-	// if($sub1<>''){
-	
-	// }
-	
-	// if($sub2<>''){
-	
-	// }
-	
-	// if($sub3<>''){
-	
-	// }
 	
 	if($gol>'GL011'){
 		$username=$_POST['username'];
