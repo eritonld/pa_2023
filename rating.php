@@ -435,6 +435,7 @@ try {
 </style>
 <div id="proses" class="proses" style="display: none"></div>
 <input id="pic" type="hidden" value="<?= $scekuser['pic']; ?>">
+<input id="idpic" type="hidden" value="<?= $scekuser['id']; ?>">
     <div class="row">
     <section class="col-lg-12 connectedSortable">
         <div class="nav-tabs-custom">
@@ -1317,8 +1318,8 @@ try {
     function matchContent(value) {
         const elements = [value+'_a', value+'_b', value+'_c', value+'_d', value+'_e'];
         const employee = $('#total'+value).val();
-        const tables   = value==='23'? table1 : (value==='45'? table2 : (value==='67'? table3 : table4));
-        const id_atasan = $('#id_atasan').val();
+        const tables = value==='23'? table1 : (value==='45'? table2 : (value==='67'? table3 : table4));
+        const idpic = $('#idpic').val();
         let allMatch = true;
 
         for (const element of elements) {
@@ -1397,8 +1398,8 @@ try {
                         "id": rowData.id,
                         "rating": selectedValue,
                         "idkar": rowData.idkar,
-                        "idpic": rowData.id_atasan,
-                        "id_atasan": id_atasan,
+                        "idpic": idpic,
+                        "nextlayer": rowData.nextlayer,
                     };
 
                     results.push(rowObject);

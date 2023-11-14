@@ -135,6 +135,8 @@ if($code == 'getPenilaian') {
         WHEN b.rating = 1 THEN 'E'
         ELSE ''
         END AS convertRating, 
+        (SELECT CONCAT('L', CAST(SUBSTRING(layer, 2) AS UNSIGNED) + 1) AS new_layer FROM atasan WHERE idkar=b2.idkar AND id_atasan='$iduser') AS nextlayer,
+        (SELECT id_atasan FROM atasan WHERE idkar=b2.idkar AND layer='L2') AS nextapprover,
         a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date
         FROM $karyawan AS a
         LEFT JOIN transaksi_2023_final AS b ON b.idkar = a.id
@@ -142,7 +144,7 @@ if($code == 'getPenilaian') {
         LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
         LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
         LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
-        WHERE ( b.created_by='$iduser' OR b.approver_review_id='$iduser' OR b2.approver_id='$iduser' AND b2.approval_status='Pending') AND a.id!='$iduser'
+        WHERE (b2.approver_id='$iduser' AND isnull(b2.rating)) AND a.id!='$iduser'
         AND a.Kode_Golongan IN $jg GROUP BY a.id";
     
         $result = $koneksi->query($sql);
@@ -173,9 +175,9 @@ if($code == 'getPenilaian') {
 
         $data = json_decode($json_data, true);
         $results = $data["results"];
-
         try {
             // Create a PDO connection
+            $koneksi->beginTransaction();
 
             // Set PDO to throw exceptions on error
             $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -186,8 +188,15 @@ if($code == 'getPenilaian') {
                 $rating = $row["rating"];
                 $idkar = $row["idkar"];
                 $idpic = $row["idpic"];
-                $id_atasan = $row["id_atasan"];
-                // echo $idkar;
+                $nextlayer = $row["nextlayer"];
+
+                $query = "SELECT id_atasan FROM atasan WHERE idkar='$idkar' AND layer='$nextlayer'";
+
+                $stmt = $koneksi->query($query);
+    
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                // echo $result['id_atasan'];
                 // Replace "your_table_name" with the actual table name in your database
                 $query2023 = "UPDATE transaksi_2023 SET rating = :rating, approval_status = 'Approved', updated_by = :idpic, updated_date = :updated_date WHERE idkar = :idkar AND approver_id = :idpic";
                 $stmt2023 = $koneksi->prepare($query2023);
@@ -197,23 +206,25 @@ if($code == 'getPenilaian') {
                 $stmt2023->bindParam(":updated_date", $datetime);
                 $stmt2023->execute();
 
-                $queryFinal = "UPDATE transaksi_2023_final SET rating = :rating, updated_by = :idpic, updated_date = :updated_date, approver_rating_id = :id_atasan WHERE idkar = :idkar AND approver_rating_id = :idpic";
+                $queryFinal = "UPDATE transaksi_2023_final SET rating = :rating, updated_by = :idpic, updated_date = :updated_date, approver_rating_id = :id_atasan, layer_rating = :nextlayer WHERE idkar = :idkar AND approver_rating_id = :idpic";
                 $stmtFinal = $koneksi->prepare($queryFinal);
                 $stmtFinal->bindParam(":rating", $rating);
                 $stmtFinal->bindParam(":idkar", $idkar);
                 $stmtFinal->bindParam(":idpic", $idpic);
-                $stmtFinal->bindParam(":id_atasan", $id_atasan);
+                $stmtFinal->bindParam(":id_atasan", $result['id_atasan']);
+                $stmtFinal->bindParam(":nextlayer", $nextlayer);
                 $stmtFinal->bindParam(":updated_date", $datetime);
                 $stmtFinal->execute();
             }
 
-            // Close the database connection
-            $koneksi = null;
-
             // Respond with a success message
             $response = "Data updated successfully!";
             echo json_encode($response);
+            $koneksi->commit();
+            
         } catch (PDOException $e) {
+            // Rollback the transaction if there are errors
+            $koneksi->rollBack();
             // Handle any PDO exceptions (database errors)
             $response = "Error updating data: " . $e->getMessage();
             http_response_code(500); // Internal Server Error
