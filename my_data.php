@@ -203,15 +203,13 @@ $(document).ready(function () {
                 {
                  
 					let style;
-
-					if ((data.created_by && data.idkar==idpic) || (data.created_by==idpic && data.updated_by==null)) {
-
+					if (data.id && data.created_by==idpic && !data.updated_date || data.id && data.created_by==idpic && data.updated_by==idpic) {
 						style = ["formpa_edit", "primary", "Edit"];
-					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending' && data.updated_by==idpic) {
-						style = ["formpa_review", "default", "Review"];
-					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending') {
+					} else if (data.created_by && data.updated_by!=idpic && data.approver_review_id==idpic) {
 						style = ["formpa_review", "primary", "Review"];
-					}else if((data.idkar==idpic || (data.id_L1==idpic && data.Kode_Golongan<'GL013')) && data.created_by==null){
+					// } else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending') {
+					// 	style = ["formpa_review", "primary", "Review"];
+					}else if(!data.id && data.idkar==idpic || data.id_L1==idpic && data.approval_status=='Pending' && data.approval_review==idpic){
 						style = ["formpa", "success", "Create PA"];
 					}else if(!data.id){
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' performance appraisal has not been created\')" class="btn btn-sm btn-default">Pending</a>';
@@ -220,16 +218,16 @@ $(document).ready(function () {
 					}
 					
 
-					if(data.id && data.approval_status=='Approved' && data.updated_by!=idpic && data.updated_by!=null){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
-					}
+					// if(data.id && data.approval_status=='Approved' && data.updated_by!=idpic && data.updated_by!=null){
+					// 	return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
+					// }
 						return '<a id="edit" href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
                      
                 }
 			 },
 		  ]
 	})
-	<!-- atasan & peers -->
+	// <!-- atasan & peers -->
 	$("#tablePenilaianSuperior").DataTable({
         
 		"bPaginate": true,
@@ -266,7 +264,7 @@ $(document).ready(function () {
                  
 					let style;
 					if (data.created_by && data.approver_id==idpic && data.approval_status=='Pending' && data.updated_by==idpic) {
-						<!--style = ["formpa_review_peers", "default", "Review"];-->
+						style = ["formpa_review_peers", "default", "Review"];
 						return '<a id="edit" class="btn btn-sm btn-default">Reviewed</a>';
 					} else if (data.created_by && data.approver_id==idpic && data.approval_status=='Pending') {
 						style = ["formpa_review_peers", "primary", "Review"];

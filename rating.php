@@ -61,7 +61,7 @@ try {
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status!='Pending') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')";
+    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status='Pending') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')";
 
     $resultPending23 = $koneksi->query($queryPending23);
 
@@ -78,7 +78,7 @@ try {
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status!='Pending') AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
+    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status='Pending') AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
 
     $resultPending45 = $koneksi->query($queryPending45);
 
@@ -95,7 +95,7 @@ try {
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status!='Pending') AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025')";
+    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status='Pending') AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025')";
 
     $resultPending67 = $koneksi->query($queryPending67);
 
@@ -112,8 +112,9 @@ try {
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status!='Pending') AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
-	
+
+    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status='Pending') AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
+
     $resultPending89 = $koneksi->query($queryPending89);
 
     $pending89 = $resultPending89->fetchAll(PDO::FETCH_ASSOC);
@@ -435,6 +436,7 @@ try {
 }
 </style>
 <div id="proses" class="proses" style="display: none"></div>
+<input id="pic" type="hidden" value="<?= $scekuser['pic']; ?>">
     <div class="row">
     <section class="col-lg-12 connectedSortable">
         <div class="nav-tabs-custom">
@@ -1430,6 +1432,7 @@ try {
     }
 
     function exportExcel(value){
+        const pic = $('#pic').val();
         const tables   = value==='23'? table1 : (value==='45'? table2 : (value==='67'? table3 : table4));
         let results = [];
         // Iterate through each row in the DataTable
@@ -1443,7 +1446,7 @@ try {
                 "Nama_Golongan": rowData.Nama_Golongan,
                 "suggestedRating": rowData.rating,
                 "proposedRating": selectedValue,
-                "exportBy": rowData.nama_atasan_view,
+                "exportBy": pic,
                 "Nama_Departemen": rowData.Nama_Departemen,
             };
 
