@@ -39,11 +39,7 @@ if($code == 'getPenilaian') {
             // LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
             // WHERE (a.id='$iduser' OR f.id_atasan='$iduser' OR b.created_by='$iduser' OR b3.approver_id='$iduser') GROUP BY a.id	
 		
-<<<<<<< HEAD
             $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
-=======
-            $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, c.Nama_Golongan,a.Kode_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
->>>>>>> e352b8e46e24a491c777b7afd920d7fbaec017ab
 			FROM $karyawan as a
 			left join atasan as f on f.idkar=a.id and f.layer='L1'
 			LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
@@ -55,11 +51,7 @@ if($code == 'getPenilaian') {
 			LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
 			where a.id='$iduser' GROUP BY a.id
 			UNION
-<<<<<<< HEAD
 			SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
-=======
-			SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, c.Nama_Golongan,a.Kode_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
->>>>>>> e352b8e46e24a491c777b7afd920d7fbaec017ab
 			FROM $karyawan as a
 			left join atasan as f on f.idkar=a.id and f.layer in ('L1','L2')
 			LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
