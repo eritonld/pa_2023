@@ -61,7 +61,7 @@ if($code == 'getPenilaian') {
 			LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
 			LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
 			LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-			where f.id_atasan='$iduser' AND f.layer='L1' GROUP BY a.id";
+			where f.id_atasan='$iduser' AND f.layer in ('L1','L2') GROUP BY a.id";
         }else{
             // $sql = "SELECT b.id, a.id AS idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.approver_id, b.layer, b2.approval_review, a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b3.approval_status
             // FROM $karyawan AS a
@@ -143,7 +143,7 @@ if($code == 'getPenilaian') {
         LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
         LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
         WHERE ( b.created_by='$iduser' OR b.approver_review_id='$iduser' OR b2.approver_id='$iduser' AND b2.approval_status='Pending') AND a.id!='$iduser'
-        AND a.Kode_Golongan IN $jg GROUP BY a.id";
+        AND a.Kode_Golongan IN $jg  and b2.layer not in ('p1','p2','p3','sub1','sub2','sub3') GROUP BY a.id";
     
         $result = $koneksi->query($sql);
     
