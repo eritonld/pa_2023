@@ -10,6 +10,7 @@ if(isset($_COOKIE['bahasa'])){
 }
 
 $id = isset($_GET['id']) ? $_GET['id'] : '';
+$layer = isset($_GET['layer']) ? $_GET['layer'] : '';
 $nama_atasan1 = isset($_GET['superior']) ? $_GET['superior'] : '';
 $nama_atasan2 = isset($_GET['headsuperior']) ? $_GET['headsuperior'] : '';
 $email_atasan1 = isset($_GET['superioremail']) ? $_GET['superioremail'] : '';
@@ -27,18 +28,14 @@ if($id=='')
 exit;
 }
 try {
-    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.fortable, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a.id_atasan1, a.id_atasan2, a.id_atasan3, a1.email as email_atasan1, a2.email as email_atasan2, a3.email as email_atasan3, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan1 = :id OR id_atasan2 = :id OR id_atasan3 = :id) as jumlah_subo
-            FROM $karyawan AS k
-            LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
-            LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.kode_departemen
-            LEFT JOIN daftargolongan AS dg ON k.Kode_Golongan = dg.Kode_Golongan
-            LEFT JOIN daftarjabatan AS dj ON k.Kode_Jabatan = dj.Kode_Jabatan
-            LEFT JOIN daftarou AS du ON k.Kode_OU = du.Kode_OU
-			LEFT JOIN atasan AS a ON a.idkar= k.id
-			LEFT JOIN $karyawan AS a1 ON a1.id= a.id_atasan1
-			LEFT JOIN $karyawan AS a2 ON a2.id= a.id_atasan2
-			LEFT JOIN $karyawan AS a3 ON a3.id= a.id_atasan3
-            WHERE k.id = :id";
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.fortable, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan = :id) as jumlah_subo FROM $karyawan AS k 
+	LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan 
+	LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.kode_departemen 
+	LEFT JOIN daftargolongan AS dg ON k.Kode_Golongan = dg.Kode_Golongan 
+	LEFT JOIN daftarjabatan AS dj ON k.Kode_Jabatan = dj.Kode_Jabatan 
+	LEFT JOIN daftarou AS du ON k.Kode_OU = du.Kode_OU 
+	WHERE k.id = :id";
+	
 			
     $stmt = $koneksi->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_STR);
@@ -252,6 +249,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
     </div>
 <form name="addAppraisal" id="addAppraisal" method="POST" action="apiController.php?code=submitReviewPeers">
 	<input type="hidden" name="pic" value="<?="$scekuser[pic]";?>">
+	<input type="hidden" id="layer" name="layer" value="<?="$layer";?>">
 	<input type="hidden" id="idpic" name="idpic" value="<?="$scekuser[id]";?>">
 	<input type="hidden" id="idkar" name="idkar" value="<?="$ckaryawan[idkar]";?>">
 	<input type="hidden" name="id_atasan1" value="<?="$ckaryawan[id_atasan1]";?>" readonly />

@@ -20,7 +20,7 @@ if(!$id)
 <?php
 }
 try {
-    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.fortable, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a1.id_atasan AS id_atasan1, a2.id_atasan AS id_atasan2, ka1.email AS email_atasan1, ka2.email AS email_atasan2, (
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.fortable, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a1.id_atasan AS id_atasan1, a2.id_atasan AS id_atasan2, ka1.email AS email_atasan1, ka2.email AS email_atasan2, k.pen_q1, k.pen_q2, k.pen_q3, k.pen_q4 , (
 		SELECT COUNT(idkar)
 		FROM atasan
 		WHERE id_atasan = :id AND layer = 'L1') AS jumlah_subo
@@ -196,7 +196,34 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 					<div class="col-md-4">: <?="$ckaryawan[Nama_Golongan]";?></div>
 					<div class="col-md-2 text-bold"><?="$a11";?></div>
 					<div class="col-md-4">: <?="$statussp / $periode";?></div>
-				</div>				
+				</div>
+				<?php
+				$quartal = "";
+				
+				if($ckaryawan['pen_q1']<>""){
+					$quartal = $quartal."Q1 : <b>$ckaryawan[pen_q1]</b>";
+				}
+				if($ckaryawan['pen_q2']<>""){
+					$quartal = $quartal." / Q2 : <b>$ckaryawan[pen_q2]</b>";
+				}
+				if($ckaryawan['pen_q3']<>""){
+					$quartal = $quartal." / Q3 : <b>$ckaryawan[pen_q3]</b>";
+				}
+				if($ckaryawan['pen_q4']<>""){
+					$quartal = $quartal." / Q4 : <b>$ckaryawan[pen_q4]</b>";
+				}
+				
+				if($ckaryawan['pen_q1']<>"" || $ckaryawan['pen_q2']<>"" || $ckaryawan['pen_q3']<>"" || $ckaryawan['pen_q4']<>""){
+					?>
+					<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
+						<div class="col-md-2 text-bold">Quartal</div>
+						<div class="col-md-4">: <?php echo "$quartal"; ?></div>
+						<div class="col-md-2 text-bold"></div>
+						<div class="col-md-4"></div>
+					</div>
+					<?php
+				}
+				?>				
 			</div>
 			
         </div>

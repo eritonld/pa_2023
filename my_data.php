@@ -136,8 +136,8 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 							<th>Grade</th>
 							<th>Unit</th>
 							<th>Department</th>
-							<th>Input Date</th>
-							<th>Review</th>
+							<th>Status</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 				</table>
@@ -203,13 +203,15 @@ $(document).ready(function () {
                 {
                  
 					let style;
-					if (data.created_by && data.created_by==idpic && data.updated_by==idpic) {
+
+					if ((data.created_by && data.idkar==idpic) || (data.created_by==idpic && data.updated_by==null)) {
+
 						style = ["formpa_edit", "primary", "Edit"];
 					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending' && data.updated_by==idpic) {
 						style = ["formpa_review", "default", "Review"];
 					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending') {
 						style = ["formpa_review", "primary", "Review"];
-					}else if(data.idkar==idpic || data.id_L1==idpic && data.approval_status=='Pending'){
+					}else if((data.idkar==idpic || (data.id_L1==idpic && data.Kode_Golongan<'GL013')) && data.created_by==null){
 						style = ["formpa", "success", "Create PA"];
 					}else if(!data.id){
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' performance appraisal has not been created\')" class="btn btn-sm btn-default">Pending</a>';
@@ -222,6 +224,60 @@ $(document).ready(function () {
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
 						return '<a id="edit" href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
+                     
+                }
+			 },
+		  ]
+	})
+	<!-- atasan & peers -->
+	$("#tablePenilaianSuperior").DataTable({
+        
+		"bPaginate": true,
+		"bInfo": true,
+		"autoWidth": false, 
+		"processing": true,
+		"language": {
+		"loadingRecords": "<span class='fa-stack fa-lg' style='margin-left: 50%;'>\n\
+							<i class='fa fa-refresh fa-spin fa-fw fast-spin' style='color:rgb(75, 183, 245);'></i>\n\
+						</span>",
+		},
+		"ajax": "apiController.php?code=getPenilaianSuperior",
+		"type": "GET", // Use POST method
+	
+		
+		  // membuat kolom
+		  "columns": [
+  
+			  //untuk membuat data index / numbering
+			  { "data": 'no', "name":'id', render: function (data, type, row, meta) {
+					return meta.row + meta.settings._iDisplayStart + 1;
+				}},
+  
+			  { "data": 'Nama_Lengkap' },
+			  { "data": 'Nama_Jabatan' },
+			  { "data": 'Nama_Golongan' },
+			  { "data": 'Nama_OU' },
+			  { "data": 'Nama_Departemen' },
+			  { "data": 'layer' },
+			  { 
+                data: null,
+                render:function(data, type, row)
+                {
+                 
+					let style;
+					if (data.created_by && data.approver_id==idpic && data.approval_status=='Pending' && data.updated_by==idpic) {
+						<!--style = ["formpa_review_peers", "default", "Review"];-->
+						return '<a id="edit" class="btn btn-sm btn-default">Reviewed</a>';
+					} else if (data.created_by && data.approver_id==idpic && data.approval_status=='Pending') {
+						style = ["formpa_review_peers", "primary", "Review"];
+					}else {
+						return '<a class="btn btn-sm btn-default">Pending</a>';
+					}
+					
+					if(data.id && data.approval_status=='Approved' && data.updated_by!=idpic && data.updated_by!=null){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
+					}
+						return '<a href="home.php?link='+style[0]+'&id='+data.idkar+'&layer='+data.layer+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
                      
                 }
 			 },
