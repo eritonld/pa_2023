@@ -221,7 +221,7 @@ else
 				$mydata2="My Subordinate (one-level) Appraisal";
 				$mydata3="My Subordinate (two-level) Appraisal";
 				$mydata4="My Subordinate (three-level) Appraisal";
-				$mydata5="My Superior (L1) Appraisal";
+				$mydata5="My Superior (L1) Appraisal  & Peers";
 				$mydata6="Peers Appraisal";
 				$myrating1="Grade 2-3";
         $myrating2="Grade 4-5";
@@ -249,7 +249,7 @@ else
 				$mydata2="Nilai Bawahan Saya (1 Level)";
 				$mydata3="Nilai Bawahan Saya (2 Level)";
 				$mydata4="Nilai Bawahan Saya (3 Level)";
-        $mydata5="Nilai Atasan Saya (L1)";
+        $mydata5="Nilai Atasan Saya (L1) & Peers";
         $mydata6="Nilai Peers";
         $myrating1="Grade 2-3";
         $myrating2="Grade 4-5";

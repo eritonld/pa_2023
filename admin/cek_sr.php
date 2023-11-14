@@ -63,7 +63,7 @@ function srating($idkar){
     return  $total_score;
 }
 
-$idkars = "2935";
+$idkars = "51321";
 for($a=1;$a<=100;$a++){
     $nilai_self = srating($idkars);
 	

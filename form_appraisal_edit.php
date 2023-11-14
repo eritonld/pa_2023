@@ -27,7 +27,7 @@ if($id=='')
 exit;
 }
 try {
-    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a1.id_atasan as id_atasan1, a2.id_atasan as id_atasan2, a3.id_atasan as id_atasan3, ka1.email as email_atasan1, ka2.email as email_atasan2, ka3.email as email_atasan3
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a1.id_atasan as id_atasan1, a2.id_atasan as id_atasan2, a3.id_atasan as id_atasan3, ka1.email as email_atasan1, ka2.email as email_atasan2, ka3.email as email_atasan3, k.pen_q1, k.pen_q2, k.pen_q3, k.pen_q4
             FROM $karyawan AS k
             LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
             LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.Kode_Departemen
@@ -296,7 +296,35 @@ try {
 					<div class="col-md-4">: <?="$Nama_Golongan";?></div>
 					<div class="col-md-2 text-bold"><?="$a11";?></div>
 					<div class="col-md-4">: <?="- / -";?></div>
-				</div>				
+				</div>
+				<?php
+				$quartal = "";
+				
+				if($ckaryawan['pen_q1']<>""){
+					$quartal = $quartal."Q1 : <b>$ckaryawan[pen_q1]</b>";
+				}
+				if($ckaryawan['pen_q2']<>""){
+					$quartal = $quartal." / Q2 : <b>$ckaryawan[pen_q2]</b>";
+				}
+				if($ckaryawan['pen_q3']<>""){
+					$quartal = $quartal." / Q3 : <b>$ckaryawan[pen_q3]</b>";
+				}
+				if($ckaryawan['pen_q4']<>""){
+					$quartal = $quartal." / Q4 : <b>$ckaryawan[pen_q4]</b>";
+				}
+				
+				
+				if($ckaryawan['pen_q1']<>"" || $ckaryawan['pen_q2']<>"" || $ckaryawan['pen_q3']<>"" || $ckaryawan['pen_q4']<>""){
+					?>
+					<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
+						<div class="col-md-2 text-bold">Quartal</div>
+						<div class="col-md-4">: <?php echo "$quartal"; ?></div>
+						<div class="col-md-2 text-bold"></div>
+						<div class="col-md-4"></div>
+					</div>
+					<?php
+				}
+				?>				
 			</div>
         </div>
     </div>
