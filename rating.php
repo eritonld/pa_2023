@@ -112,6 +112,7 @@ try {
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
+
     WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status='Pending') AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
 
     $resultPending89 = $koneksi->query($queryPending89);
@@ -190,6 +191,7 @@ try {
         LEFT JOIN karyawan_$tahunperiode AS k ON k.id = a.idkar
         LEFT JOIN kriteria AS c ON c.grade = b.kpi_unit AND c.tahun = '$tahunperiode' AND c.kesimpulan='$resultKriteria[JG45]' 
         WHERE id_atasan = '$idmaster_pa' AND k.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
+		
 
     $resultTarget45 = $koneksi->query($queryTarget45);
 
@@ -1123,7 +1125,8 @@ try {
                 { "data": 'Nama_Golongan' },
                 { "data": 'Nama_OU' },
                 { "data": 'Nama_Departemen' },
-                { "data": 'convertRating' },
+                <!--{ "data": 'convertRating' },-->
+				{ "data": 'convertRating' },
                 {
                     data: null,
                     render: function (data, type, row) {
