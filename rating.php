@@ -52,17 +52,16 @@ try {
 // echo $view['result'];
 
 try {
-    $queryPending23 = "SELECT a.Nama_Lengkap, c.approval_status FROM karyawan_2023 a 
+    $queryPending23 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')
     UNION 
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
-    LEFT JOIN karyawan_2023 b ON b.id=a.idkar
+    LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN transaksi_2023 c2 ON c2.idkar=a.idkar AND c2.approver_id=a.approver_review_id
-    LEFT JOIN karyawan_2023 d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' AND c2.approval_status!='Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')";
+    LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
+    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status!='Pending') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')";
 
     $resultPending23 = $koneksi->query($queryPending23);
 
@@ -70,17 +69,16 @@ try {
 
     $countPending23 = count($pending23);
 
-    $queryPending45 = "SELECT a.Nama_Lengkap, c.approval_status FROM karyawan_2023 a 
+    $queryPending45 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017')
     UNION 
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
-    LEFT JOIN karyawan_2023 b ON b.id=a.idkar
+    LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN transaksi_2023 c2 ON c2.idkar=a.idkar AND c2.approver_id=a.approver_review_id
-    LEFT JOIN karyawan_2023 d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' AND c2.approval_status!='Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
+    LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
+    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status!='Pending') AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
 
     $resultPending45 = $koneksi->query($queryPending45);
 
@@ -88,17 +86,16 @@ try {
 
     $countPending45 = count($pending45);
 
-    $queryPending67 = "SELECT a.Nama_Lengkap, c.approval_status FROM karyawan_2023 a 
+    $queryPending67 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025')
     UNION 
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
-    LEFT JOIN karyawan_2023 b ON b.id=a.idkar
+    LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN transaksi_2023 c2 ON c2.idkar=a.idkar AND c2.approver_id='$idmaster_pa'
-    LEFT JOIN karyawan_2023 d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' AND c2.approval_status!='Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025')";
+    LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
+    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status!='Pending') AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025')";
 
     $resultPending67 = $koneksi->query($queryPending67);
 
@@ -106,17 +103,16 @@ try {
 
     $countPending67 = count($pending67);
 
-    $queryPending89 = "SELECT a.Nama_Lengkap, c.approval_status FROM karyawan_2023 a 
+    $queryPending89 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032')
     UNION 
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
-    LEFT JOIN karyawan_2023 b ON b.id=a.idkar
+    LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN transaksi_2023 c2 ON c2.idkar=a.idkar AND c2.approver_id=a.approver_review_id
-    LEFT JOIN karyawan_2023 d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' AND c2.approval_status!='Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
+    LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
+    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status!='Pending') AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
 
     $resultPending89 = $koneksi->query($queryPending89);
 
@@ -563,7 +559,7 @@ try {
                                 <button class="btn btn-success" id="exportRating23">Export Ratings</button>
                             </div>
                         </div>
-                        <table id="tableRating1" class="table table-bordered table-striped table-condensed cf">
+                        <table id="tableRating1" class="table table-bordered table-striped table-condensed">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -686,7 +682,7 @@ try {
                                 <button class="btn btn-success" id="exportRating45">Export Ratings</button>
                             </div>
                         </div>
-                            <table id="tableRating2" class="table table-bordered table-striped table-condensed cf">
+                            <table id="tableRating2" class="table table-bordered table-striped table-condensed">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -809,7 +805,7 @@ try {
                                 <button class="btn btn-success" id="exportRating67">Export Ratings</button>
                             </div>
                         </div>
-                            <table id="tableRating3" class="table table-bordered table-striped table-condensed cf">
+                            <table id="tableRating3" class="table table-bordered table-striped table-condensed">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -932,7 +928,7 @@ try {
                                 <button class="btn btn-success" id="exportRating89">Export Ratings</button>
                             </div>
                         </div>
-                            <table id="tableRating4" class="table table-bordered table-striped table-condensed cf">
+                            <table id="tableRating4" class="table table-bordered table-striped table-condensed">
                                 <thead>
                                     <tr>
                                         <th>No</th>

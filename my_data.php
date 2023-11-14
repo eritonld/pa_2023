@@ -12,7 +12,7 @@ $stmt->bindParam(':id', $scekuser['id'], PDO::PARAM_STR);
 $stmt->execute();
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// echo $cekPeers;
+
 // Fetch data as an associative array
 $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jumlah_subo'] > 0 ? "staffb" : "staff");
 
@@ -29,7 +29,8 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
     opacity: .9;
 }
 </style>
-<div id="proses" class="proses" style="display: none"></div>
+<div id="loader" class="proses" style="display: none"></div>
+
 <input id="idpic" type="hidden" value="<?= $scekuser['id']; ?>">
 <div class="row">
 <section class="col-lg-12 connectedSortable">
@@ -202,7 +203,9 @@ $(document).ready(function () {
                 {
                  
 					let style;
+
 					if ((data.created_by && data.idkar==idpic) || (data.created_by==idpic && data.updated_by==null)) {
+
 						style = ["formpa_edit", "primary", "Edit"];
 					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending' && data.updated_by==idpic) {
 						style = ["formpa_review", "default", "Review"];
@@ -210,14 +213,17 @@ $(document).ready(function () {
 						style = ["formpa_review", "primary", "Review"];
 					}else if((data.idkar==idpic || (data.id_L1==idpic && data.Kode_Golongan<'GL013')) && data.created_by==null){
 						style = ["formpa", "success", "Create PA"];
+					}else if(!data.id){
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' performance appraisal has not been created\')" class="btn btn-sm btn-default">Pending</a>';
 					} else {
-						return '<a class="btn btn-sm btn-default">Pending</a>';
+						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
 					
+
 					if(data.id && data.approval_status=='Approved' && data.updated_by!=idpic && data.updated_by!=null){
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
-						return '<a href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
+						return '<a id="edit" href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
                      
                 }
 			 },

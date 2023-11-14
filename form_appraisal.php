@@ -159,7 +159,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 <!-- +"&id_atasan1="+id_atasan1+"&email_atasan1="+email_atasan1+"&id_atasan2="+id_atasan2+"&email_atasan2="+email_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan3="+email_atasan3 -->
 
 <div class="row">
-<div id="proses" class="proses" style="display: none"></div>
+<div id="loader" class="proses" style="display: none"></div>
 <section class="col-lg-12">
 	<div class="box box-danger">
         <div class="box-header with-border">
@@ -501,6 +501,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 			if(value=='final'){
 				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
+        			$('#loader').css('display', 'block');
 					document.getElementById('addAppraisal').submit();
 				}
 			}
@@ -526,6 +527,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 				if(value=='final'){
 					let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 					if (confirm){
+						$('#loader').css('display', 'block');
 						document.getElementById('addAppraisal').submit();
 					}
 				}
@@ -551,65 +553,13 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 			if (!foundEmpty) {
 				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
 				if (confirm){
+					$('#loader').css('display', 'block');
 					document.getElementById('addAppraisal').submit();
 				}
 			}
 			return false;
 		}
     </script>
-<script>
-  
-  var currentRow = <?= $i; ?>; // Initialize with the last value of $i
-  var alertRow = '<?= $bahasa=='eng' ? 'Sorry, you has reached maximum row.' : 'Maaf, kolom objektif sudah maksimal.'; ?>';
-
-  // Function to show an alert
-  function addRow() {
-	var newRow = `
-	<div class="row" id="row-${currentRow}" style="margin-top: 10px;">
-	  <div class="form-horizontal">
-		<label for="value${currentRow}" class="col-md-1 control-label">${currentRow}.</label>
-		<div class="col-md-8">
-		  <input type="text" class="form-control" id="value${currentRow}" placeholder="...">
-		</div>
-		<div class="col-md-2">
-		  <select class="form-control" name="score${currentRow}" id="score${currentRow}" required>
-			<option value="">- pilih -</option>
-			<option value="5">5</option>
-			<option value="4">4</option>
-			<option value="3">3</option>
-			<option value="2">2</option>
-			<option value="1">1</option>
-		  </select>
-		</div>
-		<div class="col-md-1">
-          <button type="button" id="button1" onclick="deleteRow(this)" class="btn btn-danger btn-sm btn-circle" ><i class="fa fa-times"></i></button>
-        </div>
-	  </div>
-	</div>
-  `;
-	if(currentRow>10){
-		alert(alertRow);
-		return;
-	}
-	$("#container").append(newRow); // Append the new row to the container
-    currentRow++; // Increment the current row number
-    }
-	// Get the button element by its ID
-	var button = document.getElementById("addRow");
-	
-	// Add a click event listener to the button
-	button.addEventListener("click", addRow);
-
-
-  function deleteRow(row) {
-	let closestRow = $(row).closest('.row')
-	let rowId = closestRow.attr('id')
-	var rowParts = rowId.split('-');
-	console.log(rowParts[1])
-	
-	closestRow.remove()
-}
-</script>
 <script>
     function calculateAverage() {
 		var total = 0;
