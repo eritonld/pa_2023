@@ -42,7 +42,7 @@ if($code == 'getPenilaian') {
         LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
         LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
         LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-        where f.id_atasan='$iduser' group by a.id";
+        where f.id_atasan='$iduser' GROUP BY a.id";
 
         $result = $koneksi->query($sql);
     

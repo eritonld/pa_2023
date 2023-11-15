@@ -207,8 +207,10 @@ $(document).ready(function () {
 
 					if (data.id && data.created_by==idpic && data.approval_review=='Pending' || data.id && data.created_by==idpic && data.approver_review_id==idpic) {
 						style = ["formpa_edit", "primary", "Edit"];
-					} else if (data.created_by && data.approver_review_id==idpic && !data.rating || data.nextApprover==idpic && !data.rating) {
+					} else if (data.created_by && data.approver_review_id==idpic && !data.rating && data.approval_review=='Pending') {
 						style = ["formpa_review", "primary", "Review"];
+					} else if (data.nextApprover==idpic && !data.rating && data.approval_review=='Approved') {
+						style = ["formpa_review", "warning", "Revise", "text-black"];
 					}else if(!data.id && data.idkar==idpic || !data.id && data.id_L1==idpic){
 						style = ["formpa", "success", "Create PA"];
 					} else {
@@ -219,7 +221,7 @@ $(document).ready(function () {
 					// if(data.id && data.approval_status=='Approved' && data.updated_by!=idpic && data.updated_by!=null){
 					// 	return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					// }
-						return '<a id="edit" href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
+						return '<a id="edit" href="home.php?link='+style[0]+'&id='+data.idkar+'" class="btn btn-sm btn-'+style[1]+' '+style[3]+'"><b>'+style[2]+'</b></a>';
                      
                 }
 			 },
