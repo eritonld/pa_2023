@@ -978,7 +978,16 @@ try {
                 { "data": 'Nama_Golongan' },
                 { "data": 'Nama_OU' },
                 { "data": 'Nama_Departemen' },
-                { "data": 'convertRating' },
+                {
+                   data: null,
+                   render: function (data, type, row) {
+						if(data.status_sr=='T'){
+							return data.grade_score;
+						}else{
+							return data.convertRating;
+						}
+					}
+                },
                 {
                     data: null,
                     render: function (data, type, row) {
@@ -1027,7 +1036,16 @@ try {
                 { "data": 'Nama_Golongan' },
                 { "data": 'Nama_OU' },
                 { "data": 'Nama_Departemen' },
-                { "data": 'convertRating' },
+                {
+                   data: null,
+                   render: function (data, type, row) {
+						if(data.status_sr=='T'){
+							return data.grade_score;
+						}else{
+							return data.convertRating;
+						}
+					}
+                },
                 {
                     data: null,
                     render: function (data, type, row) {
@@ -1076,7 +1094,16 @@ try {
                 { "data": 'Nama_Golongan' },
                 { "data": 'Nama_OU' },
                 { "data": 'Nama_Departemen' },
-                { "data": 'convertRating' },
+                {
+                   data: null,
+                   render: function (data, type, row) {
+						if(data.status_sr=='T'){
+							return data.grade_score;
+						}else{
+							return data.convertRating;
+						}
+					}
+                },
                 {
                     data: null,
                     render: function (data, type, row) {
@@ -1099,7 +1126,7 @@ try {
                             
                             return selectHtml;
                     }
-
+					
                 },
             ]
         });
@@ -1125,7 +1152,16 @@ try {
                 { "data": 'Nama_OU' },
                 { "data": 'Nama_Departemen' },
                 <!--{ "data": 'convertRating' },-->
-				{ "data": 'convertRating' },
+				{
+                   data: null,
+                   render: function (data, type, row) {
+						if(data.status_sr=='T'){
+							return data.grade_score;
+						}else{
+							return data.convertRating;
+						}
+					}
+                },
                 {
                     data: null,
                     render: function (data, type, row) {

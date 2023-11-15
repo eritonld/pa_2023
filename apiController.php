@@ -76,7 +76,7 @@ if($code == 'getPenilaian') {
             // LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
             // WHERE (a.id='$iduser' OR b.created_by AND f.id_atasan='$iduser' OR f.layer='L0' AND f.id_atasan='$iduser' OR b2.approver_review_id='$iduser' OR b3.approver_id='$iduser') GROUP BY a.id";
 			
-			$sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, c.Nama_Golongan,a.Kode_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
+			$sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b2.created_by, b2.updated_by, b.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, c.Nama_Golongan,a.Kode_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
 			FROM $karyawan as a
 			left join atasan as f on f.idkar=a.id and f.layer='L1'
 			LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
@@ -88,7 +88,7 @@ if($code == 'getPenilaian') {
 			LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
 			where a.id='$iduser' GROUP BY a.id
 			UNION
-			SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, c.Nama_Golongan,a.Kode_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
+			SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, c.Nama_Golongan,a.Kode_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
 			FROM $karyawan as a
 			left join atasan as f on f.idkar=a.id
 			LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
@@ -125,14 +125,14 @@ if($code == 'getPenilaian') {
 }else if($code == 'getRating') {
     $jg = $jg=="23"? "('GL004','GL005','GL006','GL007','GL008','GL009')" : ($jg=="45"? "('GL013','GL014','GL016','GL017')" : ($jg=="67"? "('GL020','GL021','GL024','GL025')" : "('GL028','GL029','GL031','GL032')"));
     try {
-        $sql = "SELECT b.id, a.id AS idkar, b.total_score, b.rating, b.layer, b.created_by,
+        $sql = "SELECT b.id, a.id AS idkar, b.total_score, '' as grade_score, b.rating, b.layer, b.created_by, b.status_sr,
         CASE
         WHEN b.rating = '' THEN 'no rating'
-        WHEN b.rating = 5 THEN 'A'
-        WHEN b.rating = 4 THEN 'B'
-        WHEN b.rating = 3 THEN 'C'
-        WHEN b.rating = 2 THEN 'D'
-        WHEN b.rating = 1 THEN 'E'
+        WHEN b.rating >= 4.75 THEN 'A'
+        WHEN b.rating >= 4 THEN 'B'
+        WHEN b.rating >= 3 THEN 'C'
+        WHEN b.rating >= 2 THEN 'D'
+        WHEN b.rating < 2 THEN 'E'
         ELSE ''
         END AS convertRating, 
         a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date
@@ -149,6 +149,11 @@ if($code == 'getPenilaian') {
     
         if ($result) {
             $employees = $result->fetchAll(PDO::FETCH_ASSOC);
+			
+			foreach ($employees as &$employee) {
+				// Call srating function and update the total_score in the employee data
+				$employee['grade_score'] = srating($employee['idkar']);
+			}
     
             $dataset = array(
                 "totalrecords" => count($employees),

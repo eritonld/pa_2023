@@ -197,33 +197,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 					<div class="col-md-2 text-bold"><?="$a11";?></div>
 					<div class="col-md-4">: <?="$statussp / $periode";?></div>
 				</div>
-				<?php
-				$quartal = "";
-				
-				if($ckaryawan['pen_q1']<>""){
-					$quartal = $quartal."Q1 : <b>$ckaryawan[pen_q1]</b>";
-				}
-				if($ckaryawan['pen_q2']<>""){
-					$quartal = $quartal." / Q2 : <b>$ckaryawan[pen_q2]</b>";
-				}
-				if($ckaryawan['pen_q3']<>""){
-					$quartal = $quartal." / Q3 : <b>$ckaryawan[pen_q3]</b>";
-				}
-				if($ckaryawan['pen_q4']<>""){
-					$quartal = $quartal." / Q4 : <b>$ckaryawan[pen_q4]</b>";
-				}
-				
-				if($ckaryawan['pen_q1']<>"" || $ckaryawan['pen_q2']<>"" || $ckaryawan['pen_q3']<>"" || $ckaryawan['pen_q4']<>""){
-					?>
-					<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
-						<div class="col-md-2 text-bold">Quartal</div>
-						<div class="col-md-4">: <?php echo "$quartal"; ?></div>
-						<div class="col-md-2 text-bold"></div>
-						<div class="col-md-4"></div>
-					</div>
-					<?php
-				}
-				?>				
+								
 			</div>
 			
         </div>
@@ -271,6 +245,31 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 						<div class="row" style="margin-top: 20px;">
 							<h1 class="col-md-3 text-bold h4">A. <?= $title_a; ?></h1>
 						</div>
+						<?php
+						$quartal = "";
+						
+						if($ckaryawan['pen_q1']<>""){
+							$quartal = $quartal."Q1 : <b>$ckaryawan[pen_q1]</b>";
+						}
+						if($ckaryawan['pen_q2']<>""){
+							$quartal = $quartal." / Q2 : <b>$ckaryawan[pen_q2]</b>";
+						}
+						if($ckaryawan['pen_q3']<>""){
+							$quartal = $quartal." / Q3 : <b>$ckaryawan[pen_q3]</b>";
+						}
+						if($ckaryawan['pen_q4']<>""){
+							$quartal = $quartal." / Q4 : <b>$ckaryawan[pen_q4]</b>";
+						}
+						
+						if($ckaryawan['pen_q1']<>"" || $ckaryawan['pen_q2']<>"" || $ckaryawan['pen_q3']<>"" || $ckaryawan['pen_q4']<>""){
+							?>
+							<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
+								<div class="col-md-1 text-bold">Quartal</div>
+								<div class="col-md-4">: <?php echo "$quartal"; ?></div>
+							</div>
+							<?php
+						}
+						?>
 						<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
 							<h1 class="col-md-3 text-bold h5"><?= $title_aa; ?></h1>
 						</div>

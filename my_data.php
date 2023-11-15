@@ -201,15 +201,16 @@ $(document).ready(function () {
                 data: null,
                 render:function(data, type, row)
                 {
-                 
+
+					
 					let style;
-					if (data.id && data.created_by==idpic && !data.updated_date || data.id && data.created_by==idpic && data.updated_by==idpic) {
+					if ((data.created_by && data.idkar==idpic) || (data.created_by==idpic && data.updated_by==null)) {
 						style = ["formpa_edit", "primary", "Edit"];
 					} else if (data.created_by && data.updated_by!=idpic && data.approver_review_id==idpic) {
 						style = ["formpa_review", "primary", "Review"];
-					// } else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending') {
-					// 	style = ["formpa_review", "primary", "Review"];
-					}else if(!data.id && data.idkar==idpic || data.id_L1==idpic && data.approval_status=='Pending' && data.approval_review==idpic){
+					} else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending') {
+					 	style = ["formpa_review", "primary", "Review"];
+					}else if(!data.id && data.idkar==idpic && data.created_by==null || data.id_L1==idpic && data.layerL1=='L1' && data.Kode_Golongan<'GL013' && data.created_by==null ){
 						style = ["formpa", "success", "Create PA"];
 					}else if(!data.id){
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' performance appraisal has not been created\')" class="btn btn-sm btn-default">Pending</a>';
