@@ -60,8 +60,8 @@ try {
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status='Pending') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')";
+    LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')";
 
     $resultPending23 = $koneksi->query($queryPending23);
 
@@ -77,8 +77,8 @@ try {
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status='Pending') AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
+    LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
 
     $resultPending45 = $koneksi->query($queryPending45);
 
@@ -94,8 +94,8 @@ try {
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status='Pending') AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025')";
+    LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025')";
 
     $resultPending67 = $koneksi->query($queryPending67);
 
@@ -111,9 +111,8 @@ try {
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN $karyawan d ON d.id=a.approver_rating_id
-
-    WHERE (a.approver_review_id='$idmaster_pa' AND a.approval_review='Pending' OR a.approver_rating_id='$idmaster_pa' AND c.approval_status='Pending') AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
+    LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
 
     $resultPending89 = $koneksi->query($queryPending89);
 
@@ -437,6 +436,7 @@ try {
 </style>
 <div id="proses" class="proses" style="display: none"></div>
 <input id="pic" type="hidden" value="<?= $scekuser['pic']; ?>">
+<input id="idpic" type="hidden" value="<?= $scekuser['id']; ?>">
     <div class="row">
     <section class="col-lg-12 connectedSortable">
         <div class="nav-tabs-custom">
@@ -1151,16 +1151,15 @@ try {
                 { "data": 'Nama_Golongan' },
                 { "data": 'Nama_OU' },
                 { "data": 'Nama_Departemen' },
-                <!--{ "data": 'convertRating' },-->
-				{
-                   data: null,
-                   render: function (data, type, row) {
-						if(data.status_sr=='T'){
-							return data.grade_score;
-						}else{
-							return data.convertRating;
-						}
-					}
+              {
+                         data: null,
+                         render: function (data, type, row) {
+                  if(data.status_sr=='T'){
+                    return data.grade_score;
+                  }else{
+                    return data.convertRating;
+                  }
+                }
                 },
                 {
                     data: null,
@@ -1356,8 +1355,8 @@ try {
     function matchContent(value) {
         const elements = [value+'_a', value+'_b', value+'_c', value+'_d', value+'_e'];
         const employee = $('#total'+value).val();
-        const tables   = value==='23'? table1 : (value==='45'? table2 : (value==='67'? table3 : table4));
-        const id_atasan = $('#id_atasan').val();
+        const tables = value==='23'? table1 : (value==='45'? table2 : (value==='67'? table3 : table4));
+        const idpic = $('#idpic').val();
         let allMatch = true;
 
         for (const element of elements) {
@@ -1366,7 +1365,7 @@ try {
             const tdElement = document.querySelector(`td span#rate${element}`).parentElement;
 
             if (element === value+'_a') {
-                if (employee>=2 || rateContent <= targetValue) {
+                if (employee==1 && rateContent==0 || employee>2 && rateContent <= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
                     tdElement.classList.remove("danger");
                     tdElement.classList.add("success");
                 } else {
@@ -1375,7 +1374,7 @@ try {
                     allMatch = false;
                 }
             } else if (element === value+'_b') {
-                if (employee>=1 || rateContent <= targetValue) {
+                if (employee==1 || employee>2 && rateContent <= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
                     tdElement.classList.remove("danger");
                     tdElement.classList.add("success");
                 } else {
@@ -1384,7 +1383,7 @@ try {
                     allMatch = false;
                 }
             } else if (element === value+'_c') {
-                if (employee>=1 || rateContent === targetValue) {
+                if (employee==1 || employee>2 && rateContent === targetValue || employee==2 && rateContent<2 && rateContent!=2) {
                     tdElement.classList.remove("danger");
                     tdElement.classList.add("success");
                 } else {
@@ -1394,7 +1393,7 @@ try {
                 }
             } else if (element === value+'_d') {
                 const rateContentE = parseInt(document.getElementById('rate'+value+'_e').textContent);
-                if (rateContent + rateContentE >= targetValue) {
+                if (employee==1 || employee>2 && rateContent + rateContentE >= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
                     tdElement.classList.remove("danger");
                     tdElement.classList.add("success");
                 } else {
@@ -1403,7 +1402,7 @@ try {
                     allMatch = false;
                 }
             } else if (element === value+'_e') {
-                if (rateContent >= targetValue) {
+                if (employee==1 || employee>2 && rateContent >= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
                     tdElement.classList.remove("danger");
                     tdElement.classList.add("success");
                 } else {
@@ -1436,8 +1435,8 @@ try {
                         "id": rowData.id,
                         "rating": selectedValue,
                         "idkar": rowData.idkar,
-                        "idpic": rowData.id_atasan,
-                        "id_atasan": id_atasan,
+                        "idpic": idpic,
+                        "nextlayer": rowData.nextlayer,
                     };
 
                     results.push(rowObject);
@@ -1455,12 +1454,15 @@ try {
                     data: JSON.stringify(postData),
                     success: function(response) {
                         // Handle the response from the server
-                        console.log("POST request successful:", response);
+                        // console.log("POST request successful:", response);
+                        alert(response);
+                        window.location='home.php?link=rating';
                         
                     },
                     error: function(error) {
                         // Handle any errors that occur during the POST request
-                        console.error("POST request failed:", error);
+                        // console.error("POST request failed:", error);
+                        window.location='home.php?link=rating';
                     }
                 });
             }
