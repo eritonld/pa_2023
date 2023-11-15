@@ -201,8 +201,10 @@ $(document).ready(function () {
                 data: null,
                 render:function(data, type, row)
                 {
-                 
+
+					
 					let style;
+
 					if (data.id && data.created_by==idpic && data.approval_review=='Pending' || data.id && data.created_by==idpic && data.approver_review_id==idpic) {
 						style = ["formpa_edit", "primary", "Edit"];
 					} else if (data.created_by && data.approver_review_id==idpic && !data.rating || data.nextApprover==idpic && !data.rating) {

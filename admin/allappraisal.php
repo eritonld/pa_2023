@@ -167,7 +167,7 @@ function getGrade($nilai)
 	include("../conf/conf.php");
 	$tahun=date('Y');
 	
-	$sql = "select ranges,grade,kesimpulan,warna,icon,bermasalah from kriteria where tahun='$tahun' order by id asc";
+	$sql = "select ranges,grade,kesimpulan,warna,icon,bermasalah from kriteria where tahun='$tahun' and kesimpulan='primary' order by id asc";
 	$stmt = $koneksi->prepare($sql);
 	$stmt->execute();
 	$ak=0;

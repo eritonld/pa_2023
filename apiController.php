@@ -19,6 +19,7 @@ $iduser     = isset($_SESSION['idmaster_pa']) ? $_SESSION['idmaster_pa'] : '';
 if($code == 'getPenilaian') {
 
     try {
+
         $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover
         FROM $karyawan as a
         left join atasan as f on f.idkar=a.id and f.layer='L1'
@@ -42,6 +43,7 @@ if($code == 'getPenilaian') {
         LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
         LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
         where f.id_atasan='$iduser'";
+
 
         $result = $koneksi->query($sql);
     
@@ -67,14 +69,14 @@ if($code == 'getPenilaian') {
 }else if($code == 'getRating') {
     $jg = $jg=="23"? "('GL004','GL005','GL006','GL007','GL008','GL009')" : ($jg=="45"? "('GL013','GL014','GL016','GL017')" : ($jg=="67"? "('GL020','GL021','GL024','GL025')" : "('GL028','GL029','GL031','GL032')"));
     try {
-        $sql = "SELECT b.id, a.id AS idkar, b.total_score, b.rating, b.layer, b.created_by,
+        $sql = "SELECT b.id, a.id AS idkar, b.total_score, '' as grade_score, b.rating, b.layer, b.created_by, b.status_sr,
         CASE
         WHEN b.rating = '' THEN 'no rating'
-        WHEN b.rating = 5 THEN 'A'
-        WHEN b.rating = 4 THEN 'B'
-        WHEN b.rating = 3 THEN 'C'
-        WHEN b.rating = 2 THEN 'D'
-        WHEN b.rating = 1 THEN 'E'
+        WHEN b.rating >= 4.75 THEN 'A'
+        WHEN b.rating >= 4 THEN 'B'
+        WHEN b.rating >= 3 THEN 'C'
+        WHEN b.rating >= 2 THEN 'D'
+        WHEN b.rating < 2 THEN 'E'
         ELSE ''
         END AS convertRating, 
         (SELECT CONCAT('L', CAST(SUBSTRING(layer, 2) AS UNSIGNED) + 1) AS new_layer FROM atasan WHERE idkar=b2.idkar AND id_atasan='$iduser') AS nextlayer,
@@ -93,6 +95,11 @@ if($code == 'getPenilaian') {
     
         if ($result) {
             $employees = $result->fetchAll(PDO::FETCH_ASSOC);
+			
+			foreach ($employees as &$employee) {
+				// Call srating function and update the total_score in the employee data
+				$employee['grade_score'] = srating($employee['idkar']);
+			}
     
             $dataset = array(
                 "totalrecords" => count($employees),
