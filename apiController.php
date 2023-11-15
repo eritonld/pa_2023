@@ -19,88 +19,30 @@ $iduser     = isset($_SESSION['idmaster_pa']) ? $_SESSION['idmaster_pa'] : '';
 if($code == 'getPenilaian') {
 
     try {
-        $stmtKpi = $koneksi->prepare("SELECT kpi_unit FROM kpi_unit_2023 WHERE idkar='$iduser' and status_aktif='T'");
+        $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover
+        FROM $karyawan as a
+        left join atasan as f on f.idkar=a.id and f.layer='L1'
+        LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
+        LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=a.id
+        LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
+        LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
+        LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
+        LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
+        LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
+        where a.id='$iduser'
+        UNION
+        SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover
+        FROM $karyawan as a
+        left join atasan as f on f.idkar=a.id AND f.layer='L1'
+        LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
+        LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=f.id_atasan
+        LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
+        LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
+        LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
+        LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
+        LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
+        where f.id_atasan='$iduser'";
 
-        $stmtKpi->execute();
-
-        $resultKpi = $stmtKpi->rowCount();
-
-        if($resultKpi){
-			// SELECT b.id, a.id AS idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.approver_id, b.layer, b2.approval_review, a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b3.approval_status
-            // FROM $karyawan AS a
-            // LEFT JOIN atasan AS f ON f.idkar=a.id AND f.layer IN ('L0')
-            // LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
-            // LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=f.id_atasan
-            // LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
-            // LEFT JOIN transaksi_2023 AS b3 ON b3.idkar = a.id
-            // LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
-            // LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
-            // LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
-            // LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-            // WHERE (a.id='$iduser' OR f.id_atasan='$iduser' OR b.created_by='$iduser' OR b3.approver_id='$iduser') GROUP BY a.id	
-		
-            $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
-			FROM $karyawan as a
-			left join atasan as f on f.idkar=a.id and f.layer='L1'
-			LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
-			LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=a.id
-			LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
-			LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
-			LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
-			LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
-			LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-			where a.id='$iduser' GROUP BY a.id
-			UNION
-			SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
-			FROM $karyawan as a
-			left join atasan as f on f.idkar=a.id and f.layer in ('L1','L2')
-			LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
-			LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=f.id_atasan
-			LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
-			LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
-			LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
-			LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
-			LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-			where f.id_atasan='$iduser' AND f.layer in ('L1','L2') GROUP BY a.id";
-        }else{
-            // $sql = "SELECT b.id, a.id AS idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.approver_id, b.layer, b2.approval_review, a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b3.approval_status
-            // FROM $karyawan AS a
-            // LEFT JOIN atasan AS f ON f.idkar=a.id AND f.layer IN ('L0','L1')
-            // LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
-            // LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=f.id_atasan
-            // LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
-            // LEFT JOIN transaksi_2023 AS b3 ON b3.idkar = a.id
-            // LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
-            // LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
-            // LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
-            // LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-            // WHERE (a.id='$iduser' OR b.created_by AND f.id_atasan='$iduser' OR f.layer='L0' AND f.id_atasan='$iduser' OR b2.approver_review_id='$iduser' OR b3.approver_id='$iduser') GROUP BY a.id";
-			
-			$sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, c.Nama_Golongan,a.Kode_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
-			FROM $karyawan as a
-			left join atasan as f on f.idkar=a.id and f.layer='L1'
-			LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
-			LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=a.id
-			LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
-			LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
-			LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
-			LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
-			LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-			where a.id='$iduser' GROUP BY a.id
-			UNION
-			SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, c.Nama_Golongan,a.Kode_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status
-			FROM $karyawan as a
-			left join atasan as f on f.idkar=a.id
-			LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
-			LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=f.id_atasan
-			LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
-			LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
-			LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
-			LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
-			LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-			where f.id_atasan='$iduser' GROUP BY a.id";
-        }
-    
         $result = $koneksi->query($sql);
     
         if ($result) {
@@ -189,6 +131,7 @@ if($code == 'getPenilaian') {
                 $idkar = $row["idkar"];
                 $idpic = $row["idpic"];
                 $nextlayer = $row["nextlayer"];
+                $status_sr = 'F';
 
                 $query = "SELECT id_atasan FROM atasan WHERE idkar='$idkar' AND layer='$nextlayer'";
 
@@ -206,7 +149,7 @@ if($code == 'getPenilaian') {
                 $stmt2023->bindParam(":updated_date", $datetime);
                 $stmt2023->execute();
 
-                $queryFinal = "UPDATE transaksi_2023_final SET rating = :rating, updated_by = :idpic, updated_date = :updated_date, approver_rating_id = :id_atasan, layer_rating = :nextlayer WHERE idkar = :idkar AND approver_rating_id = :idpic";
+                $queryFinal = "UPDATE transaksi_2023_final SET rating = :rating, updated_by = :idpic, updated_date = :updated_date, approver_rating_id = :id_atasan, layer_rating = :nextlayer, status_sr = :status_sr WHERE idkar = :idkar AND approver_rating_id = :idpic";
                 $stmtFinal = $koneksi->prepare($queryFinal);
                 $stmtFinal->bindParam(":rating", $rating);
                 $stmtFinal->bindParam(":idkar", $idkar);
@@ -214,11 +157,12 @@ if($code == 'getPenilaian') {
                 $stmtFinal->bindParam(":id_atasan", $result['id_atasan']);
                 $stmtFinal->bindParam(":nextlayer", $nextlayer);
                 $stmtFinal->bindParam(":updated_date", $datetime);
+                $stmtFinal->bindParam(":status_sr", $status_sr);
                 $stmtFinal->execute();
             }
 
             // Respond with a success message
-            $response = "Data updated successfully!";
+            $response = "Rating submitted successfully!";
             echo json_encode($response);
             $koneksi->commit();
             
@@ -535,14 +479,6 @@ if($code == 'getPenilaian') {
 
         $countL0 = $stmtCekL0->rowCount();
 
-        $cekL2 = "SELECT b.idkar, b.kpi_unit FROM atasan a LEFT JOIN kpi_unit_2023 b ON b.idkar=a.id_atasan WHERE layer='L2' AND a.idkar=:id AND b.kpi_unit!=''";
-
-        $stmtCekL2 = $koneksi->prepare($cekL2);
-        $stmtCekL2->bindParam(':id', $idkar, PDO::PARAM_INT);
-        $stmtCekL2->execute();
-
-        $countL2 = $stmtCekL2->rowCount();
-
         $cekLRating = "SELECT a.layer, a.id_atasan, b.kpi_unit FROM atasan a LEFT JOIN kpi_unit_2023 b ON b.idkar=a.id_atasan WHERE a.idkar=:id AND !b.kpi_unit ORDER BY a.id LIMIT 1";
 
         $stmtLRating = $koneksi->prepare($cekLRating);
@@ -552,22 +488,11 @@ if($code == 'getPenilaian') {
         $resultLRating = $stmtLRating->fetch(PDO::FETCH_ASSOC);
 
         $L0 = 'L0';
-        $layerApproval = $countL2 ? 'L1' : 'L2';
-        $atasanReview = $countL2 ? (!$countL0 ? $resultLayer[0]['id_atasan'] : $resultLayer[1]['id_atasan']) : (!$countL0 ? $resultLayer[1]['id_atasan'] : $resultLayer[2]['id_atasan']);
+        $layerApproval = 'L1';
+        $atasanReview = !$countL0 ? $resultLayer[0]['id_atasan'] : $resultLayer[1]['id_atasan'];
+        $approval_review = $idpic==$idkar ? 'Pending' : 'Approved';
 
         $nik = $ckaryawan['nik_baru'] ? $ckaryawan['nik_baru'] : $ckaryawan['NIK'];
-
-        $stmtKpi = $koneksi->prepare("SELECT kpi_unit FROM kpi_unit_2023 WHERE idkar='$idpic'");
-
-        $stmtKpi->execute();
-
-        $resultKpi = $stmtKpi->rowCount();
-
-        $approval_review = $idpic != $idkar ? 'Approved' : 'Pending';
-
-        if (!$resultKpi && $idpic!=$idkar) {
-            // Update karyawan ke approval ke 2
-        }
 
         if ($ckaryawan) {
             // Process the data here
@@ -859,18 +784,9 @@ if($code == 'getPenilaian') {
             //         echo "<script>console.log('email sended')</script>";
             //     } 
 
-            // Assuming $myDataVariable is the data you want to pass
-            $myDataVariable = "MyData"; // Replace "YourDataHere" with the actual data you want to send
-            // Append the data to the URL using query parameters
-            header('Location: home.php?link=mydata&data=' . urlencode($myDataVariable));
-            exit;
+            header('Location: home.php?link=mydata');
         } else {
-            ?>
-            <script>
-                window.location='home.php?link=mydata';
-                // console.log("Error");
-            </script>
-            <?php
+            header('Location: home.php?link=mydata');
         }
         
         // $stmtInsert->closeCursor();

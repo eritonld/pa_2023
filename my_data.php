@@ -203,16 +203,12 @@ $(document).ready(function () {
                 {
                  
 					let style;
-					if (data.id && data.created_by==idpic && !data.updated_date || data.id && data.created_by==idpic && data.updated_by==idpic) {
+					if (data.id && data.created_by==idpic && data.approval_review=='Pending' || data.id && data.created_by==idpic && data.approver_review_id==idpic) {
 						style = ["formpa_edit", "primary", "Edit"];
-					} else if (data.created_by && data.updated_by!=idpic && data.approver_review_id==idpic) {
+					} else if (data.created_by && data.approver_review_id==idpic && !data.rating || data.nextApprover==idpic && !data.rating) {
 						style = ["formpa_review", "primary", "Review"];
-					// } else if (data.created_by && data.id_L1==idpic && data.approval_status=='Pending') {
-					// 	style = ["formpa_review", "primary", "Review"];
-					}else if(!data.id && data.idkar==idpic || data.id_L1==idpic && data.approval_status=='Pending' && data.approval_review==idpic){
+					}else if(!data.id && data.idkar==idpic || !data.id && data.id_L1==idpic){
 						style = ["formpa", "success", "Create PA"];
-					}else if(!data.id){
-						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' performance appraisal has not been created\')" class="btn btn-sm btn-default">Pending</a>';
 					} else {
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
