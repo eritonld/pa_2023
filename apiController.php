@@ -44,7 +44,6 @@ if($code == 'getPenilaian') {
         LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
         where f.id_atasan='$iduser' GROUP BY a.id";
 
-
         $result = $koneksi->query($sql);
     
         if ($result) {
