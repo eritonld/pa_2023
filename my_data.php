@@ -211,7 +211,7 @@ $(document).ready(function () {
 						style = ["formpa_review", "primary", "Review"];
 					} else if (data.nextApprover==idpic && !data.rating && data.approval_review=='Approved') {
 						style = ["formpa_review", "warning", "Revise", "text-black"];
-					}else if(!data.id && data.idkar==idpic || !data.id && data.id_L1==idpic){
+					}else if(!data.id && data.idkar==idpic && !data.created_by || !data.id && data.id_L1==idpic){
 						style = ["formpa", "success", "Create PA"];
 					} else {
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
