@@ -61,7 +61,7 @@ try {
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')";
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') AND c.layer LIKE 'L%'";
 
     $resultPending23 = $koneksi->query($queryPending23);
 
@@ -78,7 +78,7 @@ try {
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND c.layer LIKE 'L%'";
 
     $resultPending45 = $koneksi->query($queryPending45);
 
@@ -95,7 +95,7 @@ try {
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025')";
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025') AND c.layer LIKE 'L%'";
 
     $resultPending67 = $koneksi->query($queryPending67);
 
@@ -112,7 +112,7 @@ try {
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032') AND c.layer LIKE 'L%'";
 
     $resultPending89 = $koneksi->query($queryPending89);
 
@@ -306,7 +306,7 @@ try {
         FROM transaksi_2023 AS b
         LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
         WHERE b.approver_id = '$idmaster_pa'
-            AND k.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')  -- condition
+            AND k.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') GROUP BY b.idkar  -- condition
     ) AS subquery";
     $query45 = "SELECT
     COALESCE(SUM(CASE WHEN convertRating = 'A' THEN 1 ELSE 0 END), 0) AS A,
@@ -334,7 +334,7 @@ try {
         FROM transaksi_2023 AS b
         LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
         WHERE b.approver_id = '$idmaster_pa'
-            AND k.Kode_Golongan IN ('GL013','GL014','GL016','GL017')  -- condition
+            AND k.Kode_Golongan IN ('GL013','GL014','GL016','GL017') GROUP BY b.idkar  -- condition
     ) AS subquery";
     $query67 = "SELECT
     COALESCE(SUM(CASE WHEN convertRating = 'A' THEN 1 ELSE 0 END), 0) AS A,
@@ -362,7 +362,7 @@ try {
         FROM transaksi_2023 AS b
         LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
         WHERE b.approver_id = '$idmaster_pa'
-            AND k.Kode_Golongan IN ('GL020','GL021','GL024','GL025')  -- condition
+            AND k.Kode_Golongan IN ('GL020','GL021','GL024','GL025') GROUP BY b.idkar  -- condition
     ) AS subquery";
     $query89 = "SELECT
     COALESCE(SUM(CASE WHEN convertRating = 'A' THEN 1 ELSE 0 END), 0) AS A,
@@ -390,7 +390,7 @@ try {
         FROM transaksi_2023 AS b
         LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
         WHERE b.approver_id = '$idmaster_pa'
-            AND k.Kode_Golongan IN ('GL028','GL029','GL031','GL032')  -- condition
+            AND k.Kode_Golongan IN ('GL028','GL029','GL031','GL032') GROUP BY b.idkar  -- condition
     ) AS subquery";
 
     $result23 = $koneksi->query($query23);
