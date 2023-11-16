@@ -55,13 +55,13 @@ try {
     $queryPending23 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')";
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'";
 
     $resultPending23 = $koneksi->query($queryPending23);
 
@@ -72,13 +72,15 @@ try {
     $queryPending45 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017')
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'";
+	
+	
 
     $resultPending45 = $koneksi->query($queryPending45);
 
@@ -89,13 +91,13 @@ try {
     $queryPending67 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025')
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025')";
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'";
 
     $resultPending67 = $koneksi->query($queryPending67);
 
@@ -106,13 +108,13 @@ try {
     $queryPending89 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032')
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
     SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
     LEFT JOIN $karyawan b ON b.id=a.idkar
     LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
     LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
+    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'";
 
     $resultPending89 = $koneksi->query($queryPending89);
 
@@ -160,10 +162,10 @@ try {
     $queryTarget23 = "SELECT c.ranges, c.grade, c.percent_a, c.percent_b, c.percent_c, c.percent_d, c.percent_e, 
         ROUND((COUNT(a.idkar) * c.percent_a) / 100) AS target_a, 
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) AS target_b, 
-        ROUND(COUNT(a.idkar) - (((COUNT(a.idkar) * c.percent_a) / 100) + 
-        ((COUNT(a.idkar) * c.percent_b) / 100) + 
-        ((COUNT(a.idkar) * c.percent_d) / 100) + 
-        ((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
+        ROUND(COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
         ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
@@ -178,10 +180,10 @@ try {
     $queryTarget45 = "SELECT c.ranges, c.grade, c.percent_a, c.percent_b, c.percent_c, c.percent_d, c.percent_e, 
         ROUND((COUNT(a.idkar) * c.percent_a) / 100) AS target_a, 
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) AS target_b, 
-        ROUND(COUNT(a.idkar) - (((COUNT(a.idkar) * c.percent_a) / 100) + 
-        ((COUNT(a.idkar) * c.percent_b) / 100) + 
-        ((COUNT(a.idkar) * c.percent_d) / 100) + 
-        ((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
+        ROUND(COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
         ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
@@ -197,10 +199,10 @@ try {
     $queryTarget67 = "SELECT c.ranges, c.grade, c.percent_a, c.percent_b, c.percent_c, c.percent_d, c.percent_e, 
         ROUND((COUNT(a.idkar) * c.percent_a) / 100) AS target_a, 
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) AS target_b, 
-        ROUND(COUNT(a.idkar) - (((COUNT(a.idkar) * c.percent_a) / 100) + 
-        ((COUNT(a.idkar) * c.percent_b) / 100) + 
-        ((COUNT(a.idkar) * c.percent_d) / 100) + 
-        ((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
+        ROUND(COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
         ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
@@ -215,10 +217,10 @@ try {
     $queryTarget89 = "SELECT c.ranges, c.grade, c.percent_a, c.percent_b, c.percent_c, c.percent_d, c.percent_e, 
         ROUND((COUNT(a.idkar) * c.percent_a) / 100) AS target_a, 
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) AS target_b, 
-        ROUND(COUNT(a.idkar) - (((COUNT(a.idkar) * c.percent_a) / 100) + 
-        ((COUNT(a.idkar) * c.percent_b) / 100) + 
-        ((COUNT(a.idkar) * c.percent_d) / 100) + 
-        ((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
+        ROUND(COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
         ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
