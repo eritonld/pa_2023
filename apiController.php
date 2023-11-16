@@ -20,12 +20,12 @@ if($code == 'getPenilaian') {
 
     try {
 
-        $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover
+        $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b2.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover
         FROM $karyawan as a
         left join atasan as f on f.idkar=a.id and f.layer='L1'
         LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
         LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=a.id
-        LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
+        LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = a.id
         LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
         LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
         LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
@@ -70,25 +70,20 @@ if($code == 'getPenilaian') {
     try {
         $sql = "SELECT b.id, a.id AS idkar, b.total_score, '' as grade_score, b.rating, b.layer, b.created_by, b.status_sr,
         CASE
-        WHEN b.rating = '' THEN 'no rating'
-        WHEN b.rating >= 4.75 THEN 'A'
-        WHEN b.rating >= 4 THEN 'B'
-        WHEN b.rating >= 3 THEN 'C'
-        WHEN b.rating >= 2 THEN 'D'
-        WHEN b.rating < 2 THEN 'E'
+            WHEN b.rating = '' THEN 'no rating'
+            WHEN b.rating >= 4.75 THEN 'A'
+            WHEN b.rating >= 4 THEN 'B'
+            WHEN b.rating >= 3 THEN 'C'
+            WHEN b.rating >= 2 THEN 'D'
+            WHEN b.rating < 2 THEN 'E'
         ELSE ''
         END AS convertRating, 
-        (SELECT CONCAT('L', CAST(SUBSTRING(layer, 2) AS UNSIGNED) + 1) AS new_layer FROM atasan WHERE idkar=b2.idkar AND id_atasan='$iduser') AS nextlayer,
-        (SELECT id_atasan FROM atasan WHERE idkar=b2.idkar AND layer='L2') AS nextapprover,
-        a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date
-        FROM $karyawan AS a
-        LEFT JOIN transaksi_2023_final AS b ON b.idkar = a.id
-        LEFT JOIN transaksi_2023 AS b2 ON b2.idkar = a.id
-        LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
-        LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
-        LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
-        WHERE (b2.approver_id='$iduser' AND isnull(b2.rating)) AND a.id!='$iduser'
-        AND a.Kode_Golongan IN $jg  and b2.layer not in ('p1','p2','p3','sub1','sub2','sub3') GROUP BY a.id";
+        CONCAT('L', CAST(SUBSTRING(atasan.layer, 2) AS UNSIGNED) + 1) AS nextlayer, atasan.id_atasan AS nextapprover, a.Nama_Lengkap, a.Nama_Jabatan, dg.Nama_Golongan, dou.Nama_OU, dd.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date FROM 
+        karyawan_2023 AS a LEFT JOIN 
+        transaksi_2023_final AS b ON b.idkar = a.id LEFT JOIN transaksi_2023 AS b2 ON b2.idkar = a.id LEFT JOIN daftargolongan AS dg ON dg.Kode_Golongan = a.Kode_Golongan LEFT JOIN 
+        daftarou AS dou ON dou.Kode_OU = a.Kode_OU LEFT JOIN 
+        daftardepartemen AS dd ON dd.kode_departemen = a.Kode_Departemen LEFT JOIN 
+        atasan ON atasan.idkar = b2.idkar WHERE b2.approver_id='$iduser' AND isnull(b2.rating) AND a.id!='$iduser' AND a.Kode_Golongan IN $jg AND b2.layer LIKE 'L%' AND atasan.layer='L2' GROUP BY a.id";
     
         $result = $koneksi->query($sql);
     
