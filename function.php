@@ -121,4 +121,24 @@ function srating($idkar){
     }
 }
 
+function employeeName($idkar) {
+	include("conf/conf.php");
+    include("tabel_setting.php");
+	try {
+		$sql = "SELECT Nama_Lengkap FROM $karyawan WHERE id='$idkar'";
+		
+		$stmt = $koneksi->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		
+		return $result['Nama_Lengkap'];
+	
+	} catch (Exception $e) {
+		// Log or handle the exception
+        error_log("Error in srating function: " . $e->getMessage());
+        return "Error";
+	}
+
+}
+
 ?>

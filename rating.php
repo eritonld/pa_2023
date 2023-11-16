@@ -57,11 +57,11 @@ try {
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')
     UNION 
-    SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
-    LEFT JOIN $karyawan b ON b.id=a.idkar
-    LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') AND c.layer LIKE 'L%'";
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
+    transaksi_2023_final a LEFT JOIN 
+    $karyawan b ON b.id = a.idkar
+    WHERE 
+    a.approval_review = 'Pending' AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
 
     $resultPending23 = $koneksi->query($queryPending23);
 
@@ -74,11 +74,11 @@ try {
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017')
     UNION 
-    SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
-    LEFT JOIN $karyawan b ON b.id=a.idkar
-    LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND c.layer LIKE 'L%'";
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
+    transaksi_2023_final a LEFT JOIN 
+    $karyawan b ON b.id = a.idkar
+    WHERE 
+    a.approval_review = 'Pending' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
 
     $resultPending45 = $koneksi->query($queryPending45);
 
@@ -91,11 +91,11 @@ try {
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025')
     UNION 
-    SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
-    LEFT JOIN $karyawan b ON b.id=a.idkar
-    LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025') AND c.layer LIKE 'L%'";
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
+    transaksi_2023_final a LEFT JOIN 
+    $karyawan b ON b.id = a.idkar
+    WHERE 
+    a.approval_review = 'Pending' AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
 
     $resultPending67 = $koneksi->query($queryPending67);
 
@@ -108,11 +108,11 @@ try {
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032')
     UNION 
-    SELECT b.Nama_Lengkap, d.Nama_Lengkap AS approver_name FROM transaksi_2023_final a 
-    LEFT JOIN $karyawan b ON b.id=a.idkar
-    LEFT JOIN transaksi_2023 c ON c.idkar=a.idkar AND c.approver_id='$idmaster_pa'
-    LEFT JOIN $karyawan d ON d.id=(SELECT approver_id FROM transaksi_2023 WHERE approval_status = 'Pending' AND idkar=a.idkar limit 1)
-    WHERE a.approval_review='Pending' AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032') AND c.layer LIKE 'L%'";
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
+    transaksi_2023_final a LEFT JOIN 
+    $karyawan b ON b.id = a.idkar
+    WHERE 
+    a.approval_review = 'Pending' AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
 
     $resultPending89 = $koneksi->query($queryPending89);
 
@@ -237,45 +237,6 @@ try {
 
 } catch (PDOException $e) {
     echo $e->getMessage();
-}
-
-try {
-    $sql = "SELECT
-    SUM(CASE WHEN convertRating = 'A' THEN 1 ELSE 0 END) AS A,
-    SUM(CASE WHEN convertRating = 'B' THEN 1 ELSE 0 END) AS B,
-    SUM(CASE WHEN convertRating = 'C' THEN 1 ELSE 0 END) AS C,
-    SUM(CASE WHEN convertRating = 'D' THEN 1 ELSE 0 END) AS D,
-    SUM(CASE WHEN convertRating = 'E' THEN 1 ELSE 0 END) AS E,
-    SUM(CASE WHEN convertRating IN ('A', 'B', 'C', 'D', 'E') THEN 1 ELSE 0 END) AS Total,
-    (SUM(CASE WHEN convertRating = 'A' THEN 1 ELSE 0 END) / SUM(CASE WHEN convertRating IN ('A', 'B', 'C', 'D', 'E') THEN 1 ELSE 0 END)) * 100 AS Percent_A,
-    (SUM(CASE WHEN convertRating = 'B' THEN 1 ELSE 0 END) / SUM(CASE WHEN convertRating IN ('A', 'B', 'C', 'D', 'E') THEN 1 ELSE 0 END)) * 100 AS Percent_B,
-    (SUM(CASE WHEN convertRating = 'C' THEN 1 ELSE 0 END) / SUM(CASE WHEN convertRating IN ('A', 'B', 'C', 'D', 'E') THEN 1 ELSE 0 END)) * 100 AS Percent_C,
-    (SUM(CASE WHEN convertRating = 'D' THEN 1 ELSE 0 END) / SUM(CASE WHEN convertRating IN ('A', 'B', 'C', 'D', 'E') THEN 1 ELSE 0 END)) * 100 AS Percent_D,
-    (SUM(CASE WHEN convertRating = 'E' THEN 1 ELSE 0 END) / SUM(CASE WHEN convertRating IN ('A', 'B', 'C', 'D', 'E') THEN 1 ELSE 0 END)) * 100 AS Percent_E,
-    (SUM(CASE WHEN convertRating IN ('A', 'B', 'C', 'D', 'E') THEN 1 ELSE 0 END) / SUM(CASE WHEN convertRating IN ('A', 'B', 'C', 'D', 'E') THEN 1 ELSE 0 END)) * 100 AS Total_Percent
-  FROM (
-    SELECT
-      CASE
-        WHEN b.rating = 5 THEN 'A'
-        WHEN b.rating = 4 THEN 'B'
-        WHEN b.rating = 3 THEN 'C'
-        WHEN b.rating = 2 THEN 'D'
-        WHEN b.rating = 1 THEN 'E'
-        ELSE 'no rating'
-      END AS convertRating
-    FROM transaksi_2023_final AS b
-    LEFT JOIN atasan AS a1 ON a1.idkar = b.idkar AND a1.layer = 'L1'
-    LEFT JOIN atasan AS a2 ON a2.idkar = b.idkar AND a2.layer = 'L2'
-    LEFT JOIN atasan AS a3 ON a3.idkar = b.idkar AND a3.layer = 'L3'
-    WHERE (a1.id_atasan = '$idmaster_pa' OR a2.id_atasan = '$idmaster_pa' OR a3.id_atasan = '$idmaster_pa')
-  ) AS subquery";
-
-    $result = $koneksi->query($sql);
-
-    $rating = $result->fetch(PDO::FETCH_ASSOC);
-
-} catch (PDOException $e) {
-    echo json_encode(array("error" => $e->getMessage()));
 }
 
 try {
@@ -444,7 +405,7 @@ try {
             </ul>
             <div class="tab-content">
                 <div id="TabRating1" class="tab-pane active">
-                    <div class="section-pending <?= $countPending23 ? '' : 'hidden'; ?>">
+                    <div class="section-pending <?= $countPending23 ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -458,7 +419,7 @@ try {
                             <?php
                             $no = 1;
                                 foreach ($pending23 as $row) {
-                                    $layer = $row['approval_status']==''?'No Data Appraisal' : 'Pending : '.$row['approval_status'];
+                                    $layer = $row['approval_status']==''?'No Data Appraisal' : 'Pending : '.employeeName($row['approval_status']);
                                     echo "<tr>";
                                     echo "<td>" . $no . "</td>";
                                     echo "<td>" . $row['Nama_Lengkap'] . "</td>";
@@ -470,7 +431,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending23 ? 'hidden' : ''; ?>">
+                    <div class="section-rating <?= $countPending23 ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target23_a" type="hidden" class="form-control" value="<?= $targetRating23['target_a']; ?>">
@@ -481,7 +442,7 @@ try {
                                 <input id="total23" type="hidden" class="form-control" value="<?= $targetRating23['Total']; ?>">
                             </div>
                         </div>
-                        <div class="row <?= $targetRating23['total_subo'] ? '' : 'hidden'; ?>">
+                        <div class="row <?= $targetRating23['total_subo'] ? 'block' : 'hidden'; ?>">
                             <div class="col-md-8">
                                 <table class="table table-bordered text-center">
                                     <thead>
@@ -557,24 +518,26 @@ try {
                                 </div>
                             </div>
                         </div>
-                        <table id="tableRating1" class="table table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Grade</th>
-                                    <th>Unit</th>
-                                    <th>Division</th>
-                                    <th>Suggested Ratings</th>
-                                    <th style="background-color: yellow;">Your Ratings</th>
-                                </tr>
-                            </thead>
-                        </table>
+                        <div class="<?= $rating23['Total'] ? 'hidden' : 'block'; ?>">
+                            <table id="tableRating1" class="table table-bordered table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Name</th>
+                                        <th>Position</th>
+                                        <th>Grade</th>
+                                        <th>Unit</th>
+                                        <th>Division</th>
+                                        <th>Suggested Ratings</th>
+                                        <th style="background-color: yellow;">Your Ratings</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div id="TabRating2" class="tab-pane">
-                <div class="section-pending <?= $countPending45 ? '' : 'hidden'; ?>">
+                <div class="section-pending <?= $countPending45 ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -588,7 +551,7 @@ try {
                             <?php
                             $no = 1;
                                 foreach ($pending45 as $row) {
-                                    $layer = $row['approval_status']==''?'No Data Appraisal' : 'Pending : '.$row['approval_status'];
+                                    $layer = $row['approval_status']==''?'No Data Appraisal' : 'Pending : '.employeeName($row['approval_status']);
                                     echo "<tr>";
                                     echo "<td>" . $no . "</td>";
                                     echo "<td>" . $row['Nama_Lengkap'] . "</td>";
@@ -600,7 +563,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending45 ? 'hidden' : ''; ?>">
+                    <div class="section-rating <?= $countPending45 ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target45_a" type="hidden" class="form-control" value="<?= $targetRating45['target_a']; ?>">
@@ -611,7 +574,7 @@ try {
                                 <input id="total45" type="hidden" class="form-control" value="<?= $targetRating45['Total']; ?>">
                             </div>
                         </div>
-                        <div class="row <?= $targetRating45['total_subo'] ? '' : 'hidden'; ?>">
+                        <div class="row <?= $targetRating45['total_subo'] ? 'block' : 'hidden'; ?>">
                             <div class="col-md-8">
                                 <table class="table table-bordered text-center">
                                     <thead>
@@ -687,6 +650,7 @@ try {
                                 </div>
                             </div>
                         </div>
+                        <div class="<?= $rating45['Total'] ? 'hidden' : 'block'; ?>">
                             <table id="tableRating2" class="table table-bordered table-striped table-condensed">
                                 <thead>
                                     <tr>
@@ -701,10 +665,11 @@ try {
                                     </tr>
                                 </thead>
                             </table>
+                        </div>
                     </div>
                 </div>
                 <div id="TabRating3" class="tab-pane">
-                <div class="section-pending <?= $countPending67 ? '' : 'hidden'; ?>">
+                <div class="section-pending <?= $countPending67 ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -718,7 +683,7 @@ try {
                             <?php
                             $no = 1;
                                 foreach ($pending67 as $row) {
-                                    $layer = $row['approval_status']==''?'No Data Appraisal' : 'Pending : '.$row['approval_status'];
+                                    $layer = $row['approval_status']==''?'No Data Appraisal' : 'Pending : '.employeeName($row['approval_status']);
                                     echo "<tr>";
                                     echo "<td>" . $no . "</td>";
                                     echo "<td>" . $row['Nama_Lengkap'] . "</td>";
@@ -730,7 +695,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending67 ? 'hidden' : ''; ?>">
+                    <div class="section-rating <?= $countPending67 ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target67_a" type="hidden" class="form-control" value="<?= $targetRating67['target_a']; ?>">
@@ -741,7 +706,7 @@ try {
                                 <input id="total67" type="hidden" class="form-control" value="<?= $targetRating67['Total']; ?>">
                             </div>
                         </div>
-                        <div class="row <?= $targetRating67['total_subo'] ? '' : 'hidden'; ?>">
+                        <div class="row <?= $targetRating67['total_subo'] ? 'block' : 'hidden'; ?>">
                             <div class="col-md-8">
                                 <table class="table table-bordered text-center">
                                     <thead>
@@ -817,6 +782,7 @@ try {
                                 </div>
                             </div>
                         </div>
+                        <div class="<?= $rating67['Total'] ? 'hidden' : 'block'; ?>">
                             <table id="tableRating3" class="table table-bordered table-striped table-condensed">
                                 <thead>
                                     <tr>
@@ -831,10 +797,11 @@ try {
                                     </tr>
                                 </thead>
                             </table>
+                        </div>
                     </div>
                 </div>
                 <div id="TabRating4" class="tab-pane">
-                <div class="section-pending <?= $countPending89 ? '' : 'hidden'; ?>">
+                <div class="section-pending <?= $countPending89 ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -848,7 +815,7 @@ try {
                             <?php
                             $no = 1;
                                 foreach ($pending89 as $row) {
-                                    $layer = $row['approval_status']==''?'No Data Appraisal' : 'Pending : '.$row['approval_status'];
+                                    $layer = $row['approval_status']==''?'No Data Appraisal' : 'Pending : '.employeeName($row['approval_status']);
                                     echo "<tr>";
                                     echo "<td>" . $no . "</td>";
                                     echo "<td>" . $row['Nama_Lengkap'] . "</td>";
@@ -860,7 +827,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending89 ? 'hidden' : ''; ?>">
+                    <div class="section-rating <?= $countPending89 ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target89_a" type="hidden" class="form-control" value="<?= $targetRating89['target_a']; ?>">
@@ -871,7 +838,7 @@ try {
                                 <input id="total89" type="hidden" class="form-control" value="<?= $targetRating89['Total']; ?>">
                             </div>
                         </div>
-                        <div class="row <?= $targetRating89['total_subo'] ? '' : 'hidden'; ?>">
+                        <div class="row <?= $targetRating89['total_subo'] ? 'block' : 'hidden'; ?>">
                             <div class="col-md-8">
                                 <table class="table table-bordered text-center">
                                     <thead>
@@ -947,6 +914,7 @@ try {
                                 </div>
                             </div>
                         </div>
+                        <div class="<?= $rating89['Total'] ? 'hidden' : 'block'; ?>">
                             <table id="tableRating4" class="table table-bordered table-striped table-condensed">
                                 <thead>
                                     <tr>
@@ -961,6 +929,7 @@ try {
                                     </tr>
                                 </thead>
                             </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -973,6 +942,7 @@ try {
 
 <script>
     $(document).ready(function () {
+        
         let table1 = $("#tableRating1").DataTable({
             "bPaginate": true,
             "bInfo": true,
