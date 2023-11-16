@@ -160,10 +160,10 @@ try {
     $queryTarget23 = "SELECT c.ranges, c.grade, c.percent_a, c.percent_b, c.percent_c, c.percent_d, c.percent_e, 
         ROUND((COUNT(a.idkar) * c.percent_a) / 100) AS target_a, 
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) AS target_b, 
-        ROUND(COUNT(a.idkar) - (((COUNT(a.idkar) * c.percent_a) / 100) + 
-        ((COUNT(a.idkar) * c.percent_b) / 100) + 
-        ((COUNT(a.idkar) * c.percent_d) / 100) + 
-        ((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
+        ROUND(COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
         ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
@@ -178,10 +178,10 @@ try {
     $queryTarget45 = "SELECT c.ranges, c.grade, c.percent_a, c.percent_b, c.percent_c, c.percent_d, c.percent_e, 
         ROUND((COUNT(a.idkar) * c.percent_a) / 100) AS target_a, 
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) AS target_b, 
-        ROUND(COUNT(a.idkar) - (((COUNT(a.idkar) * c.percent_a) / 100) + 
-        ((COUNT(a.idkar) * c.percent_b) / 100) + 
-        ((COUNT(a.idkar) * c.percent_d) / 100) + 
-        ((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
+        ROUND(COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
         ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
@@ -197,10 +197,10 @@ try {
     $queryTarget67 = "SELECT c.ranges, c.grade, c.percent_a, c.percent_b, c.percent_c, c.percent_d, c.percent_e, 
         ROUND((COUNT(a.idkar) * c.percent_a) / 100) AS target_a, 
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) AS target_b, 
-        ROUND(COUNT(a.idkar) - (((COUNT(a.idkar) * c.percent_a) / 100) + 
-        ((COUNT(a.idkar) * c.percent_b) / 100) + 
-        ((COUNT(a.idkar) * c.percent_d) / 100) + 
-        ((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
+        ROUND(COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
         ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
@@ -215,10 +215,10 @@ try {
     $queryTarget89 = "SELECT c.ranges, c.grade, c.percent_a, c.percent_b, c.percent_c, c.percent_d, c.percent_e, 
         ROUND((COUNT(a.idkar) * c.percent_a) / 100) AS target_a, 
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) AS target_b, 
-        ROUND(COUNT(a.idkar) - (((COUNT(a.idkar) * c.percent_a) / 100) + 
-        ((COUNT(a.idkar) * c.percent_b) / 100) + 
-        ((COUNT(a.idkar) * c.percent_d) / 100) + 
-        ((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
+        ROUND(COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
+        ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
         ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
@@ -303,12 +303,9 @@ try {
                 WHEN b.rating = 1 THEN 'E'
                 ELSE 'no rating'
             END AS convertRating
-        FROM transaksi_2023_final AS b
+        FROM transaksi_2023 AS b
         LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
-        LEFT JOIN atasan AS a1 ON a1.idkar = b.idkar AND a1.layer = 'L1'
-        LEFT JOIN atasan AS a2 ON a2.idkar = b.idkar AND a2.layer = 'L2'
-        LEFT JOIN atasan AS a3 ON a3.idkar = b.idkar AND a3.layer = 'L3'
-        WHERE (a1.id_atasan = '$idmaster_pa' OR a2.id_atasan = '$idmaster_pa' OR a3.id_atasan = '$idmaster_pa')
+        WHERE b.approver_id = '$idmaster_pa'
             AND k.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')  -- condition
     ) AS subquery";
     $query45 = "SELECT
@@ -334,12 +331,9 @@ try {
                 WHEN b.rating = 1 THEN 'E'
                 ELSE 'no rating'
             END AS convertRating
-        FROM transaksi_2023_final AS b
+        FROM transaksi_2023 AS b
         LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
-        LEFT JOIN atasan AS a1 ON a1.idkar = b.idkar AND a1.layer = 'L1'
-        LEFT JOIN atasan AS a2 ON a2.idkar = b.idkar AND a2.layer = 'L2'
-        LEFT JOIN atasan AS a3 ON a3.idkar = b.idkar AND a3.layer = 'L3'
-        WHERE (a1.id_atasan = '$idmaster_pa' OR a2.id_atasan = '$idmaster_pa' OR a3.id_atasan = '$idmaster_pa')
+        WHERE b.approver_id = '$idmaster_pa'
             AND k.Kode_Golongan IN ('GL013','GL014','GL016','GL017')  -- condition
     ) AS subquery";
     $query67 = "SELECT
@@ -365,12 +359,9 @@ try {
                 WHEN b.rating = 1 THEN 'E'
                 ELSE 'no rating'
             END AS convertRating
-        FROM transaksi_2023_final AS b
+        FROM transaksi_2023 AS b
         LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
-        LEFT JOIN atasan AS a1 ON a1.idkar = b.idkar AND a1.layer = 'L1'
-        LEFT JOIN atasan AS a2 ON a2.idkar = b.idkar AND a2.layer = 'L2'
-        LEFT JOIN atasan AS a3 ON a3.idkar = b.idkar AND a3.layer = 'L3'
-        WHERE (a1.id_atasan = '$idmaster_pa' OR a2.id_atasan = '$idmaster_pa' OR a3.id_atasan = '$idmaster_pa')
+        WHERE b.approver_id = '$idmaster_pa'
             AND k.Kode_Golongan IN ('GL020','GL021','GL024','GL025')  -- condition
     ) AS subquery";
     $query89 = "SELECT
@@ -396,12 +387,9 @@ try {
                 WHEN b.rating = 1 THEN 'E'
                 ELSE 'no rating'
             END AS convertRating
-        FROM transaksi_2023_final AS b
+        FROM transaksi_2023 AS b
         LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
-        LEFT JOIN atasan AS a1 ON a1.idkar = b.idkar AND a1.layer = 'L1'
-        LEFT JOIN atasan AS a2 ON a2.idkar = b.idkar AND a2.layer = 'L2'
-        LEFT JOIN atasan AS a3 ON a3.idkar = b.idkar AND a3.layer = 'L3'
-        WHERE (a1.id_atasan = '$idmaster_pa' OR a2.id_atasan = '$idmaster_pa' OR a3.id_atasan = '$idmaster_pa')
+        WHERE b.approver_id = '$idmaster_pa'
             AND k.Kode_Golongan IN ('GL028','GL029','GL031','GL032')  -- condition
     ) AS subquery";
 
@@ -549,17 +537,24 @@ try {
                                             <td>Total</td>
                                             <td><?= $targetRating23['Total']; ?></td>
                                             <td><?= number_format($targetRating23['Total_Percent'], 1); ?>%</td>
-                                            <td><?= $rating23['Total']; ?></td>
-                                            <td><?= number_format($rating23['Total_Percent'], 1); ?>%</td>
+                                            <td><span id="total_23"><?= $rating23['Total']; ?></span></td>
+                                            <td><span id="percent_23"><?= number_format($rating23['Total_Percent'], 1); ?>%</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-primary" id="submitRating23">Submit Ratings</button>
+                            <div class="<?= $rating23['Total'] ? 'hidden' : 'block'; ?>">
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary" id="submitRating23">Submit Ratings</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-success" id="exportRating23">Export Ratings</button>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-success" id="exportRating23">Export Ratings</button>
+                            <div class="<?= $rating23['Total'] ? 'block' : 'hidden'; ?>">
+                                <div class="col-md-4">
+                                    <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
+                                </div>
                             </div>
                         </div>
                         <table id="tableRating1" class="table table-bordered table-striped table-condensed">
@@ -672,17 +667,24 @@ try {
                                             <td>Total</td>
                                             <td><?= $targetRating45['Total']; ?></td>
                                             <td><?= number_format($targetRating45['Total_Percent'], 1); ?>%</td>
-                                            <td><?= $rating45['Total']; ?></td>
-                                            <td><?= number_format($rating45['Total_Percent'], 1); ?>%</td>
+                                            <td><span id="total_45"><?= $rating45['Total']; ?></span></td>
+                                            <td><span id="percent_45"><?= number_format($rating45['Total_Percent'], 1); ?>%</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-primary" id="submitRating45">Submit Ratings</button>
+                            <div class="<?= $rating45['Total'] ? 'hidden' : 'block'; ?>">
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary" id="submitRating45">Submit Ratings</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-success" id="exportRating45">Export Ratings</button>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-success" id="exportRating45">Export Ratings</button>
+                            <div class="<?= $rating45['Total'] ? 'block' : 'hidden'; ?>">
+                                <div class="col-md-4">
+                                    <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
+                                </div>
                             </div>
                         </div>
                             <table id="tableRating2" class="table table-bordered table-striped table-condensed">
@@ -795,17 +797,24 @@ try {
                                             <td>Total</td>
                                             <td><?= $targetRating67['Total']; ?></td>
                                             <td><?= number_format($targetRating67['Total_Percent'], 1); ?>%</td>
-                                            <td><?= $rating67['Total']; ?></td>
-                                            <td><?= number_format($rating67['Total_Percent'], 1); ?>%</td>
+                                            <td><span id="total_67"><?= $rating67['Total']; ?></span></td>
+                                            <td><span id="percent_67"><?= number_format($rating67['Total_Percent'], 1); ?>%</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-primary" id="submitRating67">Submit Ratings</button>
+                            <div class="<?= $rating67['Total'] ? 'hidden' : 'block'; ?>">
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary" id="submitRating67">Submit Ratings</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-success" id="exportRating67">Export Ratings</button>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-success" id="exportRating67">Export Ratings</button>
+                            <div class="<?= $rating67['Total'] ? 'block' : 'hidden'; ?>">
+                                <div class="col-md-4">
+                                    <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
+                                </div>
                             </div>
                         </div>
                             <table id="tableRating3" class="table table-bordered table-striped table-condensed">
@@ -918,17 +927,24 @@ try {
                                             <td>Total</td>
                                             <td><?= $targetRating89['Total']; ?></td>
                                             <td><?= number_format($targetRating89['Total_Percent'], 1); ?>%</td>
-                                            <td><?= $rating89['Total']; ?></td>
-                                            <td><?= number_format($rating89['Total_Percent'], 1); ?>%</td>
+                                            <td><span id="total_89"><?= $rating89['Total']; ?></span></td>
+                                            <td><span id="percent_89"><?= number_format($rating89['Total_Percent'], 1); ?>%</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-primary" id="submitRating89">Submit Ratings</button>
+                            <div class="<?= $rating89['Total'] ? 'hidden' : 'block'; ?>">
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary" id="submitRating89">Submit Ratings</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-success" id="exportRating89">Export Ratings</button>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-success" id="exportRating89">Export Ratings</button>
+                            <div class="<?= $rating89['Total'] ? 'block' : 'hidden'; ?>">
+                                <div class="col-md-4">
+                                    <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
+                                </div>
                             </div>
                         </div>
                             <table id="tableRating4" class="table table-bordered table-striped table-condensed">
@@ -1154,11 +1170,11 @@ try {
               {
                          data: null,
                          render: function (data, type, row) {
-                  if(data.status_sr=='T'){
-                    return data.grade_score;
-                  }else{
-                    return data.convertRating;
-                  }
+                        if(data.status_sr=='T'){
+                            return data.grade_score;
+                        }else{
+                            return data.convertRating;
+                        }
                 }
                 },
                 {
@@ -1209,6 +1225,7 @@ try {
 
             // Calculate the total count
             let totalCount = Object.values(ratingCounts).reduce((total, count) => total + count, 0);
+            let totalPercentage = 100+'%';
 
             for (let i = 1; i <= 5; i++) {
                 let ratingKey = i.toString();
@@ -1226,6 +1243,8 @@ try {
             $("#rate23_c").text(ratingCounts['3']);
             $("#rate23_d").text(ratingCounts['2']);
             $("#rate23_e").text(ratingCounts['1']);
+            $("#total_23").text(totalCount);
+            $("#percent_23").text(totalPercentage);
             // You can perform any further actions with the selected values and counts here.
         });
 
@@ -1250,7 +1269,7 @@ try {
 
             // Calculate the total count
             let totalCount = Object.values(ratingCounts).reduce((total, count) => total + count, 0);
-
+            let totalPercentage = 100+'%';
             // Calculate the percentage for each rating value and update the corresponding elements
             for (let i = 1; i <= 5; i++) {
                 let ratingKey = i.toString();
@@ -1268,6 +1287,8 @@ try {
             $("#rate45_c").text(ratingCounts['3']);
             $("#rate45_d").text(ratingCounts['2']);
             $("#rate45_e").text(ratingCounts['1']);
+            $("#total_45").text(totalCount);
+            $("#percent_45").text(totalPercentage);
             // You can perform any further actions with the selected values and counts here.
         });
 
@@ -1292,6 +1313,7 @@ try {
 
             // Calculate the total count
             let totalCount = Object.values(ratingCounts).reduce((total, count) => total + count, 0);
+            let totalPercentage = 100+'%';
 
             for (let i = 1; i <= 5; i++) {
                 let ratingKey = i.toString();
@@ -1309,6 +1331,8 @@ try {
             $("#rate67_c").text(ratingCounts['3']);
             $("#rate67_d").text(ratingCounts['2']);
             $("#rate67_e").text(ratingCounts['1']);
+            $("#total_67").text(totalCount);
+            $("#percent_67").text(totalPercentage);
             // You can perform any further actions with the selected values and counts here.
         });
 
@@ -1333,6 +1357,8 @@ try {
 
             // Calculate the total count
             let totalCount = Object.values(ratingCounts).reduce((total, count) => total + count, 0);
+            let totalPercentage = 100+'%';
+            
             for (let i = 1; i <= 5; i++) {
                 let ratingKey = i.toString();
                 let count = ratingCounts[ratingKey];
@@ -1349,6 +1375,8 @@ try {
             $("#rate89_c").text(ratingCounts['3']);
             $("#rate89_d").text(ratingCounts['2']);
             $("#rate89_e").text(ratingCounts['1']);
+            $("#total_89").text(totalCount);
+            $("#percent_89").text(totalPercentage);
             // You can perform any further actions with the selected values and counts here.
         });
 
