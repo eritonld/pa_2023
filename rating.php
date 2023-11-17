@@ -55,13 +55,14 @@ try {
     $queryPending23 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
     SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
     (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
+
 
     $resultPending23 = $koneksi->query($queryPending23);
 
@@ -72,7 +73,7 @@ try {
     $queryPending45 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017')
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
     SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
     transaksi_2023_final a LEFT JOIN 
@@ -89,13 +90,14 @@ try {
     $queryPending67 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025')
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
     SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
     (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
+
 
     $resultPending67 = $koneksi->query($queryPending67);
 
@@ -106,13 +108,14 @@ try {
     $queryPending89 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032')
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
     SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
     (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
+
 
     $resultPending89 = $koneksi->query($queryPending89);
 
@@ -1495,7 +1498,7 @@ try {
             return; // Stop further execution
         }
 
-        fetch('exportRating.php', {
+        fetch('exportRating1.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1509,7 +1512,7 @@ try {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'rating_pa.xlsx';
+            a.download = 'rating_pa.xls';
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);

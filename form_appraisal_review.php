@@ -427,7 +427,7 @@ if ($response === false) {
 							</div>
 						<?php
 							try {
-								$queryCulture = "SELECT * FROM question_pa WHERE `group` = 'culture' AND title='$title' ORDER BY `id` ASC";
+								$queryCulture = "SELECT * FROM question_pa WHERE `group` = 'culture' AND title='$title' AND `role`='$fortable' ORDER BY `id` ASC";
 							
 								$stmtCulture = $koneksi->prepare($queryCulture);
 								$stmtCulture->execute();
@@ -442,11 +442,12 @@ if ($response === false) {
 							}
 							$x = 1;
 							foreach ($cultureValue as $data) { 
+							if($bahasa=='eng'){ $item_culture=$data['item_en']; }else{ $item_culture=$data['item']; }
 							$cNumber = $x++;
 							?>
 								<div class="row" style="margin-bottom: 20px;">
 									<div class="col-md-9">
-										<span class="h4"><?= $data['item']; ?></span>
+										<span class="h4"><?= $item_culture; ?></span>
 									</div>
 									<div class="col-md-3">
 										<select class="form-control" name="<?= $data['name'].$cNumber; ?>">
@@ -497,11 +498,12 @@ if ($response === false) {
 								echo "Error: " . $e->getMessage();
 							}
 								
-							foreach ($leadershipValue as $data) { 
+							foreach ($leadershipValue as $data) {
+							if($bahasa=='eng'){ $item_leadership=$data['item_en']; }else{ $item_leadership=$data['item']; }
 								?>
 								<div class="row">
 									<div class="col-md-9">
-										<span class="h4"><?= $data['item']; ?></span>
+										<span class="h4"><?= $item_leadership; ?></span>
 									</div>
 									<div class="col-md-3">
 										<select class="form-control" name="<?= $data['name'].$lNumber; ?>">

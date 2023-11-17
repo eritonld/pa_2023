@@ -2,7 +2,6 @@
 
 namespace PhpOffice\PhpSpreadsheet\Calculation\Database;
 
-use PhpOffice\PhpSpreadsheet\Calculation\Information\ExcelError;
 use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Minimum;
 
 class DMin extends DatabaseAbstract
@@ -31,16 +30,16 @@ class DMin extends DatabaseAbstract
      *                                        the column label in which you specify a condition for the
      *                                        column.
      *
-     * @return null|float|string
+     * @return float
      */
-    public static function evaluate($database, $field, $criteria, bool $returnError = true)
+    public static function evaluate($database, $field, $criteria)
     {
         $field = self::fieldExtract($database, $field);
         if ($field === null) {
-            return $returnError ? ExcelError::VALUE() : null;
+            return null;
         }
 
-        return Minimum::min(
+        return Minimum::MIN(
             self::getFilteredColumn($database, $field, $criteria)
         );
     }
