@@ -2,15 +2,12 @@
 
 namespace PhpOffice\PhpSpreadsheet\Worksheet;
 
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Helper\Dimension as CssDimension;
-
 class ColumnDimension extends Dimension
 {
     /**
      * Column index.
      *
-     * @var ?string
+     * @var string
      */
     private $columnIndex;
 
@@ -33,12 +30,12 @@ class ColumnDimension extends Dimension
     /**
      * Create a new ColumnDimension.
      *
-     * @param ?string $index Character column index
+     * @param string $pIndex Character column index
      */
-    public function __construct($index = 'A')
+    public function __construct($pIndex = 'A')
     {
         // Initialise values
-        $this->columnIndex = $index;
+        $this->columnIndex = $pIndex;
 
         // set dimension as unformatted by default
         parent::__construct(0);
@@ -47,15 +44,17 @@ class ColumnDimension extends Dimension
     /**
      * Get column index as string eg: 'A'.
      */
-    public function getColumnIndex(): ?string
+    public function getColumnIndex(): string
     {
         return $this->columnIndex;
     }
 
     /**
      * Set column index as string eg: 'A'.
+     *
+     * @return $this
      */
-    public function setColumnIndex(string $index): self
+    public function setColumnIndex(string $index)
     {
         $this->columnIndex = $index;
 
@@ -63,54 +62,21 @@ class ColumnDimension extends Dimension
     }
 
     /**
-     * Get column index as numeric.
-     */
-    public function getColumnNumeric(): int
-    {
-        return Coordinate::columnIndexFromString($this->columnIndex ?? '');
-    }
-
-    /**
-     * Set column index as numeric.
-     */
-    public function setColumnNumeric(int $index): self
-    {
-        $this->columnIndex = Coordinate::stringFromColumnIndex($index);
-
-        return $this;
-    }
-
-    /**
      * Get Width.
-     *
-     * Each unit of column width is equal to the width of one character in the default font size. A value of -1
-     *      tells Excel to display this column in its default width.
-     * By default, this will be the return value; but this method also accepts an optional unit of measure argument
-     *    and will convert the returned value to the specified UoM..
      */
-    public function getWidth(?string $unitOfMeasure = null): float
+    public function getWidth(): float
     {
-        return ($unitOfMeasure === null || $this->width < 0)
-            ? $this->width
-            : (new CssDimension((string) $this->width))->toUnit($unitOfMeasure);
+        return $this->width;
     }
 
     /**
      * Set Width.
      *
-     * Each unit of column width is equal to the width of one character in the default font size. A value of -1
-     *      tells Excel to display this column in its default width.
-     * By default, this will be the unit of measure for the passed value; but this method also accepts an
-     *    optional unit of measure argument, and will convert the value from the specified UoM using an
-     *    approximation method.
-     *
      * @return $this
      */
-    public function setWidth(float $width, ?string $unitOfMeasure = null)
+    public function setWidth(float $width)
     {
-        $this->width = ($unitOfMeasure === null || $width < 0)
-            ? $width
-            : (new CssDimension("{$width}{$unitOfMeasure}"))->width();
+        $this->width = $width;
 
         return $this;
     }

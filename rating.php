@@ -79,7 +79,18 @@ try {
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
-    a.approval_review = 'Pending' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
+    a.approval_review = 'Pending' and a.approver_rating_id<>'$idmaster_pa' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
+	
+	// echo "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
+    // LEFT JOIN atasan b ON b.idkar=a.id 
+    // LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
+    // WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
+    // UNION 
+    // SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
+    // transaksi_2023_final a LEFT JOIN 
+    // $karyawan b ON b.id = a.idkar
+    // WHERE 
+    // a.approval_review = 'Pending' and a.approver_rating_id<>'$idmaster_pa' AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
 
 
     $resultPending45 = $koneksi->query($queryPending45);
@@ -1499,7 +1510,7 @@ try {
             return; // Stop further execution
         }
 
-        fetch('exportRating.php', {
+        fetch('exportRating1.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1513,7 +1524,7 @@ try {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'rating_pa.xlsx';
+            a.download = 'rating_pa.xls';
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
