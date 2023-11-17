@@ -141,19 +141,19 @@ function employeeName($idkar) {
 
 }
 
-function avgScore($idkar, $createdBy) {
+function avgScore($idkar, $createdBy, $approverid) {
 	include("conf/conf.php");
     include("tabel_setting.php");
 	try {
 		$id = $idkar==$createdBy ? $idkar : $createdBy;
 		$sql = "SELECT fortable, 
-		AVG(
+		(
         CASE 
             WHEN fortable IN ('staffb', 'managerial') THEN (total_score + total_culture + total_leadership) / 3
             ELSE (total_score + total_culture) / 2
         END
-		) AS avg_score
-		FROM transaksi_$tahunperiode WHERE created_by='$id' LIMIT 1";
+		) AS avg_score, total_score, total_culture, total_leadership
+		FROM transaksi_$tahunperiode WHERE created_by='$createdBy' and approver_id='$approverid' and idkar='$idkar' LIMIT 1";
 		
 		$stmt = $koneksi->prepare($sql);
 		$stmt->execute();
@@ -185,7 +185,8 @@ function avgScore($idkar, $createdBy) {
 
 		}
 
-		$score = ROUND(($result['avg_score'] * $weightSA) + ($result['avg_score'] * $weightC) + ($result['avg_score'] * $weightL), 2);
+		$score = ROUND(($result['total_score'] * $weightSA) + ($result['total_culture'] * $weightC) + ($result['total_leadership'] * $weightL), 2);
+		// $score = $result['total_score'] ;
 
 		return $score;
 	

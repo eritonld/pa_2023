@@ -51,7 +51,12 @@ if($code == 'getPenilaian') {
     
             foreach ($employees as &$employee) {
 				// Call srating function and update the total_score in the employee data
-				$employee['avg_score'] = avgScore($employee['idkar'], $employee['created_by']);
+				if($employee['created_by']){
+					$employee['avg_score'] = avgScore($employee['idkar'], $employee['created_by'], $iduser);
+				}else{	
+					$employee['avg_score'] = 0;
+				}
+				// $employee['idkar'];
 			}
 
             $dataset = array(
