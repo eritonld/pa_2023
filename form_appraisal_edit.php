@@ -444,7 +444,7 @@ try {
 							</div>
 						<?php
 							try {
-								$queryCulture = "SELECT * FROM question_pa WHERE `group` = 'culture' AND title='$title' ORDER BY `id` ASC";
+								$queryCulture = "SELECT * FROM question_pa WHERE `group` = 'culture' AND title='$title'  AND `role`='$fortable' ORDER BY `id` ASC";
 							
 								$stmtCulture = $koneksi->prepare($queryCulture);
 								$stmtCulture->execute();
@@ -459,11 +459,12 @@ try {
 							}
 							$x = 1;
 							foreach ($cultureValue as $data) { 
+							if($bahasa=='eng'){ $item_culture=$data['item_en']; }else{ $item_culture=$data['item']; }
 							$cNumber = $x++;
 							?>
 								<div class="row" style="margin-bottom: 20px;">
 									<div class="col-md-9">
-										<span class="h4"><?= $data['item']; ?></span>
+										<span class="h4"><?= $item_culture; ?></span>
 									</div>
 									<div class="col-md-3">
 										<select class="form-control" name="<?= $data['name'].$cNumber; ?>">
@@ -496,7 +497,8 @@ try {
 							
 							$y = 1;
 							foreach ($leadershipTitles as $title) {
-							$lNumber = $y++;
+							
+							
 							?>
 							<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
 								<h1 class="col-md-3 text-bold h4"><?= $title; ?></h1>
@@ -517,10 +519,12 @@ try {
 							}
 								
 							foreach ($leadershipValue as $data) { 
+							if($bahasa=='eng'){ $item_leadership=$data['item_en']; }else{ $item_leadership=$data['item']; }
+							$lNumber = $y++;
 								?>
 								<div class="row">
 									<div class="col-md-9">
-										<span class="h4"><?= $data['item']; ?></span>
+										<span class="h4"><?= $item_leadership; ?></span>
 									</div>
 									<div class="col-md-3">
 										<select class="form-control" name="<?= $data['name'].$lNumber; ?>">

@@ -404,7 +404,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 							<?php 
 							$y = 1;
 							foreach ($leadershipTitles as $title) {
-							$lNumber = $y++;
+							
 							?>
 							<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
 								<h1 class="col-md-3 text-bold h4"><?= $title; ?></h1>
@@ -423,7 +423,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 								echo "Error: " . $e->getMessage();
 							}
 							foreach ($leadershipValue as $data) { 
-							
+							$lNumber = $y++;
 							if($bahasa=='eng'){ $item_leadership=$data['item_en']; }else{ $item_leadership=$data['item']; }
 							?>
 							<div class="row" style="margin-bottom: 20px;">

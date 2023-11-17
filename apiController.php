@@ -51,7 +51,12 @@ if($code == 'getPenilaian') {
     
             foreach ($employees as &$employee) {
 				// Call srating function and update the total_score in the employee data
-				$employee['avg_score'] = avgScore($employee['idkar'], $employee['created_by']);
+				if($employee['created_by']){
+					$employee['avg_score'] = avgScore($employee['idkar'], $employee['created_by'], $iduser);
+				}else{	
+					$employee['avg_score'] = 0;
+				}
+				// $employee['idkar'];
 			}
 
             $dataset = array(
@@ -88,7 +93,7 @@ if($code == 'getPenilaian') {
         transaksi_2023_final AS b ON b.idkar = a.id LEFT JOIN transaksi_2023 AS b2 ON b2.idkar = a.id LEFT JOIN daftargolongan AS dg ON dg.Kode_Golongan = a.Kode_Golongan LEFT JOIN 
         daftarou AS dou ON dou.Kode_OU = a.Kode_OU LEFT JOIN 
         daftardepartemen AS dd ON dd.kode_departemen = a.Kode_Departemen LEFT JOIN 
-        atasan ON atasan.idkar = b2.idkar WHERE b2.approver_id='$iduser' AND isnull(b2.rating) AND a.id!='$iduser' AND a.Kode_Golongan IN $jg AND b2.layer LIKE 'L%' GROUP BY a.id";
+        atasan ON atasan.idkar = b2.idkar AND atasan.id_atasan=b2.approver_id WHERE b2.approver_id='$iduser' AND isnull(b2.rating) AND a.id!='$iduser' AND a.Kode_Golongan IN $jg AND b2.layer LIKE 'L%' GROUP BY a.id";
     
         $result = $koneksi->query($sql);
     

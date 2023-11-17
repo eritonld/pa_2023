@@ -479,7 +479,7 @@ if ($response === false) {
 							<?php 
 							$y = 1;
 							foreach ($leadershipTitles as $title) {
-							$lNumber = $y++;
+							
 							?>
 							<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
 								<h1 class="col-md-3 text-bold h4"><?= $title; ?></h1>
@@ -500,6 +500,7 @@ if ($response === false) {
 								
 							foreach ($leadershipValue as $data) {
 							if($bahasa=='eng'){ $item_leadership=$data['item_en']; }else{ $item_leadership=$data['item']; }
+							$lNumber = $y++;
 								?>
 								<div class="row">
 									<div class="col-md-9">
