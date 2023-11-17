@@ -52,12 +52,12 @@ try {
 // echo $view['result'];
 
 try {
-    $queryPending23 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
+    $queryPending23 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
-    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
@@ -70,12 +70,12 @@ try {
 
     $countPending23 = count($pending23);
 
-    $queryPending45 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
+    $queryPending45 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
-    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
@@ -87,12 +87,12 @@ try {
 
     $countPending45 = count($pending45);
 
-    $queryPending67 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
+    $queryPending67 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
-    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
@@ -105,12 +105,12 @@ try {
 
     $countPending67 = count($pending67);
 
-    $queryPending89 = "SELECT a.Nama_Lengkap, c.approval_status FROM $karyawan a 
+    $queryPending89 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
     WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
     UNION 
-    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name FROM 
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
@@ -408,7 +408,7 @@ try {
             </ul>
             <div class="tab-content">
                 <div id="TabRating1" class="tab-pane active">
-                    <div class="section-pending <?= $countPending23 ? 'block' : 'hidden'; ?>">
+                    <div class="section-pending <?= $countPending23 && $countPending23['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -434,7 +434,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending23 ? 'hidden' : 'block'; ?>">
+                    <div class="section-rating <?= $countPending23 && $countPending23['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target23_a" type="hidden" class="form-control" value="<?= $targetRating23['target_a']; ?>">
@@ -540,7 +540,7 @@ try {
                     </div>
                 </div>
                 <div id="TabRating2" class="tab-pane">
-                <div class="section-pending <?= $countPending45 ? 'block' : 'hidden'; ?>">
+                <div class="section-pending <?= $countPending45 && $countPending45['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -566,7 +566,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending45 ? 'hidden' : 'block'; ?>">
+                    <div class="section-rating <?= $countPending45 && $countPending45['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target45_a" type="hidden" class="form-control" value="<?= $targetRating45['target_a']; ?>">
@@ -672,7 +672,7 @@ try {
                     </div>
                 </div>
                 <div id="TabRating3" class="tab-pane">
-                <div class="section-pending <?= $countPending67 ? 'block' : 'hidden'; ?>">
+                <div class="section-pending <?= $countPending67 && $countPending67['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -698,7 +698,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending67 ? 'hidden' : 'block'; ?>">
+                    <div class="section-rating <?= $countPending67 && $countPending67['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target67_a" type="hidden" class="form-control" value="<?= $targetRating67['target_a']; ?>">
@@ -804,7 +804,7 @@ try {
                     </div>
                 </div>
                 <div id="TabRating4" class="tab-pane">
-                <div class="section-pending <?= $countPending89 ? 'block' : 'hidden'; ?>">
+                <div class="section-pending <?= $countPending89 && $countPending89['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -830,7 +830,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending89 ? 'hidden' : 'block'; ?>">
+                    <div class="section-rating <?= $countPending89 && $countPending89['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target89_a" type="hidden" class="form-control" value="<?= $targetRating89['target_a']; ?>">
