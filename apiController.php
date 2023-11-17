@@ -461,7 +461,7 @@ if($code == 'getPenilaian') {
         // Output the results
         // print_r($resultLayer);
         //Create an instance; passing `true` enables exceptions
-        $mail = new PHPMailer(true);
+        // $mail = new PHPMailer(true);
 
         $getData = "SELECT k.id AS idkar, k.NIK, k.nik_baru, k.Nama_Lengkap, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, k.Nama_Jabatan, DATE_FORMAT(k.Mulai_Bekerja, '%d-%m-%Y') AS tmk
         FROM $karyawan AS k

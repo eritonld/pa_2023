@@ -2,7 +2,6 @@
 
 namespace PhpOffice\PhpSpreadsheet\Calculation\Database;
 
-use PhpOffice\PhpSpreadsheet\Calculation\Information\ExcelError;
 use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Maximum;
 
 class DMax extends DatabaseAbstract
@@ -31,16 +30,16 @@ class DMax extends DatabaseAbstract
      *                                        the column label in which you specify a condition for the
      *                                        column.
      *
-     * @return null|float|string
+     * @return float
      */
-    public static function evaluate($database, $field, $criteria, bool $returnError = true)
+    public static function evaluate($database, $field, $criteria)
     {
         $field = self::fieldExtract($database, $field);
         if ($field === null) {
-            return $returnError ? ExcelError::VALUE() : null;
+            return null;
         }
 
-        return Maximum::max(
+        return Maximum::MAX(
             self::getFilteredColumn($database, $field, $criteria)
         );
     }

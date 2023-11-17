@@ -2,35 +2,27 @@
 
 namespace PhpOffice\PhpSpreadsheet\Calculation\Engineering;
 
-use PhpOffice\PhpSpreadsheet\Calculation\ArrayEnabled;
 use PhpOffice\PhpSpreadsheet\Calculation\Exception;
 use PhpOffice\PhpSpreadsheet\Calculation\Functions;
-use PhpOffice\PhpSpreadsheet\Calculation\Information\ExcelError;
 
-abstract class ConvertBase
+class ConvertBase
 {
-    use ArrayEnabled;
-
-    /** @param mixed $value */
-    protected static function validateValue($value): string
+    protected static function validateValue($value, bool $gnumericCheck = false): string
     {
         if (is_bool($value)) {
             if (Functions::getCompatibilityMode() !== Functions::COMPATIBILITY_OPENOFFICE) {
-                throw new Exception(ExcelError::VALUE());
+                throw new Exception(Functions::VALUE());
             }
             $value = (int) $value;
         }
 
-        if (is_numeric($value)) {
-            if (Functions::getCompatibilityMode() == Functions::COMPATIBILITY_GNUMERIC) {
-                $value = floor((float) $value);
-            }
+        if ($gnumericCheck && Functions::getCompatibilityMode() == Functions::COMPATIBILITY_GNUMERIC) {
+            $value = floor((float) $value);
         }
 
         return strtoupper((string) $value);
     }
 
-    /** @param mixed $places */
     protected static function validatePlaces($places = null): ?int
     {
         if ($places === null) {
@@ -38,14 +30,14 @@ abstract class ConvertBase
         }
 
         if (is_numeric($places)) {
-            if ($places < 0 || $places > 10) {
-                throw new Exception(ExcelError::NAN());
+            if ($places < 0) {
+                throw new Exception(Functions::NAN());
             }
 
             return (int) $places;
         }
 
-        throw new Exception(ExcelError::VALUE());
+        throw new Exception(Functions::VALUE());
     }
 
     /**
@@ -63,7 +55,7 @@ abstract class ConvertBase
                 return substr(str_pad($value, $places, '0', STR_PAD_LEFT), -10);
             }
 
-            return ExcelError::NAN();
+            return Functions::NAN();
         }
 
         return substr($value, -10);

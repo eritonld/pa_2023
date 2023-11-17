@@ -2,7 +2,6 @@
 
 namespace PhpOffice\PhpSpreadsheet\Calculation\Database;
 
-use PhpOffice\PhpSpreadsheet\Calculation\Information\ExcelError;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig;
 
 class DSum extends DatabaseAbstract
@@ -30,16 +29,16 @@ class DSum extends DatabaseAbstract
      *                                        the column label in which you specify a condition for the
      *                                        column.
      *
-     * @return null|float|string
+     * @return float
      */
-    public static function evaluate($database, $field, $criteria, bool $returnNull = false)
+    public static function evaluate($database, $field, $criteria)
     {
         $field = self::fieldExtract($database, $field);
         if ($field === null) {
-            return $returnNull ? null : ExcelError::VALUE();
+            return null;
         }
 
-        return MathTrig\Sum::sumIgnoringStrings(
+        return MathTrig::SUM(
             self::getFilteredColumn($database, $field, $criteria)
         );
     }

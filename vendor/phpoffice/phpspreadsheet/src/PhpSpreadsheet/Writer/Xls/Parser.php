@@ -78,7 +78,7 @@ class Parser
     /**
      * The parse tree to be generated.
      *
-     * @var array|string
+     * @var string
      */
     public $parseTree;
 
@@ -469,7 +469,6 @@ class Parser
         'BAHTTEXT' => [368, 1, 0, 0],
     ];
 
-    /** @var Spreadsheet */
     private $spreadsheet;
 
     /**
@@ -499,59 +498,42 @@ class Parser
     {
         if (preg_match('/"([^"]|""){0,255}"/', $token)) {
             return $this->convertString($token);
-        }
-        if (is_numeric($token)) {
+        } elseif (is_numeric($token)) {
             return $this->convertNumber($token);
-        }
         // match references like A1 or $A$1
-        if (preg_match('/^\$?([A-Ia-i]?[A-Za-z])\$?(\d+)$/', $token)) {
+        } elseif (preg_match('/^\$?([A-Ia-i]?[A-Za-z])\$?(\d+)$/', $token)) {
             return $this->convertRef2d($token);
-        }
         // match external references like Sheet1!A1 or Sheet1:Sheet2!A1 or Sheet1!$A$1 or Sheet1:Sheet2!$A$1
-        if (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?[A-Ia-i]?[A-Za-z]\$?(\\d+)$/u', $token)) {
+        } elseif (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?[A-Ia-i]?[A-Za-z]\$?(\\d+)$/u', $token)) {
             return $this->convertRef3d($token);
-        }
         // match external references like 'Sheet1'!A1 or 'Sheet1:Sheet2'!A1 or 'Sheet1'!$A$1 or 'Sheet1:Sheet2'!$A$1
-        if (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?[A-Ia-i]?[A-Za-z]\\$?(\\d+)$/u", $token)) {
+        } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?[A-Ia-i]?[A-Za-z]\\$?(\\d+)$/u", $token)) {
             return $this->convertRef3d($token);
-        }
         // match ranges like A1:B2 or $A$1:$B$2
-        if (preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?(\d+)\:(\$)?[A-Ia-i]?[A-Za-z](\$)?(\d+)$/', $token)) {
+        } elseif (preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?(\d+)\:(\$)?[A-Ia-i]?[A-Za-z](\$)?(\d+)$/', $token)) {
             return $this->convertRange2d($token);
-        }
         // match external ranges like Sheet1!A1:B2 or Sheet1:Sheet2!A1:B2 or Sheet1!$A$1:$B$2 or Sheet1:Sheet2!$A$1:$B$2
-        if (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?([A-Ia-i]?[A-Za-z])?\$?(\\d+)\\:\$?([A-Ia-i]?[A-Za-z])?\$?(\\d+)$/u', $token)) {
+        } elseif (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?([A-Ia-i]?[A-Za-z])?\$?(\\d+)\\:\$?([A-Ia-i]?[A-Za-z])?\$?(\\d+)$/u', $token)) {
             return $this->convertRange3d($token);
-        }
         // match external ranges like 'Sheet1'!A1:B2 or 'Sheet1:Sheet2'!A1:B2 or 'Sheet1'!$A$1:$B$2 or 'Sheet1:Sheet2'!$A$1:$B$2
-        if (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?([A-Ia-i]?[A-Za-z])?\\$?(\\d+)\\:\\$?([A-Ia-i]?[A-Za-z])?\\$?(\\d+)$/u", $token)) {
+        } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?([A-Ia-i]?[A-Za-z])?\\$?(\\d+)\\:\\$?([A-Ia-i]?[A-Za-z])?\\$?(\\d+)$/u", $token)) {
             return $this->convertRange3d($token);
-        }
         // operators (including parentheses)
-        if (isset($this->ptg[$token])) {
+        } elseif (isset($this->ptg[$token])) {
             return pack('C', $this->ptg[$token]);
-        }
         // match error codes
-        if (preg_match('/^#[A-Z0\\/]{3,5}[!?]{1}$/', $token) || $token == '#N/A') {
+        } elseif (preg_match('/^#[A-Z0\\/]{3,5}[!?]{1}$/', $token) || $token == '#N/A') {
             return $this->convertError($token);
-        }
-        if (preg_match('/^' . Calculation::CALCULATION_REGEXP_DEFINEDNAME . '$/mui', $token) && $this->spreadsheet->getDefinedName($token) !== null) {
+        } elseif (preg_match('/^' . Calculation::CALCULATION_REGEXP_DEFINEDNAME . '$/mui', $token) && $this->spreadsheet->getDefinedName($token) !== null) {
             return $this->convertDefinedName($token);
-        }
         // commented so argument number can be processed correctly. See toReversePolish().
-        /*if (preg_match("/[A-Z0-9\xc0-\xdc\.]+/", $token))
+        /*elseif (preg_match("/[A-Z0-9\xc0-\xdc\.]+/", $token))
         {
             return($this->convertFunction($token, $this->_func_args));
         }*/
         // if it's an argument, ignore the token (the argument remains)
-        if ($token == 'arg') {
+        } elseif ($token == 'arg') {
             return '';
-        }
-        if (preg_match('/^true$/i', $token)) {
-            return $this->convertBool(1);
-        }
-        if (preg_match('/^false$/i', $token)) {
-            return $this->convertBool(0);
         }
 
         // TODO: use real error codes
@@ -578,11 +560,6 @@ class Parser
         }
 
         return pack('Cd', $this->ptg['ptgNum'], $num);
-    }
-
-    private function convertBool(int $num): string
-    {
-        return pack('CC', $this->ptg['ptgBool'], $num);
     }
 
     /**
@@ -620,9 +597,10 @@ class Parser
         if ($args >= 0) {
             return pack('Cv', $this->ptg['ptgFuncV'], $this->functions[$token][0]);
         }
-
         // Variable number of args eg. SUM($i, $j, $k, ..).
-        return pack('CCv', $this->ptg['ptgFuncVarV'], $num_args, $this->functions[$token][0]);
+        if ($args == -1) {
+            return pack('CCv', $this->ptg['ptgFuncVarV'], $num_args, $this->functions[$token][0]);
+        }
     }
 
     /**
@@ -643,6 +621,7 @@ class Parser
             // TODO: use real error codes
             throw new WriterException('Unknown range separator');
         }
+
         // Convert the cell references
         [$row1, $col1] = $this->cellToPackedRowcol($cell1);
         [$row2, $col2] = $this->cellToPackedRowcol($cell2);
@@ -768,32 +747,24 @@ class Parser
         return pack('C', 0xFF);
     }
 
-    /** @var bool */
-    private $tryDefinedName = false;
-
-    private function convertDefinedName(string $name): string
+    private function convertDefinedName(string $name): void
     {
         if (strlen($name) > 255) {
             throw new WriterException('Defined Name is too long');
         }
 
-        if ($this->tryDefinedName) {
-            // @codeCoverageIgnoreStart
-            $nameReference = 1;
-            foreach ($this->spreadsheet->getDefinedNames() as $definedName) {
-                if ($name === $definedName->getName()) {
-                    break;
-                }
-                ++$nameReference;
+        $nameReference = 1;
+        foreach ($this->spreadsheet->getDefinedNames() as $definedName) {
+            if ($name === $definedName->getName()) {
+                break;
             }
-
-            $ptgRef = pack('Cvxx', $this->ptg['ptgName'], $nameReference);
-
-            return $ptgRef;
-            // @codeCoverageIgnoreEnd
+            ++$nameReference;
         }
 
+        $ptgRef = pack('Cvxx', $this->ptg['ptgName'], $nameReference);
+
         throw new WriterException('Cannot yet write formulae with defined names to Xls');
+//        return $ptgRef;
     }
 
     /**
@@ -807,7 +778,8 @@ class Parser
      */
     private function getRefIndex($ext_ref)
     {
-        $ext_ref = (string) preg_replace(["/^'/", "/'$/"], ['', ''], $ext_ref); // Remove leading and trailing ' if any.
+        $ext_ref = preg_replace("/^'/", '', $ext_ref); // Remove leading  ' if any.
+        $ext_ref = preg_replace("/'$/", '', $ext_ref); // Remove trailing ' if any.
         $ext_ref = str_replace('\'\'', '\'', $ext_ref); // Replace escaped '' with '
 
         // Check if there is a sheet range eg., Sheet1:Sheet2.
@@ -879,10 +851,10 @@ class Parser
      * called by the addWorksheet() method of the
      * \PhpOffice\PhpSpreadsheet\Writer\Xls\Workbook class.
      *
+     * @see \PhpOffice\PhpSpreadsheet\Writer\Xls\Workbook::addWorksheet()
+     *
      * @param string $name The name of the worksheet being added
      * @param int $index The index of the worksheet being added
-     *
-     * @see \PhpOffice\PhpSpreadsheet\Writer\Xls\Workbook::addWorksheet()
      */
     public function setExtSheet($name, $index): void
     {
@@ -994,9 +966,8 @@ class Parser
     /**
      * Advance to the next valid token.
      */
-    private function advance(): void
+    private function advance()
     {
-        $token = '';
         $i = $this->currentCharacter;
         $formula_length = strlen($this->formula);
         // eat up white spaces
@@ -1024,7 +995,7 @@ class Parser
                 $this->currentCharacter = $i + 1;
                 $this->currentToken = $token;
 
-                return;
+                return 1;
             }
 
             if ($i < ($formula_length - 2)) {
@@ -1064,6 +1035,7 @@ class Parser
             case '%':
                 return $token;
 
+                break;
             case '>':
                 if ($this->lookAhead === '=') { // it's a GE token
                     break;
@@ -1071,6 +1043,7 @@ class Parser
 
                 return $token;
 
+                break;
             case '<':
                 // it's a LE or a NE token
                 if (($this->lookAhead === '=') || ($this->lookAhead === '>')) {
@@ -1078,64 +1051,49 @@ class Parser
                 }
 
                 return $token;
-        }
 
-        // if it's a reference A1 or $A$1 or $A1 or A$1
-        if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?\d+$/', $token) && !preg_match('/\d/', $this->lookAhead) && ($this->lookAhead !== ':') && ($this->lookAhead !== '.') && ($this->lookAhead !== '!')) {
-            return $token;
-        }
-        // If it's an external reference (Sheet1!A1 or Sheet1:Sheet2!A1 or Sheet1!$A$1 or Sheet1:Sheet2!$A$1)
-        if (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?[A-Ia-i]?[A-Za-z]\$?\\d+$/u', $token) && !preg_match('/\d/', $this->lookAhead) && ($this->lookAhead !== ':') && ($this->lookAhead !== '.')) {
-            return $token;
-        }
-        // If it's an external reference ('Sheet1'!A1 or 'Sheet1:Sheet2'!A1 or 'Sheet1'!$A$1 or 'Sheet1:Sheet2'!$A$1)
-        if (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?[A-Ia-i]?[A-Za-z]\\$?\\d+$/u", $token) && !preg_match('/\d/', $this->lookAhead) && ($this->lookAhead !== ':') && ($this->lookAhead !== '.')) {
-            return $token;
-        }
-        // if it's a range A1:A2 or $A$1:$A$2
-        if (preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+:(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+$/', $token) && !preg_match('/\d/', $this->lookAhead)) {
-            return $token;
-        }
-        // If it's an external range like Sheet1!A1:B2 or Sheet1:Sheet2!A1:B2 or Sheet1!$A$1:$B$2 or Sheet1:Sheet2!$A$1:$B$2
-        if (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?([A-Ia-i]?[A-Za-z])?\$?\\d+:\$?([A-Ia-i]?[A-Za-z])?\$?\\d+$/u', $token) && !preg_match('/\d/', $this->lookAhead)) {
-            return $token;
-        }
-        // If it's an external range like 'Sheet1'!A1:B2 or 'Sheet1:Sheet2'!A1:B2 or 'Sheet1'!$A$1:$B$2 or 'Sheet1:Sheet2'!$A$1:$B$2
-        if (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?([A-Ia-i]?[A-Za-z])?\\$?\\d+:\\$?([A-Ia-i]?[A-Za-z])?\\$?\\d+$/u", $token) && !preg_match('/\d/', $this->lookAhead)) {
-            return $token;
-        }
-        // If it's a number (check that it's not a sheet name or range)
-        if (is_numeric($token) && (!is_numeric($token . $this->lookAhead) || ($this->lookAhead == '')) && ($this->lookAhead !== '!') && ($this->lookAhead !== ':')) {
-            return $token;
-        }
-        if (preg_match('/"([^"]|""){0,255}"/', $token) && $this->lookAhead !== '"' && (substr_count($token, '"') % 2 == 0)) {
-            // If it's a string (of maximum 255 characters)
-            return $token;
-        }
-        // If it's an error code
-        if (preg_match('/^#[A-Z0\\/]{3,5}[!?]{1}$/', $token) || $token === '#N/A') {
-            return $token;
-        }
-        // if it's a function call
-        if (preg_match("/^[A-Z0-9\xc0-\xdc\\.]+$/i", $token) && ($this->lookAhead === '(')) {
-            return $token;
-        }
-        if (preg_match('/^' . Calculation::CALCULATION_REGEXP_DEFINEDNAME . '$/miu', $token) && $this->spreadsheet->getDefinedName($token) !== null) {
-            return $token;
-        }
-        if (preg_match('/^true$/i', $token) && ($this->lookAhead === ')' || $this->lookAhead === ',')) {
-            return $token;
-        }
-        if (preg_match('/^false$/i', $token) && ($this->lookAhead === ')' || $this->lookAhead === ',')) {
-            return $token;
-        }
-        if (substr($token, -1) === ')') {
-            //    It's an argument of some description (e.g. a named range),
-            //        precise nature yet to be determined
-            return $token;
-        }
+                break;
+            default:
+                // if it's a reference A1 or $A$1 or $A1 or A$1
+                if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?\d+$/', $token) && !preg_match('/\d/', $this->lookAhead) && ($this->lookAhead !== ':') && ($this->lookAhead !== '.') && ($this->lookAhead !== '!')) {
+                    return $token;
+                } elseif (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?[A-Ia-i]?[A-Za-z]\$?\\d+$/u', $token) && !preg_match('/\d/', $this->lookAhead) && ($this->lookAhead !== ':') && ($this->lookAhead !== '.')) {
+                    // If it's an external reference (Sheet1!A1 or Sheet1:Sheet2!A1 or Sheet1!$A$1 or Sheet1:Sheet2!$A$1)
+                    return $token;
+                } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?[A-Ia-i]?[A-Za-z]\\$?\\d+$/u", $token) && !preg_match('/\d/', $this->lookAhead) && ($this->lookAhead !== ':') && ($this->lookAhead !== '.')) {
+                    // If it's an external reference ('Sheet1'!A1 or 'Sheet1:Sheet2'!A1 or 'Sheet1'!$A$1 or 'Sheet1:Sheet2'!$A$1)
+                    return $token;
+                } elseif (preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+:(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+$/', $token) && !preg_match('/\d/', $this->lookAhead)) {
+                    // if it's a range A1:A2 or $A$1:$A$2
+                    return $token;
+                } elseif (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?([A-Ia-i]?[A-Za-z])?\$?\\d+:\$?([A-Ia-i]?[A-Za-z])?\$?\\d+$/u', $token) && !preg_match('/\d/', $this->lookAhead)) {
+                    // If it's an external range like Sheet1!A1:B2 or Sheet1:Sheet2!A1:B2 or Sheet1!$A$1:$B$2 or Sheet1:Sheet2!$A$1:$B$2
+                    return $token;
+                } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?([A-Ia-i]?[A-Za-z])?\\$?\\d+:\\$?([A-Ia-i]?[A-Za-z])?\\$?\\d+$/u", $token) && !preg_match('/\d/', $this->lookAhead)) {
+                    // If it's an external range like 'Sheet1'!A1:B2 or 'Sheet1:Sheet2'!A1:B2 or 'Sheet1'!$A$1:$B$2 or 'Sheet1:Sheet2'!$A$1:$B$2
+                    return $token;
+                } elseif (is_numeric($token) && (!is_numeric($token . $this->lookAhead) || ($this->lookAhead == '')) && ($this->lookAhead !== '!') && ($this->lookAhead !== ':')) {
+                    // If it's a number (check that it's not a sheet name or range)
+                    return $token;
+                } elseif (preg_match('/"([^"]|""){0,255}"/', $token) && $this->lookAhead !== '"' && (substr_count($token, '"') % 2 == 0)) {
+                    // If it's a string (of maximum 255 characters)
+                    return $token;
+                } elseif (preg_match('/^#[A-Z0\\/]{3,5}[!?]{1}$/', $token) || $token === '#N/A') {
+                    // If it's an error code
+                    return $token;
+                } elseif (preg_match("/^[A-Z0-9\xc0-\xdc\\.]+$/i", $token) && ($this->lookAhead === '(')) {
+                    // if it's a function call
+                    return $token;
+                } elseif (preg_match('/^' . Calculation::CALCULATION_REGEXP_DEFINEDNAME . '$/miu', $token) && $this->spreadsheet->getDefinedName($token) !== null) {
+                    return $token;
+                } elseif (substr($token, -1) === ')') {
+                    //    It's an argument of some description (e.g. a named range),
+                    //        precise nature yet to be determined
+                    return $token;
+                }
 
-        return '';
+                return '';
+        }
     }
 
     /**
@@ -1190,6 +1148,10 @@ class Parser
             $this->advance();
             $result2 = $this->expression();
             $result = $this->createTree('ptgNE', $result, $result2);
+        } elseif ($this->currentToken == '&') {
+            $this->advance();
+            $result2 = $this->expression();
+            $result = $this->createTree('ptgConcat', $result, $result2);
         }
 
         return $result;
@@ -1218,18 +1180,21 @@ class Parser
             $this->advance();
 
             return $result;
-        } elseif (preg_match('/^#[A-Z0\\/]{3,5}[!?]{1}$/', $this->currentToken) || $this->currentToken == '#N/A') { // error code
+        // If it's an error code
+        } elseif (preg_match('/^#[A-Z0\\/]{3,5}[!?]{1}$/', $this->currentToken) || $this->currentToken == '#N/A') {
             $result = $this->createTree($this->currentToken, 'ptgErr', '');
             $this->advance();
 
             return $result;
-        } elseif ($this->currentToken == '-') { // negative value
+        // If it's a negative value
+        } elseif ($this->currentToken == '-') {
             // catch "-" Term
             $this->advance();
             $result2 = $this->expression();
 
             return $this->createTree('ptgUminus', $result2, '');
-        } elseif ($this->currentToken == '+') { // positive value
+        // If it's a positive value
+        } elseif ($this->currentToken == '+') {
             // catch "+" Term
             $this->advance();
             $result2 = $this->expression();
@@ -1237,11 +1202,6 @@ class Parser
             return $this->createTree('ptgUplus', $result2, '');
         }
         $result = $this->term();
-        while ($this->currentToken === '&') {
-            $this->advance();
-            $result2 = $this->expression();
-            $result = $this->createTree('ptgConcat', $result, $result2);
-        }
         while (
             ($this->currentToken == '+') ||
             ($this->currentToken == '-') ||
@@ -1269,9 +1229,9 @@ class Parser
      * This function just introduces a ptgParen element in the tree, so that Excel
      * doesn't get confused when working with a parenthesized formula afterwards.
      *
-     * @return array The parsed ptg'd tree
-     *
      * @see fact()
+     *
+     * @return array The parsed ptg'd tree
      */
     private function parenthesizedExpression()
     {
@@ -1317,8 +1277,7 @@ class Parser
      */
     private function fact()
     {
-        $currentToken = $this->currentToken;
-        if ($currentToken === '(') {
+        if ($this->currentToken === '(') {
             $this->advance(); // eat the "("
             $result = $this->parenthesizedExpression();
             if ($this->currentToken !== ')') {
@@ -1334,22 +1293,19 @@ class Parser
             $this->advance();
 
             return $result;
-        }
-        if (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?[A-Ia-i]?[A-Za-z]\$?\\d+$/u', $this->currentToken)) {
+        } elseif (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?[A-Ia-i]?[A-Za-z]\$?\\d+$/u', $this->currentToken)) {
             // If it's an external reference (Sheet1!A1 or Sheet1:Sheet2!A1 or Sheet1!$A$1 or Sheet1:Sheet2!$A$1)
             $result = $this->createTree($this->currentToken, '', '');
             $this->advance();
 
             return $result;
-        }
-        if (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?[A-Ia-i]?[A-Za-z]\\$?\\d+$/u", $this->currentToken)) {
+        } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?[A-Ia-i]?[A-Za-z]\\$?\\d+$/u", $this->currentToken)) {
             // If it's an external reference ('Sheet1'!A1 or 'Sheet1:Sheet2'!A1 or 'Sheet1'!$A$1 or 'Sheet1:Sheet2'!$A$1)
             $result = $this->createTree($this->currentToken, '', '');
             $this->advance();
 
             return $result;
-        }
-        if (
+        } elseif (
             preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+:(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+$/', $this->currentToken) ||
             preg_match('/^(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?\d+$/', $this->currentToken)
         ) {
@@ -1359,24 +1315,21 @@ class Parser
             $this->advance();
 
             return $result;
-        }
-        if (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?([A-Ia-i]?[A-Za-z])?\$?\\d+:\$?([A-Ia-i]?[A-Za-z])?\$?\\d+$/u', $this->currentToken)) {
+        } elseif (preg_match('/^' . self::REGEX_SHEET_TITLE_UNQUOTED . '(\\:' . self::REGEX_SHEET_TITLE_UNQUOTED . ')?\\!\$?([A-Ia-i]?[A-Za-z])?\$?\\d+:\$?([A-Ia-i]?[A-Za-z])?\$?\\d+$/u', $this->currentToken)) {
             // If it's an external range (Sheet1!A1:B2 or Sheet1:Sheet2!A1:B2 or Sheet1!$A$1:$B$2 or Sheet1:Sheet2!$A$1:$B$2)
             // must be an error?
             $result = $this->createTree($this->currentToken, '', '');
             $this->advance();
 
             return $result;
-        }
-        if (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?([A-Ia-i]?[A-Za-z])?\\$?\\d+:\\$?([A-Ia-i]?[A-Za-z])?\\$?\\d+$/u", $this->currentToken)) {
+        } elseif (preg_match("/^'" . self::REGEX_SHEET_TITLE_QUOTED . '(\\:' . self::REGEX_SHEET_TITLE_QUOTED . ")?'\\!\\$?([A-Ia-i]?[A-Za-z])?\\$?\\d+:\\$?([A-Ia-i]?[A-Za-z])?\\$?\\d+$/u", $this->currentToken)) {
             // If it's an external range ('Sheet1'!A1:B2 or 'Sheet1'!A1:B2 or 'Sheet1'!$A$1:$B$2 or 'Sheet1'!$A$1:$B$2)
             // must be an error?
             $result = $this->createTree($this->currentToken, '', '');
             $this->advance();
 
             return $result;
-        }
-        if (is_numeric($this->currentToken)) {
+        } elseif (is_numeric($this->currentToken)) {
             // If it's a number or a percent
             if ($this->lookAhead === '%') {
                 $result = $this->createTree('ptgPercent', $this->currentToken, '');
@@ -1387,19 +1340,11 @@ class Parser
             $this->advance();
 
             return $result;
-        }
-        if (preg_match("/^[A-Z0-9\xc0-\xdc\\.]+$/i", $this->currentToken) && ($this->lookAhead === '(')) {
+        } elseif (preg_match("/^[A-Z0-9\xc0-\xdc\\.]+$/i", $this->currentToken) && ($this->lookAhead === '(')) {
             // if it's a function call
             return $this->func();
-        }
-        if (preg_match('/^' . Calculation::CALCULATION_REGEXP_DEFINEDNAME . '$/miu', $this->currentToken) && $this->spreadsheet->getDefinedName($this->currentToken) !== null) {
+        } elseif (preg_match('/^' . Calculation::CALCULATION_REGEXP_DEFINEDNAME . '$/miu', $this->currentToken) && $this->spreadsheet->getDefinedName($this->currentToken) !== null) {
             $result = $this->createTree('ptgName', $this->currentToken, '');
-            $this->advance();
-
-            return $result;
-        }
-        if (preg_match('/^true|false$/i', $this->currentToken)) {
-            $result = $this->createTree($this->currentToken, '', '');
             $this->advance();
 
             return $result;
@@ -1499,9 +1444,6 @@ class Parser
         if (empty($tree)) { // If it's the first call use parseTree
             $tree = $this->parseTree;
         }
-        if (!is_array($tree) || !isset($tree['left'], $tree['right'], $tree['value'])) {
-            throw new WriterException('Unexpected non-array');
-        }
 
         if (is_array($tree['left'])) {
             $converted_tree = $this->toReversePolish($tree['left']);
@@ -1531,8 +1473,7 @@ class Parser
             } else {
                 $left_tree = '';
             }
-
-            // add its left subtree and return.
+            // add it's left subtree and return.
             return $left_tree . $this->convertFunction($tree['value'], $tree['right']);
         }
         $converted_tree = $this->convert($tree['value']);

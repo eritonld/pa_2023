@@ -2,13 +2,11 @@
 
 namespace PhpOffice\PhpSpreadsheet\Calculation\MathTrig;
 
-use PhpOffice\PhpSpreadsheet\Calculation\ArrayEnabled;
-use PhpOffice\PhpSpreadsheet\Calculation\Exception;
+use PhpOffice\PhpSpreadsheet\Calculation\Functions;
+use PhpOffice\PhpSpreadsheet\Calculation\MathTrig;
 
 class IntClass
 {
-    use ArrayEnabled;
-
     /**
      * INT.
      *
@@ -17,24 +15,17 @@ class IntClass
      * Excel Function:
      *        INT(number)
      *
-     * @param array|float $number Number to cast to an integer, or can be an array of numbers
+     * @param float $number Number to cast to an integer
      *
-     * @return array|int|string Integer value, or a string containing an error
-     *         If an array of numbers is passed as the argument, then the returned result will also be an array
-     *            with the same dimensions
+     * @return int|string Integer value, or a string containing an error
      */
-    public static function evaluate($number)
+    public static function funcInt($number)
     {
-        if (is_array($number)) {
-            return self::evaluateSingleArgumentArray([self::class, __FUNCTION__], $number);
+        MathTrig::nullFalseTrueToNumber($number);
+        if (is_numeric($number)) {
+            return (int) floor($number);
         }
 
-        try {
-            $number = Helpers::validateNumericNullBool($number);
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
-
-        return (int) floor($number);
+        return Functions::VALUE();
     }
 }

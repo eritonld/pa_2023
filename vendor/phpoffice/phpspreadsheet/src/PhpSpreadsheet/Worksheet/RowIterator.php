@@ -2,13 +2,10 @@
 
 namespace PhpOffice\PhpSpreadsheet\Worksheet;
 
-use Iterator as NativeIterator;
+use Iterator;
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 
-/**
- * @implements NativeIterator<int, Row>
- */
-class RowIterator implements NativeIterator
+class RowIterator implements Iterator
 {
     /**
      * Worksheet to iterate.
@@ -53,9 +50,12 @@ class RowIterator implements NativeIterator
         $this->resetStart($startRow);
     }
 
+    /**
+     * Destructor.
+     */
     public function __destruct()
     {
-        $this->subject = null; // @phpstan-ignore-line
+        $this->subject = null;
     }
 
     /**
@@ -123,8 +123,10 @@ class RowIterator implements NativeIterator
 
     /**
      * Return the current row in this worksheet.
+     *
+     * @return Row
      */
-    public function current(): Row
+    public function current()
     {
         return new Row($this->subject, $this->position);
     }

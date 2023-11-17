@@ -353,7 +353,7 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 							</div>
 						<?php
 							try {
-								$queryCulture = "SELECT * FROM question_pa WHERE `group` = 'culture' AND title='$title' ORDER BY `id` ASC";
+								$queryCulture = "SELECT * FROM question_pa WHERE `group` = 'culture' AND title='$title' AND `role`='$fortable' ORDER BY `id` ASC";
 							
 								$stmtCulture = $koneksi->prepare($queryCulture);
 								$stmtCulture->execute();
@@ -367,10 +367,12 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 								echo "Error: " . $e->getMessage();
 							}
 							foreach ($cultureValue as $data) { 
+							
+							if($bahasa=='eng'){ $item_culture=$data['item_en']; }else{ $item_culture=$data['item']; }
 							?>
 								<div class="row" style="margin-bottom: 20px;">
 									<div class="col-md-9">
-										<span class="h4"><?= $data['item']; ?></span>
+										<span class="h4"><?= $item_culture; ?></span>
 									</div>
 									<div class="col-md-3">
 										<select class="form-control" name="<?= $data['name'].$no++; ?>">
@@ -421,10 +423,12 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 								echo "Error: " . $e->getMessage();
 							}
 							foreach ($leadershipValue as $data) { 
+							
+							if($bahasa=='eng'){ $item_leadership=$data['item_en']; }else{ $item_leadership=$data['item']; }
 							?>
-							<div class="row">
+							<div class="row" style="margin-bottom: 20px;">
 								<div class="col-md-9">
-									<span class="h4"><?= $data['item']; ?></span>
+									<span class="h4"><?= $item_leadership; ?></span>
 								</div>
 								<div class="col-md-3">
 									<select class="form-control" name="<?= $data['name'].$lNumber; ?>">

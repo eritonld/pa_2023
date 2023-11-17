@@ -2,7 +2,6 @@
 
 namespace PhpOffice\PhpSpreadsheet\Calculation\Database;
 
-use PhpOffice\PhpSpreadsheet\Calculation\Information\ExcelError;
 use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Averages;
 
 class DAverage extends DatabaseAbstract
@@ -30,16 +29,16 @@ class DAverage extends DatabaseAbstract
      *                              the column label in which you specify a condition for the
      *                              column.
      *
-     * @return float|string
+     * @return null|float|string
      */
     public static function evaluate($database, $field, $criteria)
     {
         $field = self::fieldExtract($database, $field);
         if ($field === null) {
-            return ExcelError::VALUE();
+            return null;
         }
 
-        return Averages::average(
+        return Averages::AVERAGE(
             self::getFilteredColumn($database, $field, $criteria)
         );
     }
