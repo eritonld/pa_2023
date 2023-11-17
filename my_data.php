@@ -196,7 +196,16 @@ $(document).ready(function () {
 			  { "data": 'Nama_OU' },
 			  { "data": 'Nama_Departemen' },
 			  { "data": 'created_date' },
-			  { "data": 'total_score' },
+			  { 
+                data: null,
+                render:function(data, type, row)
+                {
+					let score = data.created_by==idpic ? data.avg_score : data.avg_score;
+
+					return score;
+
+                }
+			  },
 			  { 
                 data: null,
                 render:function(data, type, row)

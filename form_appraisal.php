@@ -575,8 +575,6 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 
         // Calculate the average
         var average = count === 0 ? 0 : total / count;
-		// Round the average down to the nearest integer (floor)
-		average = Math.floor(average);
 
 		// Update the input element with the result
 		document.getElementById('total_score').value = average;

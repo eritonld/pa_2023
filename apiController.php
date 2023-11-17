@@ -20,7 +20,7 @@ if($code == 'getPenilaian') {
 
     try {
 
-        $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b2.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover
+        $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b2.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore
         FROM $karyawan as a
         left join atasan as f on f.idkar=a.id and f.layer='L1'
         LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
@@ -32,7 +32,7 @@ if($code == 'getPenilaian') {
         LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
         where a.id='$iduser'
         UNION
-        SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover
+        SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore
         FROM $karyawan as a
         left join atasan as f on f.idkar=a.id AND f.layer='L1'
         LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
@@ -49,6 +49,11 @@ if($code == 'getPenilaian') {
         if ($result) {
             $employees = $result->fetchAll(PDO::FETCH_ASSOC);
     
+            foreach ($employees as &$employee) {
+				// Call srating function and update the total_score in the employee data
+				$employee['avg_score'] = avgScore($employee['idkar'], $employee['created_by']);
+			}
+
             $dataset = array(
                 "totalrecords" => count($employees),
                 "totaldisplayrecords" => count($employees),
@@ -83,7 +88,7 @@ if($code == 'getPenilaian') {
         transaksi_2023_final AS b ON b.idkar = a.id LEFT JOIN transaksi_2023 AS b2 ON b2.idkar = a.id LEFT JOIN daftargolongan AS dg ON dg.Kode_Golongan = a.Kode_Golongan LEFT JOIN 
         daftarou AS dou ON dou.Kode_OU = a.Kode_OU LEFT JOIN 
         daftardepartemen AS dd ON dd.kode_departemen = a.Kode_Departemen LEFT JOIN 
-        atasan ON atasan.idkar = b2.idkar WHERE b2.approver_id='$iduser' AND isnull(b2.rating) AND a.id!='$iduser' AND a.Kode_Golongan IN $jg AND b2.layer LIKE 'L%' AND atasan.layer='L2' GROUP BY a.id";
+        atasan ON atasan.idkar = b2.idkar WHERE b2.approver_id='$iduser' AND isnull(b2.rating) AND a.id!='$iduser' AND a.Kode_Golongan IN $jg AND b2.layer LIKE 'L%' GROUP BY a.id";
     
         $result = $koneksi->query($sql);
     
@@ -480,7 +485,7 @@ if($code == 'getPenilaian') {
 
         $countL0 = $stmtCekL0->rowCount();
 
-        $cekLRating = "SELECT a.layer, a.id_atasan, b.kpi_unit FROM atasan a LEFT JOIN kpi_unit_2023 b ON b.idkar=a.id_atasan WHERE a.idkar=:id AND !b.kpi_unit ORDER BY a.id LIMIT 1";
+        $cekLRating = "SELECT a.layer, a.id_atasan, b.kpi_unit FROM atasan a LEFT JOIN kpi_unit_2023 b ON b.idkar=a.id_atasan WHERE a.idkar=:id AND !b.kpi_unit ORDER BY a.layer ASC LIMIT 1";
 
         $stmtLRating = $koneksi->prepare($cekLRating);
         $stmtLRating->bindParam(':id', $idkar, PDO::PARAM_INT);

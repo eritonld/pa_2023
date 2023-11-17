@@ -141,4 +141,59 @@ function employeeName($idkar) {
 
 }
 
+function avgScore($idkar, $createdBy) {
+	include("conf/conf.php");
+    include("tabel_setting.php");
+	try {
+		$id = $idkar==$createdBy ? $idkar : $createdBy;
+		$sql = "SELECT fortable, 
+		AVG(
+        CASE 
+            WHEN fortable IN ('staffb', 'managerial') THEN (total_score + total_culture + total_leadership) / 3
+            ELSE (total_score + total_culture) / 2
+        END
+		) AS avg_score
+		FROM transaksi_$tahunperiode WHERE created_by='$id' LIMIT 1";
+		
+		$stmt = $koneksi->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		
+		if($result['fortable']=='managerial'){
+
+			$weightSA = 0.35;
+			$weightC = 0.3;
+			$weightL = 0.35;
+
+		}else if($result['fortable']=='staffb'){
+
+			$weightSA = 0.45;
+			$weightC = 0.3;
+			$weightL = 0.25;
+
+		}else if($result['fortable']=='staff'){
+
+			$weightSA = 0.65;
+			$weightC = 0.35;
+			$weightL = 0;
+
+		}else{
+
+			$weightSA = 0.6;
+			$weightC = 0.4;
+			$weightL = 0;
+
+		}
+
+		$score = ROUND(($result['avg_score'] * $weightSA) + ($result['avg_score'] * $weightC) + ($result['avg_score'] * $weightL), 2);
+
+		return $score;
+	
+	} catch (Exception $e) {
+		// Log or handle the exception
+        error_log("Error in srating function: " . $e->getMessage());
+        return "Error";
+	}
+}
+
 ?>
