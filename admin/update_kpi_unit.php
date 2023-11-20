@@ -202,7 +202,7 @@ if(isset($_POST['status_update_kpi']) && $_POST['status_update_kpi']=='T'){
 <script type="text/javascript">
 	function reportexcelemp()
 	{
-		window.open("reportexcelemp.php?bisnis=<?php echo $bisnis ?>&grade=<?php echo $grade ?>&dept=<?php echo $dept ?>&pt=<?php echo $pt ?>&unit=<?php echo $unit ?>");
+		window.open("reportexcelemp_kpi.php?bisnis=<?php echo $bisnis ?>&grade=<?php echo $grade ?>&dept=<?php echo $dept ?>&pt=<?php echo $pt ?>&unit=<?php echo $unit ?>");
 	}
 	function editdata(nik)
 	{
@@ -356,7 +356,7 @@ if(isset($_POST['status_update_kpi']) && $_POST['status_update_kpi']=='T'){
 			//echo "isinya adalah $where";
 			?>
 			<tr>
-				<td><br><b>Export Data Karyawan :</b> <img src="../img/excel2.png" onClick="reportexcelemp()" style="padding-top:0px;cursor:pointer;width:15%;" title="Employee Data on Excel"></img></td>
+				<td><br><b>Export Data KPI :</b> <img src="../img/excel2.png" onClick="reportexcelemp()" style="padding-top:0px;cursor:pointer;width:15%;" title="Employee Data on Excel"></img></td>
 			</tr>
 			<?php
 			}
@@ -406,7 +406,7 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
 					left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan 
 					left join daftarjabatan dj on k.Kode_Jabatan = dj.Kode_Jabatan 
-					where k.Kode_StatusKerja<>'SKH05' $where order by k.Nama_Lengkap ASC";
+					where k.Kode_StatusKerja<>'SKH05' and k.Kode_Golongan>'GL019' $where order by k.Nama_Lengkap ASC";
 					$stmt = $koneksi->prepare($sql);
 					$stmt->execute();
 					
