@@ -55,13 +55,13 @@ try {
     $queryPending23 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') and a.id!='$idmaster_pa'
     UNION 
     SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
-    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
+    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND c.layer LIKE 'L%')";
 
 
     $resultPending23 = $koneksi->query($queryPending23);
@@ -73,13 +73,13 @@ try {
     $queryPending45 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017') and a.id!='$idmaster_pa'
     UNION 
     SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
     transaksi_2023_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
-    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND c.layer LIKE 'L%')";
+    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND c.layer LIKE 'L%')";
 
     $resultPending45 = $koneksi->query($queryPending45);
 
@@ -90,7 +90,7 @@ try {
     $queryPending67 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025') and a.id!='$idmaster_pa'
     UNION 
     SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
     transaksi_2023_final a LEFT JOIN 
@@ -108,7 +108,7 @@ try {
     $queryPending89 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
     LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032') and c.idkar<>'$idmaster_pa' and c.layer like 'L%'
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032') and a.id!='$idmaster_pa'
     UNION 
     SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
     transaksi_2023_final a LEFT JOIN 
@@ -167,7 +167,7 @@ try {
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
         ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
-        ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
         FROM atasan AS a
@@ -185,7 +185,7 @@ try {
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
         ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
-        ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
         FROM atasan AS a
@@ -204,7 +204,7 @@ try {
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
         ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
-        ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
         FROM atasan AS a
@@ -222,7 +222,7 @@ try {
         ROUND((COUNT(a.idkar) * c.percent_b) / 100) + 
         ROUND((COUNT(a.idkar) * c.percent_d) / 100) + 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100))) AS target_c, 
-        ROUND((COUNT(a.idkar) * c.percent_d) /100 , 0) AS target_d, 
+        ROUND((COUNT(a.idkar) * c.percent_d) / 100) AS target_d, 
         ROUND((COUNT(a.idkar) * c.percent_e) / 100) AS target_e, 
         (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + (COUNT(a.idkar) - (ROUND((COUNT(a.idkar) * c.percent_a) / 100) + ROUND((COUNT(a.idkar) * c.percent_b) / 100) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100))) + ROUND((COUNT(a.idkar) * c.percent_d) / 100) + ROUND((COUNT(a.idkar) * c.percent_e) / 100)) AS Total, (c.percent_a + c.percent_b + c.percent_c + c.percent_d + c.percent_e) AS Total_Percent, COUNT(a.idkar) AS total_subo
         FROM atasan AS a
@@ -408,7 +408,7 @@ try {
             </ul>
             <div class="tab-content">
                 <div id="TabRating1" class="tab-pane active">
-                    <div class="section-pending <?= $countPending23 && $countPending23['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
+                    <div class="section-pending <?= $countPending23 || $countPending23 && $countPending23['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -434,7 +434,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending23 && $countPending23['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
+                    <div class="section-rating <?= $countPending23 || $countPending23 && $countPending23['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target23_a" type="hidden" class="form-control" value="<?= $targetRating23['target_a']; ?>">
@@ -540,7 +540,7 @@ try {
                     </div>
                 </div>
                 <div id="TabRating2" class="tab-pane">
-                <div class="section-pending <?= $countPending45 && $countPending45['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
+                <div class="section-pending <?= $countPending45 || $countPending45 && $countPending45['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -566,7 +566,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending45 && $countPending45['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
+                    <div class="section-rating <?= $countPending45 || $countPending45 && $countPending45['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target45_a" type="hidden" class="form-control" value="<?= $targetRating45['target_a']; ?>">
@@ -672,7 +672,7 @@ try {
                     </div>
                 </div>
                 <div id="TabRating3" class="tab-pane">
-                <div class="section-pending <?= $countPending67 && $countPending67['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
+                <div class="section-pending <?= $countPending67 || $countPending67 && $countPending67['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -698,7 +698,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending67 && $countPending67['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
+                    <div class="section-rating <?= $countPending67 || $countPending67 && $countPending67['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target67_a" type="hidden" class="form-control" value="<?= $targetRating67['target_a']; ?>">
@@ -804,7 +804,7 @@ try {
                     </div>
                 </div>
                 <div id="TabRating4" class="tab-pane">
-                <div class="section-pending <?= $countPending89 && $countPending89['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
+                <div class="section-pending <?= $countPending89 || $countPending89 && $countPending89['ratingApproved']=='Pending' ? 'block' : 'hidden'; ?>">
                         <label for="pending_table">Pending List</label>
                         <table id="pending_table" class="table table-bordered">
                             <thead>
@@ -830,7 +830,7 @@ try {
                             </tbody>
                         </table>
                     </div>
-                    <div class="section-rating <?= $countPending89 && $countPending89['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
+                    <div class="section-rating <?= $countPending89 || $countPending89 && $countPending89['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target89_a" type="hidden" class="form-control" value="<?= $targetRating89['target_a']; ?>">
@@ -1219,6 +1219,7 @@ try {
             $("#total_23").text(totalCount);
             $("#percent_23").text(totalPercentage);
             // You can perform any further actions with the selected values and counts here.
+            $("#target23_c").val(totalCount - (ratingCounts['5'] + ratingCounts['4'] + ratingCounts['2'] + ratingCounts['1']));
         });
 
         table2.on('change', '#rating_value', function() {
@@ -1262,6 +1263,8 @@ try {
             $("#rate45_e").text(ratingCounts['1']);
             $("#total_45").text(totalCount);
             $("#percent_45").text(totalPercentage);
+            
+            $("#target45_c").val(totalCount - (ratingCounts['5'] + ratingCounts['4'] + ratingCounts['2'] + ratingCounts['1']));
             // You can perform any further actions with the selected values and counts here.
         });
 
@@ -1307,6 +1310,7 @@ try {
             $("#total_67").text(totalCount);
             $("#percent_67").text(totalPercentage);
             // You can perform any further actions with the selected values and counts here.
+            $("#target67_c").val(totalCount - (ratingCounts['5'] + ratingCounts['4'] + ratingCounts['2'] + ratingCounts['1']));
         });
 
         table4.on('change', '#rating_value', function() {
@@ -1351,6 +1355,7 @@ try {
             $("#total_89").text(totalCount);
             $("#percent_89").text(totalPercentage);
             // You can perform any further actions with the selected values and counts here.
+            $("#target89_c").val(totalCount - (ratingCounts['5'] + ratingCounts['4'] + ratingCounts['2'] + ratingCounts['1']));
         });
 
     function matchContent(value) {
