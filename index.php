@@ -1,17 +1,9 @@
 <?php
 include("conf/conf.php");
-session_start();
 
-if(isset($_SESSION["idmaster_pa"])){
-
-	if ($_SESSION["idmaster_pa"]<>"" || $_SESSION["idmaster_pa"]<>null)
-	{
-	?>
-		<script language="JavaScript">
-			document.location='home.php?link=mydata';
-		</script>
-	<?php	
-	} 
+if (isset($_COOKIE['id']) && isset($_COOKIE['pic'])) {
+	header('Location: '.$base_url.'/home.php?link=mydata');
+// Use $id and $pic to maintain the session or personalize content
 }
 
 $browser = $_SERVER['HTTP_USER_AGENT'];
@@ -53,7 +45,10 @@ if 	($nambrow=="Ie")
 <?php	
 }
 
+$username = isset($_COOKIE['username']) && isset($_COOKIE['cookieConsent']) ? $_COOKIE['username'] : '';
 ?>
+<!DOCTYPE html>
+<html>
 <head>
 	<meta charset="UTF-8">
 	<title>Performance Appraisal</title>
@@ -224,7 +219,7 @@ if 	($nambrow=="Ie")
 	</p>
 
 	  <div class="form-group has-feedback">
-		<input type="text" class="form-control" id="username" name="username" placeholder="User ID" autofocus>
+		<input type="text" class="form-control" id="username" name="username" value="<?= $username; ?>" placeholder="User ID" autofocus>
 		<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
 	  </div>
 	  <div class="form-group has-feedback">
@@ -240,7 +235,53 @@ if 	($nambrow=="Ie")
 
   </div>
 </div>
+<!-- Modal -->
+<div id="cookieConsentModal" class="modal fade" data-backdrop="static" role="dialog">
+  <div class="modal-dialog" style="margin-top: 100px;">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Cookies</h4>
+      </div>
+      <div class="modal-body">
+        <p>We use cookies to enhance your experience on this website. By continuing to use this site, you consent to use of cookies.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="acceptCookies">Accept</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="plugins/jQuery/jQuery-2.1.3.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="plugins/iCheck/icheck.min.js" type="text/javascript"></script>
+<script>
+  $(document).ready(function() {
+    // Check if the 'cookieConsent' cookie is not set or doesn't have the value 'accepted'
+	<?php if (!isset($_COOKIE['cookieConsent']) || $_COOKIE['cookieConsent'] !== 'accepted') : ?>
+		$('#cookieConsentModal').modal('show'); // Show the modal if cookie consent is not given
+	<?php endif; ?>
+    // Set a cookie on 'Accept' button click
+    $('#acceptCookies').click(function() {
+		$('#cookieConsentModal').modal('hide');
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '<?= $base_url; ?>/setCookie.php', true);
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState === 4) {
+				if (xhr.status === 200) {
+					// Success, do something with xhr.responseText
+					console.log(xhr.responseText);
+				} else {
+					// Handle error
+					console.error('Request failed: ' + xhr.status);
+				}
+			}
+		};
+		xhr.send();
+
+    });
+  });
+</script>
 </body>
+</html>

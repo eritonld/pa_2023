@@ -1,24 +1,13 @@
 <?php
 include("conf/conf.php");
-
-// session_start();
-// if(session_is_registered('idmaster_pa'))
-// {
-	// $user_pa=unserialize($_SESSION[idmaster_pa]);
-	// $idmaster_pa=$user_pa[mas];
-// }
-
-session_start();
-
-// $operators['id']=$_SESSION["idmaster_pa"];
-
-$idmaster_pa=isset($_SESSION["idmaster_pa"])? $_SESSION["idmaster_pa"]: "";
-
-if ($idmaster_pa=="")
-{
-	?>
+if (isset($_COOKIE['id'])) {
+  $idmaster_pa = $_COOKIE['id'];
+  $pic = $_COOKIE['pic'];
+  // Use $id and $pic to maintain the session or personalize content
+} else {
+  ?>
 	<script>
-		alert('Login First');
+		alert('Your session has ended, please Signin');
 		window.location= '<?= "$base_url"; ?>';
 	</script>
 	<?php
@@ -160,10 +149,35 @@ else
 	<link rel="stylesheet" href="plugins/select2/multiple-select.css"/>
 	<script src="plugins/jQuery/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+<script>
+  function confirmLogout() {
+    if (confirm("Are you sure you want to log out?")) {
+      document.getElementById('proses').classList.remove('hidden');
+      window.location.href = 'ceklogout.php'; // Redirect to ceklogout.php if confirmed
+    } else {
+      document.getElementById('proses').classList.add('hidden');
+    }
+  }
+</script>
+
 	<!--
 	
 	-->
   </head>
+<style type="text/css">
+.proses {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('dist/img/ellipsis.gif') 50% 50% no-repeat rgb(249,249,249);
+    opacity: .9;
+}
+</style>
+<div id="proses" class="proses" style="display: none"></div>
   <body class="skin-black">
     <div class="wrapper">
       <header class="main-header">
@@ -301,7 +315,7 @@ else
               </a>
             </li>
 			<li class="<?php echo $menulogout?>">
-              <a href="ceklogout.php">
+              <a href="#" onclick="confirmLogout()">
                 <i class="fa fa-times"></i><span><?php echo "$menu4"; ?></span>
               </a>
             </li>			
@@ -384,8 +398,7 @@ else
 				placeholder: "Pilih Unit",
 				filter:true
 			});
-		});	
-		$(document).ready(function(){
+		
 			$('#namapt').multipleSelect({
 				placeholder: "Pilih Perusahaan",
 				filter:true
