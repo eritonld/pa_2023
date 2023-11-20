@@ -199,7 +199,7 @@ else
 			
 			if($bahasa=='eng'){
 				$menu1="All Data Appraisal";
-				$menu2="Employee Not Been Assessed";
+				$menu2="Appraisal Progress";
 				$menu3="All Data Employee";
 				$menu4="Stastical Report";
 				$menu5="Logout";
@@ -208,7 +208,7 @@ else
 				$menu8="KPI Unit";
 			}else{
 				$menu1="Data Penilaian";
-				$menu2="Karyawan Belum dinilai";
+				$menu2="Progres Penilaian";
 				$menu3="Data Karyawan";
 				$menu4="Laporan Statistik";
 				$menu5="Keluar";
@@ -236,14 +236,6 @@ else
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu2"; ?></span>
               </a>
             </li>
-			
-			<?php if($scekuser['level']=='admin'){?>
-			<!--<li class="<?php //echo $menudatareport?>">
-              <a href="?link=datareport">
-                <i class="fa fa-dashboard"></i><span><?php //echo "$menu4"; ?></span>
-              </a>
-            </li>-->
-			<?php } ?>
 			<?php if($scekuser['username']=='adminhomaster'){?>
 				<li class="<?php echo $menudatainemp?>">
 				  <a href="?link=input_karyawan">
@@ -266,7 +258,14 @@ else
               <a href="ceklogout.php">
                 <i class="fa fa-times"></i><span><?php echo "Logout"; ?></span>
               </a>
-            </li>			
+            </li>
+			<?php if($scekuser['level']=='admin'){?>
+			<!--<li class="<?php //echo $menudatareport?>">
+              <a href="?link=datareport">
+                <i class="fa fa-dashboard"></i><span><?php //echo "$menu4"; ?></span>
+              </a>
+            </li>-->
+			<?php } ?>
           </ul>
         </section>
       </aside>
