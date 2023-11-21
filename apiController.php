@@ -302,11 +302,12 @@ if($code == 'getPenilaian') {
                 // LEFT JOIN transaksi_2023_subo AS g ON g.created_by='$iduser'
                 // WHERE a.idkar=f.id_atasan";
 				
-		$sql = "SELECT b.id, b.idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.layer, b.approver_id, a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, b.approval_status FROM `transaksi_2023` as b
+		$sql = "SELECT b.id, b.idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.layer, b.approver_id, a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, b.approval_status, tf.status_sr, ROUND((b.total_culture+b.total_leadership)/2,2) as avg_score FROM `transaksi_2023` as b
 		left join $karyawan as a on a.id=b.idkar
 		LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
 		LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
 		LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
+		left join transaksi_2023_final as tf on tf.idkar=b.idkar
 		where b.approver_id='$iduser' and b.layer in ('p1','p2','p3','sub1','sub2','sub3');";
     
         $result = $koneksi->query($sql);
@@ -329,7 +330,6 @@ if($code == 'getPenilaian') {
         echo json_encode(array("error" => $e->getMessage()));
     }
     
-
     // Step 6: Close the database connection
     // $koneksi->close();
 
@@ -1473,6 +1473,93 @@ if($code == 'getPenilaian') {
                         'score4' => $item['score_4'],
                         'score5' => $item['score_5']
                     ),
+                    'culture' => array(
+                        'synergized1' => $item['synergized1'],
+                        'synergized2' => $item['synergized2'],
+                        'synergized3' => $item['synergized3'],
+                        'integrity1' => $item['integrity1'],
+                        'integrity2' => $item['integrity2'],
+                        'integrity3' => $item['integrity3'],
+                        'growth1' => $item['growth1'],
+                        'growth2' => $item['growth2'],
+                        'growth3' => $item['growth3'],
+                        'adaptive1' => $item['adaptive1'],
+                        'adaptive2' => $item['adaptive2'],
+                        'adaptive3' => $item['adaptive3'],
+                        'passion1' => $item['passion1'],
+                        'passion2' => $item['passion2'],
+                        'passion3' => $item['passion3'],
+                    ),
+                    'leadership' => array(
+                        'leadership1' => $item['leadership1'],
+                        'leadership2' => $item['leadership2'],
+                        'leadership3' => $item['leadership3'],
+                        'leadership4' => $item['leadership4'],
+                        'leadership5' => $item['leadership5'],
+                        'leadership6' => $item['leadership6'],                        
+                    ),
+                );
+            }
+
+            // Add the filtered result to the response array
+            $response['data'] = $selectedResult;
+        
+        } catch (PDOException $e) {
+            // Handle database errors here
+            $response['error'] = 'Database error: ' . $e->getMessage();
+        }
+
+    // Convert the response array to JSON and output it
+    header('Content-Type: application/json');
+    echo json_encode($response);
+
+}else if($code == 'getDataReviewPeers') {
+    // Initialize an empty response array
+    $response = array();
+
+    // Check if the HTTP method is GET
+        // Perform your database query here
+        try {
+            $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Example query: Select all data from a table named 'your_table'
+            $query = "SELECT trf.*, DATE_FORMAT(b.mulai_bekerja, '%d-%m-%Y') AS tmk, b.NIK, b.nik_baru, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, c.fortable, d.Nama_OU, e.Nama_Departemen, f.Nama_Perusahaan, DATE_FORMAT(trf.created_date, '%d-%m-%Y') AS created_date
+            FROM transaksi_2023_final AS trf
+            LEFT JOIN transaksi_2023 AS tr ON tr.idkar=trf.idkar and tr.layer='$layer'
+            LEFT JOIN karyawan_2023 AS b ON b.id = trf.idkar
+            LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan
+            LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU
+            LEFT JOIN daftardepartemen AS e ON e.kode_departemen = b.Kode_Departemen
+            LEFT JOIN daftarperusahaan AS f ON f.Kode_Perusahaan = b.Kode_Perusahaan
+            WHERE trf.idkar= :id
+            GROUP BY trf.idkar";
+            $stmt = $koneksi->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Fetch data as an associative array
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $selectedResult = array();
+            foreach ($result as $item) {
+                
+                $selectedResult[] = array(
+                    'id' => $item['id'],
+                    'idkar' => $item['idkar'],
+                    'total_score' => $item['total_score'],
+                    'periode' => $item['periode'],
+                    'tmk' => $item['tmk'],
+                    'NIK' => $item['NIK'],
+                    'nik_baru' => $item['nik_baru'],
+                    'Nama_Lengkap' => $item['Nama_Lengkap'],
+                    'Nama_Jabatan' => $item['Nama_Jabatan'],
+                    'Nama_Golongan' => $item['Nama_Golongan'],
+                    'Nama_OU' => $item['Nama_OU'],
+                    'Nama_Departemen' => $item['Nama_Departemen'],
+                    'Nama_Perusahaan' => $item['Nama_Perusahaan'],
+                    'fortable' => $item['fortable'],
+                    'comment' => $item['comment'],
+                    'rating' => $item['rating'],
                     'culture' => array(
                         'synergized1' => $item['synergized1'],
                         'synergized2' => $item['synergized2'],

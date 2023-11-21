@@ -183,6 +183,14 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 	$stmt = $koneksi->prepare($sql);
 	$updatekar =  $stmt->execute();
 	
+	$cek_fortable = "SELECT k.id, if(dg.fortable='staff',if(COUNT(aa.idkar)>0,'staffb','staff'),dg.fortable) as fortable FROM $karyawan as k 
+	left join daftargolongan as dg on dg.Kode_Golongan=k.Kode_Golongan
+	left join atasan as aa on aa.id_atasan=k.id
+	where k.id='$idkar'";
+	$stmt_fortable = $koneksi->prepare($cek_fortable);
+	$scek_fortable =  $stmt_fortable->execute();
+	$scek_fortable = $stmt_fortable->fetch(PDO::FETCH_ASSOC);
+	
 	//submit ke transaksi PA
 	for($aa=1;$aa<7;$aa++){
 		if($aa==1){$layer="p1"; $id_layer=$p1;}
@@ -193,36 +201,30 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 		else if($aa==6){$layer="sub3"; $id_layer=$sub3;}
 		
 		if($id_layer<>""){
-			$cek_fortable = "SELECT k.id, if(dg.fortable='staff',if(COUNT(aa.idkar)>0,'staffb','staff'),dg.fortable) as fortable FROM $karyawan as k 
-			left join daftargolongan as dg on dg.Kode_Golongan=k.Kode_Golongan
-			left join atasan as aa on aa.id_atasan=k.id
-			where k.id='$idkar' GROUP BY k.id";
-			$stmt_fortable = $koneksi->prepare($cek_fortable);
-			$scek_fortable =  $stmt_fortable->execute();
-			$scek_fortable = $stmt_fortable->fetch(PDO::FETCH_ASSOC);
-			
 			$cekp1 = "SELECT idkar, approver_id FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
 			
-			// echo "SELECT idkar, approver_id FROM $transaksi_pa where idkar='$idkar' and layer='$layer'<br>";
 			$stmt = $koneksi->prepare($cekp1);
 			$scekp1 =  $stmt->execute();
 			$scekp1 = $stmt->rowCount();
 			$sscekp1 = $stmt->fetch(PDO::FETCH_ASSOC);
 			
 			if($scekp1>0){
-				//edit
-				// echo "INSERT INTO transaksi_2023_delete (SELECT * FROM $transaksi_pa where idkar='$idkar' and layer='$layer')<br>";
-				$pindah_p1 = "INSERT INTO transaksi_2023_delete (SELECT * FROM $transaksi_pa where idkar='$idkar' and layer='$layer')";
-				$stmt = $koneksi->prepare($pindah_p1);
-				$spindah_p1 =  $stmt->execute();
+				if($sscekp1['approver_id']==$id_layer){
 				
-				$delete_p1 = "DELETE FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
-				$stmt = $koneksi->prepare($delete_p1);
-				$sdelete_p1 =  $stmt->execute();
-				
-				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','$scek_fortable[fortable]','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
-				$stmt = $koneksi->prepare($input_p1);
-				$sinput_p1 =  $stmt->execute();
+				}else{
+					//edit
+					$pindah_p1 = "INSERT INTO transaksi_2023_delete (SELECT * FROM $transaksi_pa where idkar='$idkar' and layer='$layer')";
+					$stmt = $koneksi->prepare($pindah_p1);
+					$spindah_p1 =  $stmt->execute();
+					
+					$delete_p1 = "DELETE FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
+					$stmt = $koneksi->prepare($delete_p1);
+					$sdelete_p1 =  $stmt->execute();
+					
+					$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','$scek_fortable[fortable]','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
+					$stmt = $koneksi->prepare($input_p1);
+					$sinput_p1 =  $stmt->execute();
+				}
 			}else{
 				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','$scek_fortable[fortable]','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
 				$stmt = $koneksi->prepare($input_p1);
@@ -234,6 +236,10 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 			$scekp1 =  $stmt->execute();
 			$scekp1 = $stmt->rowCount();
 			if($scekp1>0){
+				$pindah_p1 = "INSERT INTO transaksi_2023_delete (SELECT * FROM $transaksi_pa where idkar='$idkar' and layer='$layer')";
+				$stmt = $koneksi->prepare($pindah_p1);
+				$spindah_p1 =  $stmt->execute();
+				
 				$delete_p1 = "DELETE FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
 				$stmt = $koneksi->prepare($delete_p1);
 				$sdelete_p1 =  $stmt->execute();
@@ -475,9 +481,7 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					<th>Golongan</th>
 					<th>PT</th>
 					<th>Lokasi Unit</th>
-					<?php if($scekuser['username']=="adminhomaster"){ ?>
 					<th>Action</th>
-					<?php } ?>
 				  </tr>
 				</thead>
 				<tbody>
@@ -506,11 +510,12 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 						<td><?php echo "$scekkar[Nama_Golongan]"; ?></td>
 						<td><?php echo "$scekkar[Nama_Perusahaan]"; ?></td>
 						<td><?php echo "$scekkar[Nama_OU]"; ?></td>
-						<?php if($scekuser['username']=="adminhomaster"){ ?>
-						<td><button class="btn btn-danger btn-xs" onclick = "editdata('<?php echo $scekkar['NIK']; ?>')"><i class="fa fa-pencil"></i></button>
+						<td>
+							<button class="btn btn-danger btn-xs" onclick = "editdata('<?php echo $scekkar['NIK']; ?>')"><i class="fa fa-pencil"></i></button>
+							<?php if($scekuser['username']=="adminhomaster"){ ?>
 							<button class="btn btn-warning btn-xs" onclick = "hapusdata('<?php echo $scekkar['NIK']; ?>','<?php echo $scekkar['Nama_Lengkap']?>')"><i class="fa fa-trash"></i></button>
+							<?php } ?>
 						</td> 
-						<?php } ?> 
 					</tr>
 					<?php
 					$no++;

@@ -115,6 +115,13 @@ else if ($link=="gantipas")
   $linkmark			= " > Change Password";
   $title			= "Performance Appraisal";
 }
+else if ($link=="import_nonstaff")
+{
+  $includefile		= "import.php";
+  $menuimportns		= "active";	
+  $linkmark			= " > Import Non Staff";
+  $title			= "Performance Appraisal";
+} 
 else 
 {
 	$includefile		= "my_data.php";
@@ -324,6 +331,73 @@ if($bahasa=='eng'){
               </span>
             </div>
           </form>
+			<?php
+			if(isset($_COOKIE['bahasa'])){
+				$bahasa=$_COOKIE['bahasa'];
+			}else{
+				$bahasa="ind";
+			}
+			
+			if($bahasa=='eng'){
+				$menu1="My Data";
+				$menu2="Add Appraisal";
+				$menu3="Change Password";
+				$menu4="Logout";
+				$menu5="Ratings";
+				$menu6="Import Non Staff";
+				$mydata1="My Tasks";
+				$mydata2="My Subordinate (one-level) Appraisal";
+				$mydata3="My Subordinate (two-level) Appraisal";
+				$mydata4="My Subordinate (three-level) Appraisal";
+				$mydata5="360 Review";
+				$mydata6="Peers Appraisal";
+				$myrating1="Grade 2-3";
+        $myrating2="Grade 4-5";
+        $myrating3="Grade 6-7";
+        $myrating4="Grade 8-9";
+				$unitlokasi="Work Location";
+				$karyawandinilai="Employee to be Assessed";
+				$pilihunit="Chosee";
+				$atasan1="Direct Superior";
+				$atasan2="Indirect Superior";
+				$pilihnama="Chosee";
+				$pilihatasan="Chosee";
+				$anggota="The employee has subordinate?";
+				$ya="Yes";
+				$tidak="No";
+				$staffno="Non Staff/Staff?";
+				$pilih="Chosee";
+			}else{
+				$menu1="Data Saya";
+				$menu2="Tambah Penilaian";
+				$menu3="Ubah Password";
+				$menu4="Keluar";
+				$menu5="Rating";
+				$menu6="Import Non Staff";
+				$mydata1="Tugas Saya";
+				$mydata2="Nilai Bawahan Saya (1 Level)";
+				$mydata3="Nilai Bawahan Saya (2 Level)";
+				$mydata4="Nilai Bawahan Saya (3 Level)";
+        $mydata5="Penilaian 360";
+        $mydata6="Nilai Peers";
+        $myrating1="Grade 2-3";
+        $myrating2="Grade 4-5";
+        $myrating3="Grade 6-7";
+        $myrating4="Grade 8-9";
+				$unitlokasi="Unit/Lokasi Kerja";
+				$karyawandinilai="Karyawan dinilai";
+				$pilihunit="Pilih Unit";
+				$atasan1="Atasan 1 (Atasan Langsung)";
+				$atasan2="Atasan 2";
+				$pilihnama="Pilih Nama";
+				$pilihatasan="Pilih Atasan";
+				$anggota="Apakah Karyawan yang dinilai memiliki anggota?";
+				$ya="Ya";
+				$tidak="Tidak";
+				$staffno="Apakah status ybs Non Staff/Staff?";
+				$pilih="Pilih";
+			}
+			?>
           <ul class="sidebar-menu" >
             <li class="header">NAVIGATION</li>
             <li class="<?php echo $menumydata?>">
@@ -350,6 +424,17 @@ if($bahasa=='eng'){
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu2"; ?></span>
               </a>
             </li> -->
+			<li class="<?php echo $menugantipas?>">
+              <a href="?link=gantipas">
+                <i class="fa fa-dashboard"></i><span><?php echo "$menu3"; ?></span>
+              </a>
+            </li>
+			<!--<li class="<?php //echo $menuimportns ?>"> 
+              <a href="?link=import_nonstaff">
+                <i class="fa fa-dashboard"></i><span><?php //echo "$menu6"; ?></span>
+              </a>
+            </li>-->
+
 			<li class="<?php echo $menulogout?>">
               <a href="#" onclick="confirmLogout()">
                 <i class="fa fa-sign-out"></i><span><?php echo "$menu4"; ?></span>

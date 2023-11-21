@@ -22,7 +22,7 @@ if($nik=='')
 <?php	
 exit;
 }
-$sql = "select tp1.approver_id as p1,tp2.approver_id as p2,tp3.approver_id as p3,sub1.approver_id as sub1,sub2.approver_id as sub2,sub3.approver_id as sub3,k.*,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan,du.Nama_OU from $karyawan as k 
+$sql = "select tp1.approver_id as p1,(tp1.total_culture+tp1.total_leadership) as totalnilai_p1,tp2.approver_id as p2,(tp2.total_culture+tp2.total_leadership) as totalnilai_p2,tp3.approver_id as p3,(tp3.total_culture+tp3.total_leadership) as totalnilai_p3,sub1.approver_id as sub1,(sub1.total_culture+sub1.total_leadership) as totalnilai_sub1,sub2.approver_id as sub2,(sub2.total_culture+sub2.total_leadership) as totalnilai_sub2,sub3.approver_id as sub3,(sub3.total_culture+sub3.total_leadership) as totalnilai_sub3,k.*,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan,du.Nama_OU from $karyawan as k 
 left join daftarperusahaan as dp on k.Kode_Perusahaan=dp.Kode_Perusahaan 
 left join daftardepartemen as dep on k.Kode_Departemen=dep.Kode_Departemen 
 left join daftargolongan as dg on k.Kode_Golongan=dg.Kode_Golongan 
@@ -35,6 +35,7 @@ left join $transaksi_pa as sub1 on sub1.idkar=k.id and sub1.layer='sub1'
 left join $transaksi_pa as sub2 on sub2.idkar=k.id and sub2.layer='sub2'
 left join $transaksi_pa as sub3 on sub3.idkar=k.id and sub3.layer='sub3'
 where k.NIK='$nik'";
+
 $stmt = $koneksi->prepare($sql);
 $stmt->execute();
 $ckaryawan = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -47,7 +48,7 @@ if($ckaryawan['Kode_Golongan']>'GL023'){$display_peers="";} //echo $ckaryawan['K
 $sql = "select * from user_pa where username='$nik'";
 $stmt = $koneksi->prepare($sql);
 $stmt->execute();
-$scekuser = $stmt->fetch(PDO::FETCH_ASSOC);
+$scekuser1 = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if($bahasa=='eng')
 {
@@ -85,6 +86,29 @@ else
 	$a13='Pembobotan';
 	$a14='Lokasi Kerja';
 }
+
+if($scekuser['username']=="adminhomaster"){
+	$display="";
+	$readonly="";
+}else if($scekuser['level']=="admin"){
+	$display="";
+	$readonly="readonly";
+}else if($scekuser['level']=="adminhco"){
+	$display="none";
+	$readonly="readonly";
+}else{
+	$display="none";
+	$readonly="readonly";
+}
+
+// pointer-events: none; readonly; 
+if($ckaryawan['totalnilai_p1']>0){$pointer_p1="none"; $readonly_p1="readonly";}else{$pointer_p1=""; $readonly_p1="";}
+if($ckaryawan['totalnilai_p2']>0){$pointer_p2="none"; $readonly_p2="readonly";}else{$pointer_p2=""; $readonly_p2="";}
+if($ckaryawan['totalnilai_p3']>0){$pointer_p3="none"; $readonly_p3="readonly";}else{$pointer_p3=""; $readonly_p3="";}
+
+if($ckaryawan['totalnilai_sub1']>0){$pointer_sub1="none"; $readonly_sub1="readonly";}else{$pointer_sub1=""; $readonly_sub1="";}
+if($ckaryawan['totalnilai_sub2']>0){$pointer_sub2="none"; $readonly_sub2="readonly";}else{$pointer_sub2=""; $readonly_sub2="";}
+if($ckaryawan['totalnilai_sub3']>0){$pointer_sub3="none"; $readonly_sub3="readonly";}else{$pointer_sub3=""; $readonly_sub3="";}
 ?>
 <div class="row">
 <section class="col-lg-12 connectedSortable">
@@ -103,13 +127,13 @@ else
 	</tr>
 	<tr>
 		<td><?php echo"$a2";?></td>
-		<td><input class="form-control" style="width:50%;" type="text" name="nama" id="nama" value="<?php echo"$ckaryawan[Nama_Lengkap]";?>" /></td> 
+		<td><input class="form-control" style="width:50%;" type="text" name="nama" id="nama" value="<?php echo"$ckaryawan[Nama_Lengkap]";?>" <?php echo $readonly; ?>/></td> 
 	</tr>
 	<tr>
 		<td><?php echo"$a8";?></td>
-		<td><input class="form-control" style="width:50%;" type="text" name="mulai" id="mulai" value="<?php echo"$ckaryawan[Mulai_Bekerja]";?>" /></td> 
+		<td><input class="form-control" style="width:50%;" type="text" name="mulai" id="mulai" value="<?php echo"$ckaryawan[Mulai_Bekerja]";?>" <?php echo $readonly; ?>/></td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo $display; ?>">
 		<td><?php echo"$a5";?></td>
 		<td>
 		<select id="dept" name="dept" class="form-control" style="width:50%;">
@@ -130,11 +154,11 @@ else
 		</select>
 		</td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo $display; ?>">
 		<td><?php echo"$a6";?></td>
 		<td><input class="form-control" style="width:50%;" type="text" name="jabatan" id="jabatan" value="<?php echo"$ckaryawan[Nama_Jabatan]";?>" /></td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo $display; ?>">
 		<td><?php echo"$a10";?></td>
 		<td>
 		<select id="gol" name="gol" class="form-control" style="width:50%;">
@@ -155,7 +179,7 @@ else
 		</select>
 		</td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo $display; ?>">
 		<td><?php echo"$a3";?></td>
 		<td>
 		<select id="pt" name="pt" class="form-control" style="width:50%;">
@@ -176,7 +200,7 @@ else
 		</select>
 		</td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo $display; ?>">
 		<td><?php echo"$a14";?></td>
 		<td>
 		<select id="unit" name="unit" class="form-control" style="width:50%;">
@@ -197,18 +221,18 @@ else
 		</select>
 		</td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo $display; ?>">
 		<td><?php echo"Email";?></td>
 		<td><input class="form-control" style="width:50%;" type="text" name="email" id="email" value="<?php echo"$ckaryawan[Email]";?>" /></td> 
 	</tr>
 	<?php if($ckaryawan['Kode_Golongan']>='GL012'){?>
-	<tr>
+	<tr style="display:<?php echo $display; ?>">
 		<td><?php echo"Username";?></td>
 		<td><input class="form-control" style="width:50%;" type="text" name="username" id="username" value="<?php if(isset($ckaryawan['NIK'])){echo"$ckaryawan[NIK]";} ?>" readonly /></td> 
 	</tr>
-	<tr>
+	<tr style="display:<?php echo $display; ?>">
 		<td><?php echo"Password";?></td>
-		<td><input class="form-control" style="width:50%;" type="text" name="password" id="password" value="<?php if(isset($scekuser['password'])){echo"$scekuser[password]";} ?>" /> 12345678 = ec028a30c5d949fe8548cf244639584c</td> 
+		<td><input class="form-control" style="width:50%;" type="text" name="password" id="password" value="<?php if(isset($scekuser1['password'])){echo"$scekuser1[password]";} ?>" /> 12345678 = ec028a30c5d949fe8548cf244639584c</td> 
 	</tr>
 	<?php } ?>
 	
@@ -267,12 +291,13 @@ else
 	<tr style="display:<?php echo "$display_peers"; ?>;">
 		<td>Peers 1</td>
 		<td>
-			<select id="p1" name="p1" style="width:50%" class="form-control" >
+			<select id="p1" name="p1" style="width:50%; pointer-events: <?php echo $pointer_p1; ?>;" class="form-control" <?php echo $readonly_p1; ?>>
 				<option value="" > Pilih </option>
 				<?php 
 				$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
 				left join $karyawan as k on k.id=ats.idkar
 				where ats.id_atasan=(SELECT id_atasan FROM `atasan` where idkar='$ckaryawan[id]' and layer='L1') and idkar<>'$ckaryawan[id]' ORDER BY k.Nama_Lengkap asc";
+				
 				$scek_sql = $koneksi->prepare($cek_sql);
 				$scek_sql->execute();
 				
@@ -289,7 +314,7 @@ else
 	<tr style="display:<?php echo "$display_peers"; ?>;">
 		<td>Peers 2</td>
 		<td>
-		<select id="p2" name="p2" style="width:50%" class="form-control" >
+		<select id="p2" name="p2" style="width:50%; pointer-events: <?php echo $pointer_p2; ?>;" class="form-control" <?php echo $readonly_p2; ?>>
 			<option value="" > Pilih </option>
 			<?php 
 			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
@@ -310,7 +335,7 @@ else
 	<tr style="display:<?php echo "$display_peers"; ?>;">
 		<td>Peers 3</td>
 		<td>
-		<select id="p3" name="p3" style="width:50%" class="form-control" >
+		<select id="p3" name="p3" style="width:50%; pointer-events: <?php echo $pointer_p3; ?>;" class="form-control" <?php echo $readonly_p3; ?>>
 			<option value="" > Pilih </option>
 			<?php 
 			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
@@ -331,7 +356,7 @@ else
 	<tr style="display:<?php echo "$display_peers"; ?>;">
 		<td>Subordinate 1</td>
 		<td>
-		<select id="sub1" name="sub1" style="width:50%" class="form-control" >
+		<select id="sub1" name="sub1" style="width:50%; pointer-events: <?php echo $pointer_sub1; ?>;" class="form-control" <?php echo $readonly_sub1; ?>>
 			<option value="" > Pilih </option>
 			<?php 
 			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
@@ -352,7 +377,7 @@ else
 	<tr style="display:<?php echo "$display_peers"; ?>;">
 		<td>Subordinate 2</td>
 		<td>
-		<select id="sub2" name="sub2" style="width:50%" class="form-control" >
+		<select id="sub2" name="sub2" style="width:50%; pointer-events: <?php echo $pointer_sub1; ?>;" class="form-control" <?php echo $readonly_sub1; ?>>
 			<option value="" > Pilih </option>
 			<?php 
 			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
@@ -373,7 +398,7 @@ else
 	<tr style="display:<?php echo "$display_peers"; ?>;">
 		<td>Subordinate 3</td>
 		<td>
-		<select id="sub3" name="sub3" style="width:50%" class="form-control" >
+		<select id="sub3" name="sub3" style="width:50%; pointer-events: <?php echo $pointer_sub1; ?>;" class="form-control" <?php echo $readonly_sub1; ?>>
 			<option value="" > Pilih </option>
 			<?php 
 			$cek_sql = "SELECT ats.*, k.Nama_Lengkap FROM `atasan` as ats
