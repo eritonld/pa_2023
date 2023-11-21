@@ -125,6 +125,13 @@ else if ($link=="gantipas")
   $linkmark			= " > Change Password";
   $title			= "Performance Appraisal";
 }
+else if ($link=="import_nonstaff")
+{
+  $includefile		= "import.php";
+  $menuimportns		= "active";	
+  $linkmark			= " > Import Non Staff";
+  $title			= "Performance Appraisal";
+} 
 else 
 {
 	$includefile		= "my_data.php";
@@ -217,6 +224,7 @@ else
 				$menu3="Change Password";
 				$menu4="Logout";
 				$menu5="Ratings";
+				$menu6="Import Non Staff";
 				$mydata1="My Tasks";
 				$mydata2="My Subordinate (one-level) Appraisal";
 				$mydata3="My Subordinate (two-level) Appraisal";
@@ -244,7 +252,8 @@ else
 				$menu2="Tambah Penilaian";
 				$menu3="Ubah Password";
 				$menu4="Keluar";
-        $menu5="Rating";
+				$menu5="Rating";
+				$menu6="Import Non Staff";
 				$mydata1="Tugas Saya";
 				$mydata2="Nilai Bawahan Saya (1 Level)";
 				$mydata3="Nilai Bawahan Saya (2 Level)";
@@ -300,6 +309,11 @@ else
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu3"; ?></span>
               </a>
             </li>
+			<!--<li class="<?php //echo $menuimportns ?>"> 
+              <a href="?link=import_nonstaff">
+                <i class="fa fa-dashboard"></i><span><?php //echo "$menu6"; ?></span>
+              </a>
+            </li>-->
 			<li class="<?php echo $menulogout?>">
               <a href="ceklogout.php">
                 <i class="fa fa-times"></i><span><?php echo "$menu4"; ?></span>

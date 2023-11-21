@@ -307,8 +307,10 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 							} catch (PDOException $e) {
 								echo "Error: " . $e->getMessage();
 							}
+							$x = 1;
 							foreach ($cultureValue as $data) { 
 							if($bahasa=='eng'){ $item_culture=$data['item_en']; }else{ $item_culture=$data['item']; }
+							$cNumber = $x++;
 							?>
 								<div class="row" style="margin-bottom: 20px;">
 									<div class="col-md-9">
