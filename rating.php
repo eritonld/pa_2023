@@ -1,4 +1,16 @@
 <?php
+if (isset($_COOKIE['id'])) {
+    $idmaster_pa = $_COOKIE['id'];
+    $pic = $_COOKIE['pic'];
+    // Use $id and $pic to maintain the session or personalize content
+  } else {
+    ?>
+      <script>
+          alert('Your session has ended, please Signin');
+          window.location= '<?= "$base_url"; ?>';
+      </script>
+      <?php
+  }
 include("tabel_setting.php");
 include("function.php");
 $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -512,12 +524,15 @@ try {
                                     <button class="btn btn-primary" id="submitRating23">Submit Ratings</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-success" id="exportRating23">Export Ratings</button>
+                                    <button class="btn btn-success" id="exportRating23"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
                             </div>
                             <div class="<?= $rating23['Total'] ? 'block' : 'hidden'; ?>">
                                 <div class="col-md-4">
                                     <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-default" onclick="downloadRating('23')"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i>Rating</button>
                                 </div>
                             </div>
                         </div>
@@ -644,12 +659,15 @@ try {
                                     <button class="btn btn-primary" id="submitRating45">Submit Ratings</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-success" id="exportRating45">Export Ratings</button>
+                                    <button class="btn btn-success" id="exportRating45"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
                             </div>
                             <div class="<?= $rating45['Total'] ? 'block' : 'hidden'; ?>">
                                 <div class="col-md-4">
                                     <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-default" onclick="downloadRating('45')"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i>Rating</button>
                                 </div>
                             </div>
                         </div>
@@ -776,12 +794,15 @@ try {
                                     <button class="btn btn-primary" id="submitRating67">Submit Ratings</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-success" id="exportRating67">Export Ratings</button>
+                                    <button class="btn btn-success" id="exportRating67"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
                             </div>
                             <div class="<?= $rating67['Total'] ? 'block' : 'hidden'; ?>">
                                 <div class="col-md-4">
                                     <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-default" onclick="downloadRating('67')"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i>Rating</button>
                                 </div>
                             </div>
                         </div>
@@ -908,12 +929,15 @@ try {
                                     <button class="btn btn-primary" id="submitRating89">Submit Ratings</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-success" id="exportRating89">Export Ratings</button>
+                                    <button class="btn btn-success" id="exportRating89"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
                             </div>
                             <div class="<?= $rating89['Total'] ? 'block' : 'hidden'; ?>">
                                 <div class="col-md-4">
                                     <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-default" onclick="downloadRating('89')"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i>Rating</button>
                                 </div>
                             </div>
                         </div>
@@ -944,6 +968,7 @@ try {
 </div>
 
 <script>
+    
     $(document).ready(function () {
         
         let table1 = $("#tableRating1").DataTable({
@@ -1558,5 +1583,39 @@ try {
     });
 
 
-    })
+    });
+
+    function downloadRating(value){
+        // alert('ok');
+        const idpic = $('#idpic').val();
+        const pic   = $('#pic').val();
+        const grade = value == '23' ? "('GL004','GL005','GL006','GL007','GL008','GL009')" : (value == '45' ? "('GL013','GL014','GL016','GL017')" : (value == '67' ? "('GL020','GL021','GL024','GL025')" : "('GL028','GL029','GL031','GL032')"));
+        const data = {
+            idpic: idpic,
+            pic: pic,
+            grade: grade
+        };
+
+        const url = 'downloadRating.php';
+        const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // Set the content type based on your requirements
+        },
+        body: JSON.stringify(data) // Convert data to JSON format before sending
+        };
+
+        fetch(url, options)
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'rating_pa.xls';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        });
+           
+    }
 </script>

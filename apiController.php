@@ -1,6 +1,5 @@
 <?php
 include 'conf/conf.php'; // Include the database connection script
-session_start();
 
 include("tabel_setting.php");
 include("function.php");
@@ -14,7 +13,7 @@ $jg 		= isset($_GET['jg']) ? $_GET['jg'] : '';
 $id 		= isset($_GET['id']) ? $_GET['id'] : '';
 $date		= Date('Y-m-d');
 $datetime	= Date('Y-m-d H:i:s');
-$iduser     = isset($_SESSION['idmaster_pa']) ? $_SESSION['idmaster_pa'] : '';
+$iduser     = isset($_COOKIE['id']) ? $_COOKIE['id']: "";
 
 if($code == 'getPenilaian') {
 
@@ -43,7 +42,7 @@ if($code == 'getPenilaian') {
         LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
         LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
         where f.id_atasan='$iduser' GROUP BY a.id";
-
+        
         $result = $koneksi->query($sql);
     
         if ($result) {

@@ -11,6 +11,18 @@
 }
 </style>
 <?php
+if (isset($_COOKIE['id'])) {
+  $idmaster_pa = $_COOKIE['id'];
+  $pic = $_COOKIE['pic'];
+  // Use $id and $pic to maintain the session or personalize content
+} else {
+  ?>
+	<script>
+		alert('Your session has ended, please Signin');
+		window.location= '<?= "$base_url"; ?>';
+	</script>
+	<?php
+}
 if(isset($_COOKIE['bahasa'])){
 	$bahasa=$_COOKIE['bahasa'];
 }else{

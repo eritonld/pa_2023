@@ -1,10 +1,12 @@
 <?php 
 include("conf/conf.php");
-session_start();
-unset($_SESSION['idmaster_pa']);
-// session_destroy('idmaster_pa');
+include("function.php");
+
+setCookieLogout('id');
+setCookieLogout('pic');
+setCookieLogout('id_admin');
+setCookieLogout('pic_admin');
+
+header('Location: '.$base_url);
 
 ?>
-<script>
-	window.location= '<?= "$base_url"; ?>';
-</script>

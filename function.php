@@ -145,7 +145,7 @@ function avgScore($idkar, $createdBy, $approverid) {
 	include("conf/conf.php");
     include("tabel_setting.php");
 	try {
-		$id = $idkar==$createdBy ? $idkar : $createdBy;
+		$and = $idkar==$approverid ? "" : 'and approver_id='.$approverid;
 		$sql = "SELECT fortable, 
 		(
         CASE 
@@ -153,7 +153,7 @@ function avgScore($idkar, $createdBy, $approverid) {
             ELSE (total_score + total_culture) / 2
         END
 		) AS avg_score, total_score, total_culture, total_leadership
-		FROM transaksi_$tahunperiode WHERE created_by='$createdBy' and approver_id='$approverid' and idkar='$idkar' LIMIT 1";
+		FROM transaksi_$tahunperiode WHERE created_by='$createdBy' $and and idkar='$idkar' LIMIT 1";
 		
 		$stmt = $koneksi->prepare($sql);
 		$stmt->execute();
@@ -192,9 +192,29 @@ function avgScore($idkar, $createdBy, $approverid) {
 	
 	} catch (Exception $e) {
 		// Log or handle the exception
-        error_log("Error in srating function: " . $e->getMessage());
+        error_log("Error in rating function: " . $e->getMessage());
         return "Error";
 	}
+}
+
+function setCookieWithOptions($name, $value, $expirationDays, $sameSite = 'None') {
+    setcookie($name, $value, [
+        'expires' => time() + (86400 * $expirationDays),
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => $sameSite
+    ]);
+}
+
+function setCookieLogout($name, $value = '', $sameSite = 'None') {
+    setcookie($name, $value, [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => $sameSite
+    ]);
 }
 
 ?>

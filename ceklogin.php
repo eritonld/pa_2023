@@ -1,9 +1,13 @@
 <?php
 include("conf/conf.php");
+include("function.php");
 
 // Validate and sanitize user input
 $username = $_POST['username'];
 $password = $_POST['password'];
+
+$expired = 30;
+$expiredCookies = 90;
 
 $pengacak = "HJBDSUYGQ783242BHJSSDFSD";
 
@@ -11,17 +15,31 @@ try {
     // Establish a PDO database connection
 
     // Prepare a SQL statement to retrieve user data
-    $stmt = $koneksi->prepare("SELECT id, pic, password, active FROM user_pa WHERE username = :username OR nik_baru = :username");
+    $stmt = $koneksi->prepare("SELECT id, username, pic, password, role, active FROM user_pa WHERE username = :username OR nik_baru = :username");
     $stmt->bindParam(':username', $username, PDO::PARAM_STR);
     $stmt->execute();
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $rowCount =  $stmt->rowCount();
 
+    // $roleArray = explode(',', $row['role']);
+
+    // if (in_array("user", $roleArray)) {
+    // $viewAdmin = 0;
+    // } else {
+    // $viewAdmin = 1;
+    // }
+
     if($rowCount){
         if ($row && md5($pengacak . md5($password) . $pengacak) == $row['password'] && $row['active'] == 'Y') {
-            session_start();
-            $_SESSION['idmaster_pa'] = $row['id'];
+           
+            setCookieWithOptions('id', $row['id'], $expired);
+            setCookieWithOptions('pic', $row['pic'], $expired);
+            // if($viewAdmin){
+            //     setCookieWithOptions('id_admin', $row['id'], $expired);
+            //     setCookieWithOptions('pic_admin', $row['pic'], $expired);
+            // }
+            setCookieWithOptions('username', $row['username'], $expiredCookies);
     
             $datetime = date('Y-m-d H:i:s');
             $updateStmt = $koneksi->prepare("UPDATE user_pa SET lastip = :ip, lastlogin = :datetime WHERE id = :id");
@@ -53,8 +71,6 @@ $result = array(
     'message' => $message,
 );
 
-
 header('Content-Type: application/json');
 echo json_encode($result);
-
 ?>
