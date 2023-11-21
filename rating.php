@@ -524,7 +524,7 @@ try {
                                     <button class="btn btn-primary" id="submitRating23">Submit Ratings</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-success" id="exportRating23">Export Ratings</button>
+                                    <button class="btn btn-success" id="exportRating23"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
                             </div>
                             <div class="<?= $rating23['Total'] ? 'block' : 'hidden'; ?>">
@@ -659,7 +659,7 @@ try {
                                     <button class="btn btn-primary" id="submitRating45">Submit Ratings</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-success" id="exportRating45">Export Ratings</button>
+                                    <button class="btn btn-success" id="exportRating45"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
                             </div>
                             <div class="<?= $rating45['Total'] ? 'block' : 'hidden'; ?>">
@@ -794,7 +794,7 @@ try {
                                     <button class="btn btn-primary" id="submitRating67">Submit Ratings</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-success" id="exportRating67">Export Ratings</button>
+                                    <button class="btn btn-success" id="exportRating67"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
                             </div>
                             <div class="<?= $rating67['Total'] ? 'block' : 'hidden'; ?>">
@@ -929,7 +929,7 @@ try {
                                     <button class="btn btn-primary" id="submitRating89">Submit Ratings</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-success" id="exportRating89">Export Ratings</button>
+                                    <button class="btn btn-success" id="exportRating89"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
                             </div>
                             <div class="<?= $rating89['Total'] ? 'block' : 'hidden'; ?>">
