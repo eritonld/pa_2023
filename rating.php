@@ -531,6 +531,9 @@ try {
                                 <div class="col-md-4">
                                     <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
                                 </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-default" onclick="downloadRating('23')"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i>Rating</button>
+                                </div>
                             </div>
                         </div>
                         <div class="<?= $rating23['Total'] ? 'hidden' : 'block'; ?>">
@@ -798,6 +801,9 @@ try {
                                 <div class="col-md-4">
                                     <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
                                 </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-default" onclick="downloadRating('67')"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i>Rating</button>
+                                </div>
                             </div>
                         </div>
                         <div class="<?= $rating67['Total'] ? 'hidden' : 'block'; ?>">
@@ -929,6 +935,9 @@ try {
                             <div class="<?= $rating89['Total'] ? 'block' : 'hidden'; ?>">
                                 <div class="col-md-4">
                                     <h4>Rating has been submitted <i class="fa fa-check-circle" style="color: #00a65a;"></i></h4>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-default" onclick="downloadRating('89')"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i>Rating</button>
                                 </div>
                             </div>
                         </div>
