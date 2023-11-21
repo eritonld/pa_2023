@@ -22,6 +22,7 @@ try {
   echo "Error: " . $e->getMessage();
 }
 
+
 $link = $_GET['link'];
 
 $menumydata			= "deactive";
@@ -176,7 +177,103 @@ else
     background: url('dist/img/ellipsis.gif') 50% 50% no-repeat rgb(249,249,249);
     opacity: .9;
 }
+
+.profile-icon {
+  padding-inline: 5px;
+  font-size: 1.5rem;
+  margin: auto;
+  width: 40px;
+  text-align: center;
+}
+
+.user-body .row {
+  display: block;
+}
+
+.user-body .row a {
+  display: block;
+  width: 100%;
+  text-decoration: none; /* Removes the default underline */
+  padding: 10px; /* Optional: Add padding for better click target */
+}
+
+/* Optional: Apply styles when hovering over the links */
+.user-body .row a:hover {
+  background-color: #f0f0f0;
+}
+
+.img-profile {
+  max-width: 70px; /* Maximum width of 160 pixels */
+  max-height: 70px; /* Maximum height of 160 pixels */
+  width: auto; /* Allows the image to scale proportionally */
+  height: auto; /* Allows the image to scale proportionally */
+}
 </style>
+<?php
+if(isset($_COOKIE['bahasa'])){
+  $bahasa=$_COOKIE['bahasa'];
+}else{
+  $bahasa="ind";
+}
+
+if($bahasa=='eng'){
+  $menu1="My Data";
+  $menu2="Add Appraisal";
+  $menu3="Change Password";
+  $menu4="Logout";
+  $menu5="Ratings";
+  $mydata1="My Tasks";
+  $mydata2="My Subordinate (one-level) Appraisal";
+  $mydata3="My Subordinate (two-level) Appraisal";
+  $mydata4="My Subordinate (three-level) Appraisal";
+  $mydata5="360 Review";
+  $mydata6="Peers Appraisal";
+  $myrating1="Grade 2-3";
+  $myrating2="Grade 4-5";
+  $myrating3="Grade 6-7";
+  $myrating4="Grade 8-9";
+  $unitlokasi="Work Location";
+  $karyawandinilai="Employee to be Assessed";
+  $pilihunit="Chosee";
+  $atasan1="Direct Superior";
+  $atasan2="Indirect Superior";
+  $pilihnama="Chosee";
+  $pilihatasan="Chosee";
+  $anggota="The employee has subordinate?";
+  $ya="Yes";
+  $tidak="No";
+  $staffno="Non Staff/Staff?";
+  $pilih="Chosee";
+}else{
+  $menu1="Data Saya";
+  $menu2="Tambah Penilaian";
+  $menu3="Ubah Password";
+  $menu4="Keluar";
+  $menu5="Rating";
+  $mydata1="Tugas Saya";
+  $mydata2="Nilai Bawahan Saya (1 Level)";
+  $mydata3="Nilai Bawahan Saya (2 Level)";
+  $mydata4="Nilai Bawahan Saya (3 Level)";
+  $mydata5="Penilaian 360";
+  $mydata6="Nilai Peers";
+  $myrating1="Grade 2-3";
+  $myrating2="Grade 4-5";
+  $myrating3="Grade 6-7";
+  $myrating4="Grade 8-9";
+  $unitlokasi="Unit/Lokasi Kerja";
+  $karyawandinilai="Karyawan dinilai";
+  $pilihunit="Pilih Unit";
+  $atasan1="Atasan 1 (Atasan Langsung)";
+  $atasan2="Atasan 2";
+  $pilihnama="Pilih Nama";
+  $pilihatasan="Pilih Atasan";
+  $anggota="Apakah Karyawan yang dinilai memiliki anggota?";
+  $ya="Ya";
+  $tidak="Tidak";
+  $staffno="Apakah status ybs Non Staff/Staff?";
+  $pilih="Pilih";
+}
+?>
 <div id="proses" class="proses" style="display: none"></div>
   <body class="skin-black">
     <div class="wrapper">
@@ -193,6 +290,24 @@ else
                   <img src="dist/img/<?php echo $scekuser['profile']; ?>" class="user-image" alt="User Image"/>
                   <span class="hidden-xs"><?php echo $scekuser['pic']; ?></span>
                 </a>
+                <ul class="dropdown-menu">
+                  <li class="user-header">
+                  <img src="dist/img/<?php echo $scekuser['profile']; ?>" class="img-circle img-profile" alt="User Image"/>
+                  <p>
+                  <?php echo $scekuser['pic']; ?>
+                  <?php echo $scekuser['username']; ?>
+                  </p>
+                  </li>
+
+                  <li class="user-body">
+                    <div class="row">
+                        <a href="?link=gantipas"><i class="fa fa-lock profile-icon"></i> Change Password</a>
+                    </div>
+                    <div class="row">
+                        <a href="#" onclick="confirmLogout()"><i class="fa fa-sign-out profile-icon"></i> <?= $menu4; ?></a>
+                    </div>
+                  </li>
+                </ul>
               </li>
             </ul>
           </div>
@@ -201,16 +316,7 @@ else
 	  
       <aside class="main-sidebar" style="height:670px">
         <section class="sidebar">
-          <div class="user-panel">
-            <div class="pull-left image">
-              <img src="dist/img/<?php echo $scekuser['profile']; ?>" class="img-circle" alt="User Image" />
-            </div>
-            <div class="pull-left info">
-              <p><?php echo $scekuser['pic']; ?></p>
-              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-            </div>
-          </div>
-          <form action="#" method="get" class="sidebar-form">
+          <form action="#" method="get" class="sidebar-form hidden">
             <div class="input-group">
               <input type="text" name="q" class="form-control" placeholder="Search..."/>
               <span class="input-group-btn">
@@ -218,76 +324,11 @@ else
               </span>
             </div>
           </form>
-			<?php
-			if(isset($_COOKIE['bahasa'])){
-				$bahasa=$_COOKIE['bahasa'];
-			}else{
-				$bahasa="ind";
-			}
-			
-			if($bahasa=='eng'){
-				$menu1="My Data";
-				$menu2="Add Appraisal";
-				$menu3="Change Password";
-				$menu4="Logout";
-				$menu5="Ratings";
-				$mydata1="My Tasks";
-				$mydata2="My Subordinate (one-level) Appraisal";
-				$mydata3="My Subordinate (two-level) Appraisal";
-				$mydata4="My Subordinate (three-level) Appraisal";
-				$mydata5="360 Review";
-				$mydata6="Peers Appraisal";
-				$myrating1="Grade 2-3";
-        $myrating2="Grade 4-5";
-        $myrating3="Grade 6-7";
-        $myrating4="Grade 8-9";
-				$unitlokasi="Work Location";
-				$karyawandinilai="Employee to be Assessed";
-				$pilihunit="Chosee";
-				$atasan1="Direct Superior";
-				$atasan2="Indirect Superior";
-				$pilihnama="Chosee";
-				$pilihatasan="Chosee";
-				$anggota="The employee has subordinate?";
-				$ya="Yes";
-				$tidak="No";
-				$staffno="Non Staff/Staff?";
-				$pilih="Chosee";
-			}else{
-				$menu1="Data Saya";
-				$menu2="Tambah Penilaian";
-				$menu3="Ubah Password";
-				$menu4="Keluar";
-        $menu5="Rating";
-				$mydata1="Tugas Saya";
-				$mydata2="Nilai Bawahan Saya (1 Level)";
-				$mydata3="Nilai Bawahan Saya (2 Level)";
-				$mydata4="Nilai Bawahan Saya (3 Level)";
-        $mydata5="Penilaian 360";
-        $mydata6="Nilai Peers";
-        $myrating1="Grade 2-3";
-        $myrating2="Grade 4-5";
-        $myrating3="Grade 6-7";
-        $myrating4="Grade 8-9";
-				$unitlokasi="Unit/Lokasi Kerja";
-				$karyawandinilai="Karyawan dinilai";
-				$pilihunit="Pilih Unit";
-				$atasan1="Atasan 1 (Atasan Langsung)";
-				$atasan2="Atasan 2";
-				$pilihnama="Pilih Nama";
-				$pilihatasan="Pilih Atasan";
-				$anggota="Apakah Karyawan yang dinilai memiliki anggota?";
-				$ya="Ya";
-				$tidak="Tidak";
-				$staffno="Apakah status ybs Non Staff/Staff?";
-				$pilih="Pilih";
-			}
-			?>
           <ul class="sidebar-menu" >
-            <li class="header">MAIN NAVIGATION</li>
+            <li class="header">NAVIGATION</li>
             <li class="<?php echo $menumydata?>">
               <a href="?link=mydata">
-                <i class="fa fa-dashboard"></i><span><?php echo "$menu1"; ?></span>
+                <i class="fa fa-list"></i><span><?php echo "$menu1"; ?></span>
               </a>
             </li>
 			<?php 
@@ -300,7 +341,7 @@ else
 			?>
 			<li class="<?php echo $menurating?>">
               <a href="?link=rating">
-                <i class="fa fa-dashboard"></i><span><?php echo "$menu5"; ?></span>
+                <i class="fa fa-star"></i><span><?php echo "$menu5"; ?></span>
               </a>
             </li>
 			<?php } ?>
@@ -309,20 +350,14 @@ else
                 <i class="fa fa-dashboard"></i><span><?php echo "$menu2"; ?></span>
               </a>
             </li> -->
-			<li class="<?php echo $menugantipas?>">
-              <a href="?link=gantipas">
-                <i class="fa fa-dashboard"></i><span><?php echo "$menu3"; ?></span>
-              </a>
-            </li>
 			<li class="<?php echo $menulogout?>">
               <a href="#" onclick="confirmLogout()">
-                <i class="fa fa-times"></i><span><?php echo "$menu4"; ?></span>
+                <i class="fa fa-sign-out"></i><span><?php echo "$menu4"; ?></span>
               </a>
             </li>			
           </ul>
         </section>
       </aside>
-
       <div class="content-wrapper">
         <section class="content-header">
           <h1>

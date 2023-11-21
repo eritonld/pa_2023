@@ -197,4 +197,24 @@ function avgScore($idkar, $createdBy, $approverid) {
 	}
 }
 
+function setCookieWithOptions($name, $value, $expirationDays, $sameSite = 'None') {
+    setcookie($name, $value, [
+        'expires' => time() + (86400 * $expirationDays),
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => $sameSite
+    ]);
+}
+
+function setCookieLogout($name, $value = '', $sameSite = 'None') {
+    setcookie($name, $value, [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => $sameSite
+    ]);
+}
+
 ?>
