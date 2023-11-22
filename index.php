@@ -266,7 +266,7 @@ $username = isset($_COOKIE['username']) && isset($_COOKIE['cookieConsent']) ? $_
     $('#acceptCookies').click(function() {
 		$('#cookieConsentModal').modal('hide');
 		var xhr = new XMLHttpRequest();
-		xhr.open('POST', '<?= $base_url; ?>/setCookie.php', true);
+		xhr.open('POST', '<?= $base_url; ?>/setCookieConsent.php', true);
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState === 4) {
 				if (xhr.status === 200) {
