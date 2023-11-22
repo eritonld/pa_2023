@@ -220,13 +220,13 @@ if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){
 					$delete_p1 = "DELETE FROM $transaksi_pa where idkar='$idkar' and layer='$layer'";
 					$stmt = $koneksi->prepare($delete_p1);
 					$sdelete_p1 =  $stmt->execute();
-					
-					$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','$scek_fortable[fortable]','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
+
+					$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,value_1,score_1,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','$scek_fortable[fortable]','0','0','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
 					$stmt = $koneksi->prepare($input_p1);
 					$sinput_p1 =  $stmt->execute();
 				}
 			}else{
-				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','$scek_fortable[fortable]','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
+				$input_p1 = "INSERT INTO $transaksi_pa (idkar,fortable,value_1,score_1,created_by,created_date,periode,layer,approver_id,approval_status) VALUES ('$idkar','$scek_fortable[fortable]','0','0','$idmaster_pa_admin','$datetime','$tahunperiode','$layer','$id_layer','Pending')";
 				$stmt = $koneksi->prepare($input_p1);
 				$sinput_p1 =  $stmt->execute();
 			}
@@ -481,7 +481,9 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					<th>Golongan</th>
 					<th>PT</th>
 					<th>Lokasi Unit</th>
+					<?php if($scekuser['username']=="adminhomaster"){ ?>
 					<th>Action</th>
+					<?php } ?>
 				  </tr>
 				</thead>
 				<tbody>
@@ -511,8 +513,8 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 						<td><?php echo "$scekkar[Nama_Perusahaan]"; ?></td>
 						<td><?php echo "$scekkar[Nama_OU]"; ?></td>
 						<td>
-							<button class="btn btn-danger btn-xs" onclick = "editdata('<?php echo $scekkar['NIK']; ?>')"><i class="fa fa-pencil"></i></button>
 							<?php if($scekuser['username']=="adminhomaster"){ ?>
+							<button class="btn btn-danger btn-xs" onclick = "editdata('<?php echo $scekkar['NIK']; ?>')"><i class="fa fa-pencil"></i></button>
 							<button class="btn btn-warning btn-xs" onclick = "hapusdata('<?php echo $scekkar['NIK']; ?>','<?php echo $scekkar['Nama_Lengkap']?>')"><i class="fa fa-trash"></i></button>
 							<?php } ?>
 						</td> 

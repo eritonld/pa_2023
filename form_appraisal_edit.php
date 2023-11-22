@@ -38,7 +38,7 @@ if($id=='')
 exit;
 }
 try {
-    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a1.id_atasan as id_atasan1, a2.id_atasan as id_atasan2, a3.id_atasan as id_atasan3, ka1.email as email_atasan1, ka2.email as email_atasan2, ka3.email as email_atasan3, k.pen_q1, k.pen_q2, k.pen_q3, k.pen_q4
+    $sql = "SELECT k.id AS idkar, k.NIK, k.Nama_Lengkap, k.Mulai_Bekerja, dp.Nama_Perusahaan, dep.Nama_Departemen, dg.Nama_Golongan, dg.fortable, k.Nama_Jabatan, du.Nama_OU, a1.id_atasan as id_atasan1, a2.id_atasan as id_atasan2, a3.id_atasan as id_atasan3, ka1.email as email_atasan1, ka2.email as email_atasan2, ka3.email as email_atasan3, k.pen_q1, k.pen_q2, k.pen_q3, k.pen_q4, k.pen_q5, k.pen_q6, k.pen_q7, k.pen_q8, k.pen_q9, k.pen_q10, k.pen_q11, k.pen_q12
             FROM $karyawan AS k
             LEFT JOIN daftarperusahaan AS dp ON k.Kode_Perusahaan = dp.Kode_Perusahaan
             LEFT JOIN daftardepartemen AS dep ON k.Kode_Departemen = dep.Kode_Departemen
@@ -379,6 +379,55 @@ try {
 						<div class="row" style="margin-top: 20px;">
 							<h1 class="col-md-3 text-bold h4">A. <?= $title_a; ?></h1>
 						</div>
+						<?php
+						$quartal = "";
+						
+						if($ckaryawan['pen_q1']<>""){
+							$quartal = $quartal."Q1 : <b>$ckaryawan[pen_q1]</b>";
+						}
+						if($ckaryawan['pen_q2']<>""){
+							$quartal = $quartal." / Q2 : <b>$ckaryawan[pen_q2]</b>";
+						}
+						if($ckaryawan['pen_q3']<>""){
+							$quartal = $quartal." / Q3 : <b>$ckaryawan[pen_q3]</b>";
+						}
+						if($ckaryawan['pen_q4']<>""){
+							$quartal = $quartal." / Q4 : <b>$ckaryawan[pen_q4]</b>";
+						}
+						if($ckaryawan['pen_q5']<>""){
+							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q5]</b>";
+						}
+						if($ckaryawan['pen_q6']<>""){
+							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q6]</b>";
+						}
+						if($ckaryawan['pen_q7']<>""){
+							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q7]</b>";
+						}
+						if($ckaryawan['pen_q8']<>""){
+							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q8]</b>";
+						}
+						if($ckaryawan['pen_q9']<>""){
+							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q9]</b>";
+						}
+						if($ckaryawan['pen_q10']<>""){
+							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q10]</b>";
+						}
+						if($ckaryawan['pen_q11']<>""){
+							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q11]</b>";
+						}
+						if($ckaryawan['pen_q12']<>""){
+							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q12]</b>";
+						}
+						
+						if($quartal<>""){
+							?>
+							<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
+								<div class="col-md-1 text-bold">Quartal</div>
+								<div class="col-md-4">: <?php echo "$quartal"; ?></div>
+							</div>
+							<?php
+						}
+						?>
 						<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
 							<h1 class="col-md-3 text-bold h5"><?= $title_aa; ?></h1>
 						</div>
