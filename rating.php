@@ -44,7 +44,7 @@ try {
     $queryView = "SELECT CASE
     WHEN
         (SELECT COUNT(a.id) AS total
-         FROM transaksi_2023_final AS a
+         FROM $transaksi_pa_final AS a
          LEFT JOIN atasan AS b ON b.idkar = a.idkar AND b.id_atasan = '$idmaster_pa'
          WHERE b.id_atasan = '$idmaster_pa' AND a.layer = b.layer) = 
         (SELECT COUNT(id) 
@@ -64,16 +64,16 @@ try {
 // echo $view['result'];
 
 try {
-    $queryPending23 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
+    $queryPending23 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM $transaksi_pa WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
-    LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') and a.id!='$idmaster_pa'
+    LEFT JOIN $transaksi_pa c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') and a.id!='$idmaster_pa' AND a.Mulai_Bekerja<='$cuttOff'
     UNION 
-    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
-    transaksi_2023_final a LEFT JOIN 
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM $transaksi_pa WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
+    $transaksi_pa_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
-    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND a.approver_rating_id!=0 AND c.layer LIKE 'L%')";
+    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') AND EXISTS (SELECT 1 FROM $transaksi_pa c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND a.approver_rating_id!=0 AND c.layer LIKE 'L%') AND b.Mulai_Bekerja<='$cuttOff'";
 
 
     $resultPending23 = $koneksi->query($queryPending23);
@@ -82,16 +82,16 @@ try {
 
     $countPending23 = count($pending23);
 
-    $queryPending45 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
+    $queryPending45 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM $transaksi_pa WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
-    LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017') and a.id!='$idmaster_pa'
+    LEFT JOIN $transaksi_pa c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL013','GL014','GL016','GL017') and a.id!='$idmaster_pa' AND a.Mulai_Bekerja<='$cuttOff'
     UNION 
-    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
-    transaksi_2023_final a LEFT JOIN 
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM $transaksi_pa WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
+    $transaksi_pa_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
-    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND a.approver_rating_id!=0 AND c.layer LIKE 'L%')";
+    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND EXISTS (SELECT 1 FROM $transaksi_pa c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND a.approver_rating_id!=0 AND c.layer LIKE 'L%') AND b.Mulai_Bekerja<='$cuttOff'";
 
     $resultPending45 = $koneksi->query($queryPending45);
 
@@ -99,16 +99,16 @@ try {
 
     $countPending45 = count($pending45);
 
-    $queryPending67 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
+    $queryPending67 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM $transaksi_pa WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
-    LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025') and a.id!='$idmaster_pa'
+    LEFT JOIN $transaksi_pa c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL020','GL021','GL024','GL025') and a.id!='$idmaster_pa' AND a.Mulai_Bekerja<='$cuttOff'
     UNION 
-    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
-    transaksi_2023_final a LEFT JOIN 
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM $transaksi_pa WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
+    $transaksi_pa_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
-    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND a.approver_rating_id!=0 and c.layer LIKE 'L%')";
+    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL020','GL021','GL024','GL025') AND EXISTS (SELECT 1 FROM $transaksi_pa c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND a.approver_rating_id!=0 and c.layer LIKE 'L%') AND b.Mulai_Bekerja<='$cuttOff'";
 
 
     $resultPending67 = $koneksi->query($queryPending67);
@@ -117,16 +117,16 @@ try {
 
     $countPending67 = count($pending67);
 
-    $queryPending89 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
+    $queryPending89 = "SELECT a.Nama_Lengkap, c.approval_status, (SELECT approval_status FROM $transaksi_pa WHERE idkar=a.id AND approver_id='$idmaster_pa') AS ratingApproved FROM $karyawan a 
     LEFT JOIN atasan b ON b.idkar=a.id 
-    LEFT JOIN transaksi_2023 c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
-    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032') and a.id!='$idmaster_pa'
+    LEFT JOIN $transaksi_pa c ON c.idkar=a.id AND c.approver_id='$idmaster_pa'
+    WHERE b.id_atasan='$idmaster_pa' AND isnull(c.id) AND a.Kode_Golongan IN ('GL028','GL029','GL031','GL032') and a.id!='$idmaster_pa' AND a.Mulai_Bekerja<='$cuttOff'
     UNION 
-    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM transaksi_2023 WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
-    transaksi_2023_final a LEFT JOIN 
+    SELECT b.Nama_Lengkap, a.approver_rating_id AS approver_name, (SELECT approval_status FROM $transaksi_pa WHERE idkar=a.idkar AND approver_id='$idmaster_pa') AS ratingApproved FROM 
+    $transaksi_pa_final a LEFT JOIN 
     $karyawan b ON b.id = a.idkar
     WHERE 
-    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032') AND EXISTS (SELECT 1 FROM transaksi_2023 c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND a.approver_rating_id!=0 AND c.layer LIKE 'L%')";
+    (a.approval_review = 'Pending' OR a.approver_rating_id!='$idmaster_pa') AND b.Kode_Golongan IN ('GL028','GL029','GL031','GL032') AND EXISTS (SELECT 1 FROM $transaksi_pa c WHERE c.idkar = a.idkar AND c.approver_id = '$idmaster_pa' AND a.idkar<>'$idmaster_pa' AND a.approver_rating_id!=0 AND c.layer LIKE 'L%') AND b.Mulai_Bekerja<='$cuttOff'";
 
 
     $resultPending89 = $koneksi->query($queryPending89);
@@ -186,7 +186,7 @@ try {
         LEFT JOIN kpi_unit_$tahunperiode AS b ON b.idkar = a.id_atasan
         LEFT JOIN karyawan_$tahunperiode AS k ON k.id = a.idkar
         LEFT JOIN kriteria AS c ON c.grade = b.kpi_unit AND c.tahun = '$tahunperiode' AND c.kesimpulan='$resultKriteria[JG23]' 
-        WHERE id_atasan = '$idmaster_pa' AND k.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009')";
+        WHERE id_atasan = '$idmaster_pa' AND k.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') AND k.Mulai_Bekerja<='$cuttOff'";
 
     $resultTarget23 = $koneksi->query($queryTarget23);
 
@@ -204,7 +204,7 @@ try {
         LEFT JOIN kpi_unit_$tahunperiode AS b ON b.idkar = a.id_atasan
         LEFT JOIN karyawan_$tahunperiode AS k ON k.id = a.idkar
         LEFT JOIN kriteria AS c ON c.grade = b.kpi_unit AND c.tahun = '$tahunperiode' AND c.kesimpulan='$resultKriteria[JG45]' 
-        WHERE id_atasan = '$idmaster_pa' AND k.Kode_Golongan IN ('GL013','GL014','GL016','GL017')";
+        WHERE id_atasan = '$idmaster_pa' AND k.Kode_Golongan IN ('GL013','GL014','GL016','GL017') AND k.Mulai_Bekerja<='$cuttOff'";
 		
 
     $resultTarget45 = $koneksi->query($queryTarget45);
@@ -223,7 +223,7 @@ try {
         LEFT JOIN kpi_unit_$tahunperiode AS b ON b.idkar = a.id_atasan
         LEFT JOIN karyawan_$tahunperiode AS k ON k.id = a.idkar
         LEFT JOIN kriteria AS c ON c.grade = b.kpi_unit AND c.tahun = '$tahunperiode' AND c.kesimpulan='$resultKriteria[JG67]'
-        WHERE id_atasan = '$idmaster_pa' AND k.Kode_Golongan IN ('GL020','GL021','GL024','GL025')";
+        WHERE id_atasan = '$idmaster_pa' AND k.Kode_Golongan IN ('GL020','GL021','GL024','GL025') AND k.Mulai_Bekerja<='$cuttOff'";
 
     $resultTarget67 = $koneksi->query($queryTarget67);
 
@@ -241,7 +241,7 @@ try {
         LEFT JOIN kpi_unit_$tahunperiode AS b ON b.idkar = a.id_atasan
         LEFT JOIN karyawan_$tahunperiode AS k ON k.id = a.idkar
         LEFT JOIN kriteria AS c ON c.grade = b.kpi_unit AND c.tahun = '$tahunperiode' AND c.kesimpulan='$resultKriteria[JG89]'
-        WHERE id_atasan = '$idmaster_pa' AND k.Kode_Golongan IN ('GL028','GL029','GL031','GL032')";
+        WHERE id_atasan = '$idmaster_pa' AND k.Kode_Golongan IN ('GL028','GL029','GL031','GL032') AND k.Mulai_Bekerja<='$cuttOff'";
 
     $resultTarget89 = $koneksi->query($queryTarget89);
 
@@ -279,8 +279,8 @@ try {
                 WHEN b.rating = 1 THEN 'E'
                 ELSE 'no rating'
             END AS convertRating
-        FROM transaksi_2023 AS b
-        LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
+        FROM $transaksi_pa AS b
+        LEFT JOIN $karyawan AS k ON k.id = b.idkar
         WHERE b.approver_id = '$idmaster_pa'
             AND k.Kode_Golongan IN ('GL004','GL005','GL006','GL007','GL008','GL009') GROUP BY b.idkar  -- condition
     ) AS subquery";
@@ -307,8 +307,8 @@ try {
                 WHEN b.rating = 1 THEN 'E'
                 ELSE 'no rating'
             END AS convertRating
-        FROM transaksi_2023 AS b
-        LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
+        FROM $transaksi_pa AS b
+        LEFT JOIN $karyawan AS k ON k.id = b.idkar
         WHERE b.approver_id = '$idmaster_pa'
             AND k.Kode_Golongan IN ('GL013','GL014','GL016','GL017') GROUP BY b.idkar  -- condition
     ) AS subquery";
@@ -335,8 +335,8 @@ try {
                 WHEN b.rating = 1 THEN 'E'
                 ELSE 'no rating'
             END AS convertRating
-        FROM transaksi_2023 AS b
-        LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
+        FROM $transaksi_pa AS b
+        LEFT JOIN $karyawan AS k ON k.id = b.idkar
         WHERE b.approver_id = '$idmaster_pa'
             AND k.Kode_Golongan IN ('GL020','GL021','GL024','GL025') GROUP BY b.idkar  -- condition
     ) AS subquery";
@@ -363,8 +363,8 @@ try {
                 WHEN b.rating = 1 THEN 'E'
                 ELSE 'no rating'
             END AS convertRating
-        FROM transaksi_2023 AS b
-        LEFT JOIN karyawan_2023 AS k ON k.id = b.idkar
+        FROM $transaksi_pa AS b
+        LEFT JOIN $karyawan AS k ON k.id = b.idkar
         WHERE b.approver_id = '$idmaster_pa'
             AND k.Kode_Golongan IN ('GL028','GL029','GL031','GL032') GROUP BY b.idkar  -- condition
     ) AS subquery";

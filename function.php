@@ -1,5 +1,4 @@
 <?php
-//include("../conf/conf.php");
 
 function convertRating($value) {
 	$roundedValue = floor($value);
@@ -64,7 +63,7 @@ function srating($idkar){
     
 	try {
         
-		$cek_self = "SELECT idkar, t.fortable, score_1, score_2, score_3, score_4, score_5, if(score_5>0,5,if(score_4>0,4,if(score_3>0,3,if(score_2>0,2,if(score_1>0,1,0))))) as score_aktif, (score_1+score_2+score_3+score_4+score_5) as total_s, ROUND((score_1+score_2+score_3+score_4+score_5)/(if(score_5>0,5,if(score_4>0,4,if(score_3>0,3,if(score_2>0,2,if(score_1>0,1,0)))))),2)  as avg_self, bb.self, bb.culture, bb.leadership FROM `transaksi_2023_final` as t 
+		$cek_self = "SELECT idkar, t.fortable, score_1, score_2, score_3, score_4, score_5, if(score_5>0,5,if(score_4>0,4,if(score_3>0,3,if(score_2>0,2,if(score_1>0,1,0))))) as score_aktif, (score_1+score_2+score_3+score_4+score_5) as total_s, ROUND((score_1+score_2+score_3+score_4+score_5)/(if(score_5>0,5,if(score_4>0,4,if(score_3>0,3,if(score_2>0,2,if(score_1>0,1,0)))))),2)  as avg_self, bb.self, bb.culture, bb.leadership FROM $transaksi_pa_final as t 
 		left join bobot as bb on bb.fortable=t.fortable
 		where idkar='$idkar'";
 		
@@ -96,7 +95,7 @@ function srating($idkar){
 		AVG(leadership6) as leadership6,
 		round((AVG(synergized1)+AVG(synergized2)+AVG(synergized3)+AVG(integrity1)+AVG(integrity2)+AVG(integrity3)+AVG(growth1)+AVG(growth2)+AVG(growth3)+AVG(adaptive1)+AVG(adaptive2)+AVG(adaptive3)+AVG(passion1)+AVG(passion2)+AVG(passion3))/15,3) as avg_culture,
 		round((AVG(leadership1)+AVG(leadership2)+AVG(leadership3)+AVG(leadership4)+AVG(leadership5)+AVG(leadership6))/6,3) as avg_leadership
-		FROM `transaksi_2023` 
+		FROM $transaksi_pa 
 		where idkar='$idkar' and synergized1 is not null ORDER BY layer asc;";
 		
 		$conn_culture = $koneksi->prepare($cek_culture);
@@ -153,7 +152,7 @@ function avgScore($idkar, $createdBy, $approverid) {
             ELSE (total_score + total_culture) / 2
         END
 		) AS avg_score, total_score, total_culture, total_leadership
-		FROM transaksi_$tahunperiode WHERE created_by='$createdBy' $and and idkar='$idkar' LIMIT 1";
+		FROM $transaksi_pa WHERE created_by='$createdBy' $and and idkar='$idkar' LIMIT 1";
 		
 		$stmt = $koneksi->prepare($sql);
 		$stmt->execute();

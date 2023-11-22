@@ -28,24 +28,24 @@
             </thead>
             <tbody>
                 <tr>
-                    <td style="vertical-align: middle;">Basic</td>
-                    <td>Tahu namun belum bisa mempraktekkan</td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: middle;">Comprehension</td>
-                    <td>Sudah mulai memahami dan mampu berdiskusi tentang terminologi, konsep, dan hal-hal yang terkait dengan hal tersebut</td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: middle;">Practitioner</td>
-                    <td>Mampu mengaplikasikan kompetensi ini secara berkala sambil membutuhkan arahan untuk berhasil</td>
+                    <td style="vertical-align: middle;">Expert</td>
+                    <td>Menunjukkan keunggulan yang konsisten dalam menerapkan hal ini di berbagai proyek dan/ atau organisasi dan mengajak orang lain melakukan hal tersebut</td>
                 </tr>
                 <tr>
                     <td style="vertical-align: middle;">Advanced</td>
                     <td>Dapat secara konsisten dan mandiri melakukan hal ini dan Diakui di dalam organisasi</td>
                 </tr>
                 <tr>
-                    <td style="vertical-align: middle;">Expert</td>
-                    <td>Menunjukkan keunggulan yang konsisten dalam menerapkan hal ini di berbagai proyek dan/ atau organisasi dan mengajak orang lain melakukan hal tersebut</td>
+                    <td style="vertical-align: middle;">Practitioner</td>
+                    <td>Mampu mengaplikasikan kompetensi ini secara berkala sambil membutuhkan arahan untuk berhasil</td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: middle;">Comprehension</td>
+                    <td>Sudah mulai memahami dan mampu berdiskusi tentang terminologi, konsep, dan hal-hal yang terkait dengan hal tersebut</td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: middle;">Basic</td>
+                    <td>Tahu namun belum bisa mempraktekkan</td>
                 </tr>
             </tbody>
         </table>
