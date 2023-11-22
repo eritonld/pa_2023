@@ -9,6 +9,8 @@ $db_name = 'pa_2023';
 $db_user = 'root';
 $db_pass = '';
 
+$cuttOff = '2023-06-01';
+
 try {
     $koneksi = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
     $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

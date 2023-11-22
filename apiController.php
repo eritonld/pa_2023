@@ -19,29 +19,29 @@ if($code == 'getPenilaian') {
 
     try {
 
-        $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b2.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore
+        $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b2.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore
         FROM $karyawan as a
         left join atasan as f on f.idkar=a.id and f.layer='L1'
         LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
-        LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=a.id
-        LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = a.id
+        LEFT JOIN $transaksi_pa AS b ON b.idkar = a.id AND b.approver_id=a.id
+        LEFT JOIN $transaksi_pa_final AS b2 ON b2.idkar = a.id
         LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
         LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
         LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
         LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-        where a.id='$iduser'
+        where a.id='$iduser' AND a.Mulai_Bekerja<='$cuttOff'
         UNION
-        SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM transaksi_2023 WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore
+        SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore
         FROM $karyawan as a
         left join atasan as f on f.idkar=a.id AND f.layer='L1'
         LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
-        LEFT JOIN transaksi_2023 AS b ON b.idkar = a.id AND b.approver_id=f.id_atasan
-        LEFT JOIN transaksi_2023_final AS b2 ON b2.idkar = b.idkar
+        LEFT JOIN $transaksi_pa AS b ON b.idkar = a.id AND b.approver_id=f.id_atasan
+        LEFT JOIN $transaksi_pa_final AS b2 ON b2.idkar = b.idkar
         LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
         LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
         LEFT JOIN daftardepartemen AS e ON e.kode_departemen = a.Kode_Departemen
         LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
-        where f.id_atasan='$iduser' GROUP BY a.id";
+        where f.id_atasan='$iduser' AND a.Mulai_Bekerja<='$cuttOff' GROUP BY a.id";
         
         $result = $koneksi->query($sql);
     
@@ -88,8 +88,8 @@ if($code == 'getPenilaian') {
         ELSE ''
         END AS convertRating, 
         CONCAT('L', CAST(SUBSTRING(atasan.layer, 2) AS UNSIGNED) + 1) AS nextlayer, atasan.id_atasan AS nextapprover, a.Nama_Lengkap, a.Nama_Jabatan, dg.Nama_Golongan, dou.Nama_OU, dd.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date FROM 
-        karyawan_2023 AS a LEFT JOIN 
-        transaksi_2023_final AS b ON b.idkar = a.id LEFT JOIN transaksi_2023 AS b2 ON b2.idkar = a.id LEFT JOIN daftargolongan AS dg ON dg.Kode_Golongan = a.Kode_Golongan LEFT JOIN 
+        $karyawan AS a LEFT JOIN 
+        $transaksi_pa_final AS b ON b.idkar = a.id LEFT JOIN $transaksi_pa AS b2 ON b2.idkar = a.id LEFT JOIN daftargolongan AS dg ON dg.Kode_Golongan = a.Kode_Golongan LEFT JOIN 
         daftarou AS dou ON dou.Kode_OU = a.Kode_OU LEFT JOIN 
         daftardepartemen AS dd ON dd.kode_departemen = a.Kode_Departemen LEFT JOIN 
         atasan ON atasan.idkar = b2.idkar AND atasan.id_atasan=b2.approver_id
@@ -152,7 +152,7 @@ if($code == 'getPenilaian') {
 
                 // echo $result['id_atasan'];
                 // Replace "your_table_name" with the actual table name in your database
-                $query2023 = "UPDATE transaksi_2023 SET rating = :rating, approval_status = 'Approved', updated_by = :idpic, updated_date = :updated_date WHERE idkar = :idkar AND approver_id = :idpic";
+                $query2023 = "UPDATE $transaksi_pa SET rating = :rating, approval_status = 'Approved', updated_by = :idpic, updated_date = :updated_date WHERE idkar = :idkar AND approver_id = :idpic";
                 $stmt2023 = $koneksi->prepare($query2023);
                 $stmt2023->bindParam(":rating", $rating);
                 $stmt2023->bindParam(":idkar", $idkar);
@@ -160,7 +160,7 @@ if($code == 'getPenilaian') {
                 $stmt2023->bindParam(":updated_date", $datetime);
                 $stmt2023->execute();
 
-                $queryFinal = "UPDATE transaksi_2023_final SET rating = :rating, updated_by = :idpic, updated_date = :updated_date, approver_rating_id = :id_atasan, layer_rating = :nextlayer, status_sr = :status_sr WHERE idkar = :idkar AND approver_rating_id = :idpic";
+                $queryFinal = "UPDATE $transaksi_pa_final SET rating = :rating, updated_by = :idpic, updated_date = :updated_date, approver_rating_id = :id_atasan, layer_rating = :nextlayer, status_sr = :status_sr WHERE idkar = :idkar AND approver_rating_id = :idpic";
                 $stmtFinal = $koneksi->prepare($queryFinal);
                 $stmtFinal->bindParam(":rating", $rating);
                 $stmtFinal->bindParam(":idkar", $idkar);
@@ -189,7 +189,7 @@ if($code == 'getPenilaian') {
 } else if($code == 'getPenilaianA1') {
 
     try {
-        $sql = "SELECT a.id, a.idkar, a.total_score, a.created_by, a.rating, a.layer, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, g.Nama_Lengkap AS nama_atasan FROM transaksi_2023 AS a  LEFT JOIN $karyawan AS b ON b.id = a.idkar  LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan  LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU  LEFT JOIN daftardepartemen AS e ON e.kode_departemen = b.Kode_Departemen LEFT JOIN atasan AS f ON f.idkar=a.idkar LEFT JOIN $karyawan AS g ON g.id=f.id_atasan WHERE f.id_atasan='$iduser'";
+        $sql = "SELECT a.id, a.idkar, a.total_score, a.created_by, a.rating, a.layer, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, g.Nama_Lengkap AS nama_atasan FROM $transaksi_pa AS a  LEFT JOIN $karyawan AS b ON b.id = a.idkar  LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan  LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU  LEFT JOIN daftardepartemen AS e ON e.kode_departemen = b.Kode_Departemen LEFT JOIN atasan AS f ON f.idkar=a.idkar LEFT JOIN $karyawan AS g ON g.id=f.id_atasan WHERE f.id_atasan='$iduser'";
     
         $result = $koneksi->query($sql);
     
@@ -219,7 +219,7 @@ if($code == 'getPenilaian') {
 
     try {
         $sql = "SELECT a.id, a.idkar, a.total_score, a.rating, a.layer, f.id_atasan, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, g.Nama_Lengkap AS nama_atasan
-                FROM transaksi_2023 AS a 
+                FROM $transaksi_pa AS a 
                 LEFT JOIN $karyawan AS b ON b.id = a.idkar 
                 LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
                 LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU 
@@ -256,7 +256,7 @@ if($code == 'getPenilaian') {
 
     try {
         $sql = "SELECT a.id, a.idkar, a.total_score, a.rating, a.layer, f.id_atasan, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date 
-                FROM transaksi_2023 AS a 
+                FROM $transaksi_pa AS a 
                 LEFT JOIN $karyawan AS b ON b.id = a.idkar 
                 LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
                 LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU 
@@ -292,17 +292,7 @@ if($code == 'getPenilaian') {
 
     try {
 
-        // $sql = "SELECT a.id, a.idkar, a.total_score, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, g.created_by
-                // FROM transaksi_2023 AS a 
-                // LEFT JOIN $karyawan AS b ON b.id = a.idkar 
-                // LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
-                // LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU 
-                // LEFT JOIN daftardepartemen AS e ON e.kode_departemen = b.Kode_Departemen
-                // LEFT JOIN atasan AS f ON f.idkar='$iduser'
-                // LEFT JOIN transaksi_2023_subo AS g ON g.created_by='$iduser'
-                // WHERE a.idkar=f.id_atasan";
-				
-		$sql = "SELECT b.id, b.idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.layer, b.approver_id, a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, b.approval_status FROM `transaksi_2023` as b
+		$sql = "SELECT b.id, b.idkar, b.total_score, b.rating, b.created_by, b.updated_by, b.updated_date, b.layer, b.approver_id, a.Nama_Lengkap, a.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, b.approval_status FROM $transaksi_pa as b
 		left join $karyawan as a on a.id=b.idkar
 		LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = a.Kode_Golongan
 		LEFT JOIN daftarou AS d ON d.Kode_OU = a.Kode_OU
@@ -338,7 +328,7 @@ if($code == 'getPenilaian') {
     try {
 
         $sql = "SELECT a.id, a.idkar, a.total_culture, a.total_leadership, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, g.created_by
-                FROM transaksi_2023 AS a 
+                FROM $transaksi_pa AS a 
                 LEFT JOIN $karyawan AS b ON b.id = a.idkar 
                 LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
                 LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU 
@@ -396,7 +386,7 @@ if($code == 'getPenilaian') {
     $score5 = $_POST["score5"];
     $total_score = floor($_POST["total_score"]);
     $fortable = $_POST["fortable"];
-    $periode = 2023;
+    $periode = $tahunperiode;
     $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
     $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
     $synergized3 = floatval(isset($_POST["synergized3"]) ? $_POST["synergized3"] : 0);
@@ -515,8 +505,8 @@ if($code == 'getPenilaian') {
 
         $errors = false;
         
-        $tableName = 'transaksi_2023';
-        $tableFinal = 'transaksi_2023_final';
+        $tableName = $transaksi_pa;
+        $tableFinal = $transaksi_pa_final;
         // Initialize a variable to track any errors
         
         try {
@@ -820,7 +810,7 @@ if($code == 'getPenilaian') {
     $score5 = $_POST["score5"];
     $total_score = $_POST["total_score"];
     $fortable = $_POST["fortable"];
-    $periode = 2023;
+    $periode = $tahunperiode;
     $synergized1 = isset($_POST["synergized1"]) ? $_POST["synergized1"] : null;
     $synergized2 = isset($_POST["synergized2"]) ? $_POST["synergized2"] : null;
     $synergized3 = isset($_POST["synergized3"]) ? $_POST["synergized3"] : null;
@@ -940,8 +930,8 @@ if($code == 'getPenilaian') {
                         comment = :comment
                     WHERE idkar = :idkar";
         
-            $table2023 = 'transaksi_2023';
-            $tableFinal = 'transaksi_2023_final';
+            $table2023 = $transaksi_pa;
+            $tableFinal = $transaksi_pa_final;
         
             // Create a prepared statement for each table
             $stmt2023 = $koneksi->prepare(sprintf($sql2023, $table2023));
@@ -1027,7 +1017,7 @@ if($code == 'getPenilaian') {
         $score5 = $_POST["score5"];
         $total_score = $_POST["total_score"];
         $fortable = $_POST["fortable"];
-        $periode = 2023;
+        $periode = $tahunperiode;
         $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
         $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
         $synergized3 = floatval(isset($_POST["synergized3"]) ? $_POST["synergized3"] : 0);
@@ -1104,7 +1094,7 @@ if($code == 'getPenilaian') {
             $koneksi->beginTransaction();
             $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
-            $update2023 = "UPDATE transaksi_2023 SET
+            $update2023 = "UPDATE $transaksi_pa SET
                         value_1 = :value1,
                         value_2 = :value2,
                         value_3 = :value3,
@@ -1189,7 +1179,7 @@ if($code == 'getPenilaian') {
         
             $stmtUpdate2023->execute();
 
-            $updateFinal = "UPDATE transaksi_2023_final SET
+            $updateFinal = "UPDATE $transaksi_pa_final SET
                         value_1 = :value1,
                         value_2 = :value2,
                         value_3 = :value3,
@@ -1307,7 +1297,7 @@ if($code == 'getPenilaian') {
 
             // Example query: Select all data from a table named 'your_table'
             $query = "SELECT a.*, DATE_FORMAT(b.mulai_bekerja, '%d-%m-%Y') AS tmk, b.NIK, b.nik_baru, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, c.fortable, d.Nama_OU, e.Nama_Departemen, f.Nama_Perusahaan, DATE_FORMAT(a.created_date, '%d-%m-%Y') AS created_date, (SELECT COUNT(idkar) FROM atasan WHERE id_atasan = :id AND layer='L1') as jumlah_subo 
-            FROM transaksi_2023_final AS a 
+            FROM $transaksi_pa_final AS a 
             LEFT JOIN $karyawan AS b ON b.id = a.idkar 
             LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan 
             LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU 
@@ -1409,19 +1399,19 @@ if($code == 'getPenilaian') {
             $query = "SELECT trf.*, DATE_FORMAT(b.mulai_bekerja, '%d-%m-%Y') AS tmk, b.NIK, b.nik_baru, b.Nama_Lengkap, b.Nama_Jabatan, c.Nama_Golongan, c.fortable, d.Nama_OU, e.Nama_Departemen, f.Nama_Perusahaan, DATE_FORMAT(trf.created_date, '%d-%m-%Y') AS created_date, 
             (SELECT COUNT(idkar) FROM atasan WHERE id_atasan = :id AND layer='L1') AS jumlah_subo, 
             a1.id_atasan AS id_atasan1, a2.id_atasan AS id_atasan2, a3.id_atasan AS id_atasan3, ka1.Nama_Lengkap AS nama_a1, ka2.Nama_Lengkap AS nama_a2, ka3.Nama_Lengkap AS nama_a3
-            FROM transaksi_2023_final AS trf
-            LEFT JOIN transaksi_2023 AS tr ON tr.idkar=trf.idkar
-            LEFT JOIN karyawan_2023 AS b ON b.id = trf.idkar
+            FROM $transaksi_pa_final AS trf
+            LEFT JOIN $transaksi_pa AS tr ON tr.idkar=trf.idkar
+            LEFT JOIN $karyawan AS b ON b.id = trf.idkar
             LEFT JOIN daftargolongan AS c ON c.Kode_Golongan = b.Kode_Golongan
             LEFT JOIN daftarou AS d ON d.Kode_OU = b.Kode_OU
             LEFT JOIN daftardepartemen AS e ON e.kode_departemen = b.Kode_Departemen
             LEFT JOIN daftarperusahaan AS f ON f.Kode_Perusahaan = b.Kode_Perusahaan
             LEFT JOIN atasan AS a1 ON a1.idkar=trf.idkar AND a1.layer='L1'
-            LEFT JOIN karyawan_2023 AS ka1 ON ka1.id=a1.id_atasan
+            LEFT JOIN $karyawan AS ka1 ON ka1.id=a1.id_atasan
             LEFT JOIN atasan AS a2 ON a2.idkar=trf.idkar AND a2.layer='L2'
-            LEFT JOIN karyawan_2023 AS ka2 ON ka2.id=a2.id_atasan
+            LEFT JOIN $karyawan AS ka2 ON ka2.id=a2.id_atasan
             LEFT JOIN atasan AS a3 ON a3.idkar=trf.idkar AND a3.layer='L3'
-            LEFT JOIN karyawan_2023 AS ka3 ON ka3.id=a3.id_atasan
+            LEFT JOIN $karyawan AS ka3 ON ka3.id=a3.id_atasan
             WHERE trf.idkar= :id
             GROUP BY trf.idkar";
             $stmt = $koneksi->prepare($query);
@@ -1529,7 +1519,7 @@ if($code == 'getPenilaian') {
     $score5 = isset($_POST["score5"]) ? $_POST["score5"] : 0;
     $total_score = isset($_POST["total_score"]) ? $_POST["total_score"] : 0;
     $fortable = $_POST["fortable"];
-    $periode = 2023;
+    $periode = $tahunperiode;
     $synergized1 = floatval(isset($_POST["synergized1"]) ? $_POST["synergized1"] : 0);
     $synergized2 = floatval(isset($_POST["synergized2"]) ? $_POST["synergized2"] : 0);
     $synergized3 = floatval(isset($_POST["synergized3"]) ? $_POST["synergized3"] : 0);
@@ -1689,7 +1679,7 @@ if($code == 'getPenilaian') {
     try {
 
             // Process the data here
-            $updateQuery = "UPDATE transaksi_2023 SET
+            $updateQuery = "UPDATE $transaksi_pa SET
             updated_by = :idpic,
             updated_date = :updated_date,
             synergized1 = :synergized1,
