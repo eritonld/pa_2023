@@ -1,8 +1,8 @@
 <?php
 date_default_timezone_set('Asia/Jakarta');
 
-$base_url = 'http://localhost:8080/hcis-pa-2023';
-// $base_url = 'http://localhost/pa_2023';
+// $base_url = 'http://localhost:8080/hcis-pa-2023';
+$base_url = 'http://localhost/pa_2023';
 
 $db_host = 'localhost';
 $db_name = 'pa_2023';

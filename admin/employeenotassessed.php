@@ -298,27 +298,33 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					<th style="width: 10px">No</th>
 				    <th>NIK</th>
 				    <th>Nama</th>
-				    <th>Mulai Bekerja</th>
-				    <th>Departemen</th>
 				    <th>Jabatan</th>
-					<th>Golongan</th>
-					<th>PT</th>
-					<th>Lokasi Unit</th>
+					<th>L1</th>
+					<th>L2</th>
+					<th>L3</th>
+					<th>L4</th>
+					<th>L5</th>
+					<th>L6</th>
+					<th>L7</th>
+					<th>L8</th>
+					<th>Status</th>
 				  </tr>
 				</thead>
 				<tbody>
 					<?php					
 					$no = 1;
 					$yearnow	= Date('Y');
-					$cutoff		= $yearnow."-07-01";
+					$cutoff		= $yearnow."-06-30";
 					
-					$sql = "Select k.*, dpt.Nama_Departemen, do.Nama_OU, dg.Nama_Golongan, k.Nama_Jabatan, dp.Nama_Perusahaan from $karyawan k 
-					left join daftardepartemen dpt on k.Kode_Departemen = dpt.Kode_Departemen 
+					$sql = "SELECT k.id,k.nik_baru, k.Nama_Lengkap, k.Nama_Jabatan, do.Nama_OU, dg.Nama_Golongan, dp.Nama_Perusahaan, aa.layer, kk.Nama_Lengkap as nama_atasan, t.approval_status, t.updated_date, tf.approver_rating_id FROM `karyawan_2023` as k
 					left join daftarou do on k.Kode_OU = do.Kode_OU
 					left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
-					left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan 
-					left join daftarjabatan dj on k.Kode_Jabatan = dj.Kode_Jabatan 
-					where k.Kode_StatusKerja<>'SKH05' $where and k.Mulai_Bekerja <= '$cutoff' and k.id not in (select idkar from $transaksi_pa where created_by<>'') order by k.Nama_Lengkap ASC";
+					left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan
+					left join atasan as aa on aa.idkar=k.id
+					left join karyawan_2023 as kk on kk.id=aa.id_atasan
+					left join transaksi_2023 as t on t.idkar=k.id and t.layer=aa.layer and aa.id_atasan=t.approver_id
+					left join transaksi_2023_final as tf on tf.idkar=k.id
+					where k.Kode_StatusKerja<>'SKH05' $where and k.Mulai_Bekerja <= '$cutoff' ORDER BY k.Nama_Lengkap, k.id, aa.layer ASC";
 					
 					$stmt = $koneksi->prepare($sql);
 					$stmt->execute();
@@ -327,14 +333,19 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					?>
 					<tr>
 						<td><?php echo "$no"; ?></td>
-						<td><?php echo "$scekkar[NIK]"; ?></td>
+						<td><?php echo "$scekkar[nik_baru]"; ?></td>
 						<td><?php echo "$scekkar[Nama_Lengkap]"; ?></td>
-						<td><?php echo "$scekkar[Mulai_Bekerja]"; ?></td>
-						<td><?php echo "$scekkar[Nama_Departemen]"; ?></td>
 						<td><?php echo "$scekkar[Nama_Jabatan]"; ?></td>
-						<td><?php echo "$scekkar[Nama_Golongan]"; ?></td>
-						<td><?php echo "$scekkar[Nama_Perusahaan]"; ?></td>
-						<td><?php echo "$scekkar[Nama_OU]"; ?></td>
+						<td><?php echo ""; ?></td>
+						<td><?php echo ""; ?></td>
+						<td><?php echo ""; ?></td>
+						<td><?php echo ""; ?></td>
+						<td><?php echo ""; ?></td>
+						<td><?php echo ""; ?></td>
+						<td><?php echo ""; ?></td>
+						<td><?php echo ""; ?></td>
+						<td><?php echo ""; ?></td>
+
 					</tr>
 					<?php
 					$no++;

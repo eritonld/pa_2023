@@ -225,34 +225,41 @@ else
 					<i class="fa fa-dashboard"></i><span><?php echo "$menu1"; ?></span>
 				  </a>
 				</li>
+			<?php } 
+			if($scekuser['level']=='admin' || $scekuser['level']=='adminhco'){?>
 				<li class="<?php echo $menudataemp?>">
 				  <a href="?link=dataemp">
 					<i class="fa fa-dashboard"></i><span><?php echo "$menu3"; ?></span>
 				  </a>
 				</li>
-			<?php } ?>
-			<li class="<?php echo $menunotassessed?>">
-              <a href="?link=notassessed">
-                <i class="fa fa-dashboard"></i><span><?php echo "$menu2"; ?></span>
-              </a>
-            </li>
-			<?php if($scekuser['username']=='adminhomaster'){?>
-				<li class="<?php echo $menudatainemp?>">
-				  <a href="?link=input_karyawan">
-					<i class="fa fa-dashboard"></i><span><?php echo "$menu6"; ?></span>
+			<?php }
+			if($scekuser['level']=='admin' || $scekuser['level']=='adminhco'){?>
+				<li class="<?php echo $menunotassessed?>">
+				  <a href="?link=notassessed">
+					<i class="fa fa-dashboard"></i><span><?php echo "$menu2"; ?></span>
 				  </a>
 				</li>
+			<?php }
+			if($scekuser['level']=='admin'){?>
 				<li class="<?php echo $menudataupdsup?>">
 				  <a href="?link=update_sup">
 					<i class="fa fa-dashboard"></i><span><?php echo "$menu7"; ?></span>
 				  </a>
 				</li>
+			<?php }
+			if($scekuser['level']=='admin' || $scekuser['level']=='adminhco'){?>
 				<li class="<?php echo $menudataupdkpi?>">
 				  <a href="?link=update_kpi">
 					<i class="fa fa-dashboard"></i><span><?php echo "$menu8"; ?></span>
 				  </a>
 				</li>
-				
+			<?php }  
+			if($scekuser['username']=='adminhomaster'){?>
+				<li class="<?php echo $menudatainemp?>">
+				  <a href="?link=input_karyawan">
+					<i class="fa fa-dashboard"></i><span><?php echo "$menu6"; ?></span>
+				  </a>
+				</li>
 			<?php } ?>
 			<li class="<?php echo $menulogout?>">
               <a href="ceklogout.php">

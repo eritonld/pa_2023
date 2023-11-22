@@ -149,6 +149,7 @@ $fortable = $result['fortable'] != "staff" ? $result['fortable'] : ($result['jum
 							<th>Unit</th>
 							<th>Department</th>
 							<th>Status</th>
+							<th style="background-color: yellow;">Total Score</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -278,6 +279,7 @@ $(document).ready(function () {
 			  { "data": 'Nama_OU' },
 			  { "data": 'Nama_Departemen' },
 			  { "data": 'layer' },
+			  { "data": 'avg_score' },
 			  { 
                 data: null,
                 render:function(data, type, row)
@@ -285,7 +287,7 @@ $(document).ready(function () {
                  
 					let style;
 					if (data.created_by && data.approver_id==idpic && data.approval_status=='Pending' && data.updated_by==idpic) {
-						style = ["formpa_review_peers", "default", "Review"];
+						style = ["formpa_review_peers", "warning", "Revise"];
 						return '<a id="edit" class="btn btn-sm btn-default">Reviewed</a>';
 					} else if (data.created_by && data.approver_id==idpic && data.approval_status=='Pending') {
 						style = ["formpa_review_peers", "primary", "Review"];
@@ -293,7 +295,7 @@ $(document).ready(function () {
 						return '<a class="btn btn-sm btn-default">Pending</a>';
 					}
 					
-					if(data.id && data.approval_status=='Approved' && data.updated_by!=idpic && data.updated_by!=null){
+					if(data.id && data.status_sr=='F'){
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
 						return '<a href="home.php?link='+style[0]+'&id='+data.idkar+'&layer='+data.layer+'" class="btn btn-sm btn-'+style[1]+'"><b>'+style[2]+'</b></a>';
