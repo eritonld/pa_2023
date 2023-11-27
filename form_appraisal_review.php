@@ -364,46 +364,46 @@ if ($response === false) {
 						$quartal = "";
 						
 						if($ckaryawan['pen_q1']<>""){
-							$quartal = $quartal."Q1 : <b>$ckaryawan[pen_q1]</b>";
+							$quartal = $quartal."Bulan 1 : <b>$ckaryawan[pen_q1]</b>";
 						}
 						if($ckaryawan['pen_q2']<>""){
-							$quartal = $quartal." / Q2 : <b>$ckaryawan[pen_q2]</b>";
+							$quartal = $quartal." / Bulan 2 : <b>$ckaryawan[pen_q2]</b>";
 						}
 						if($ckaryawan['pen_q3']<>""){
-							$quartal = $quartal." / Q3 : <b>$ckaryawan[pen_q3]</b>";
+							$quartal = $quartal." / Bulan 3 : <b>$ckaryawan[pen_q3]</b>";
 						}
 						if($ckaryawan['pen_q4']<>""){
-							$quartal = $quartal." / Q4 : <b>$ckaryawan[pen_q4]</b>";
+							$quartal = $quartal." / Bulan 4 : <b>$ckaryawan[pen_q4]</b>";
 						}
 						if($ckaryawan['pen_q5']<>""){
-							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q5]</b>";
+							$quartal = $quartal." / Bulan 5 : <b>$ckaryawan[pen_q5]</b>";
 						}
 						if($ckaryawan['pen_q6']<>""){
-							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q6]</b>";
+							$quartal = $quartal." / Bulan 6 : <b>$ckaryawan[pen_q6]</b>";
 						}
 						if($ckaryawan['pen_q7']<>""){
-							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q7]</b>";
+							$quartal = $quartal." / Bulan 7 : <b>$ckaryawan[pen_q7]</b>";
 						}
 						if($ckaryawan['pen_q8']<>""){
-							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q8]</b>";
+							$quartal = $quartal." / Bulan 8 : <b>$ckaryawan[pen_q8]</b>";
 						}
 						if($ckaryawan['pen_q9']<>""){
-							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q9]</b>";
+							$quartal = $quartal." / Bulan 9 : <b>$ckaryawan[pen_q9]</b>";
 						}
 						if($ckaryawan['pen_q10']<>""){
-							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q10]</b>";
+							$quartal = $quartal." / Bulan 10 : <b>$ckaryawan[pen_q10]</b>";
 						}
 						if($ckaryawan['pen_q11']<>""){
-							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q11]</b>";
+							$quartal = $quartal." / Bulan 11 : <b>$ckaryawan[pen_q11]</b>";
 						}
 						if($ckaryawan['pen_q12']<>""){
-							$quartal = $quartal." / Q5 : <b>$ckaryawan[pen_q12]</b>";
+							$quartal = $quartal." / Bulan 12 : <b>$ckaryawan[pen_q12]</b>";
 						}
 						
 						if($quartal<>""){
 							?>
 							<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
-								<div class="col-md-1 text-bold">Quartal</div>
+								<div class="col-md-1 text-bold">KPI/Bulan</div>
 								<div class="col-md-4">: <?php echo "$quartal"; ?></div>
 							</div>
 							<?php
@@ -512,11 +512,11 @@ if ($response === false) {
 									<div class="col-md-3">
 										<select class="form-control" name="<?= $data['name'].$cNumber; ?>">
 											<option value="">- scale -</option>
-											<option value="1" <?= $culture[$data['name'].$cNumber]==1 ? 'selected' : ''; ?>>Basic</option>
-											<option value="2" <?= $culture[$data['name'].$cNumber]==2 ? 'selected' : ''; ?>>Comprehension</option>
-											<option value="3" <?= $culture[$data['name'].$cNumber]==3 ? 'selected' : ''; ?>>Practitioner</option>
-											<option value="4" <?= $culture[$data['name'].$cNumber]==4 ? 'selected' : ''; ?>>Advanced</option>
 											<option value="5" <?= $culture[$data['name'].$cNumber]==5 ? 'selected' : ''; ?>>Expert</option>
+                                        	<option value="4" <?= $culture[$data['name'].$cNumber]==4 ? 'selected' : ''; ?>>Advanced</option>
+                                        	<option value="3" <?= $culture[$data['name'].$cNumber]==3 ? 'selected' : ''; ?>>Practitioner</option>
+                                        	<option value="2" <?= $culture[$data['name'].$cNumber]==2 ? 'selected' : ''; ?>>Comprehension</option>
+                                        	<option value="1" <?= $culture[$data['name'].$cNumber]==1 ? 'selected' : ''; ?>>Basic</option>
 										</select>
 									</div>
 								</div>
@@ -569,11 +569,11 @@ if ($response === false) {
 									<div class="col-md-3">
 										<select class="form-control" name="<?= $data['name'].$lNumber; ?>">
 											<option value="">- scale -</option>
-											<option value="1" <?= $leadership[$data['name'].$lNumber]==1 ? 'selected' : ''; ?>>Basic</option>
-											<option value="2" <?= $leadership[$data['name'].$lNumber]==2 ? 'selected' : ''; ?>>Comprehension</option>
-											<option value="3" <?= $leadership[$data['name'].$lNumber]==3 ? 'selected' : ''; ?>>Practitioner</option>
-											<option value="4" <?= $leadership[$data['name'].$lNumber]==4 ? 'selected' : ''; ?>>Advanced</option>
-											<option value="5" <?= $leadership[$data['name'].$lNumber]==5 ? 'selected' : ''; ?>>Expert</option>
+                                        	<option value="5" <?= $leadership[$data['name'].$lNumber]==5 ? 'selected' : ''; ?>>Expert</option>
+                                        	<option value="4" <?= $leadership[$data['name'].$lNumber]==4 ? 'selected' : ''; ?>>Advanced</option>
+                                        	<option value="3" <?= $leadership[$data['name'].$lNumber]==3 ? 'selected' : ''; ?>>Practitioner</option>
+                                        	<option value="2" <?= $leadership[$data['name'].$lNumber]==2 ? 'selected' : ''; ?>>Comprehension</option>
+                                        	<option value="1" <?= $leadership[$data['name'].$lNumber]==1 ? 'selected' : ''; ?>>Basic</option>
 										</select>
 									</div>
 								</div>

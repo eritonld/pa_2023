@@ -153,7 +153,7 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 	
 	
 	if(isset($_GET['carinama']) && $_GET['carinama'] <> ''){
-		$where=$where." and k.Nama_Lengkap like '%$_GET[carinama]%'";
+		$where=$where." and (k.Nama_Lengkap like '%$_GET[carinama]%' or k.NIK like '%$_GET[carinama]%' or k.nik_baru like '%$_GET[carinama]%')";
 	}
 }
 if(isset($_POST['generatekar']) && $_POST['generatekar']=='T'){

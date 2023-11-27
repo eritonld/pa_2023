@@ -312,15 +312,36 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 				</thead>
 				<tbody>
 					<?php					
-					$no = 1;
+					$nodata = 1;
+					$nourut = 1;
 					$yearnow	= Date('Y');
 					$cutoff		= $yearnow."-06-30";
+					$idkar		= "";
 					
-					$sql = "SELECT k.id,k.nik_baru, k.Nama_Lengkap, k.Nama_Jabatan, do.Nama_OU, dg.Nama_Golongan, dp.Nama_Perusahaan, aa.layer, kk.Nama_Lengkap as nama_atasan, t.approval_status, t.updated_date, tf.approver_rating_id FROM `karyawan_2023` as k
+					$layer1="";
+					$layer2="";
+					$layer3="";
+					$layer4="";
+					$layer5="";
+					$layer6="";
+					$layer7="";
+					$layer8="";
+					
+					$bcg1="";
+					$bcg2="";
+					$bcg3="";
+					$bcg4="";
+					$bcg5="";
+					$bcg6="";
+					$bcg7="";
+					$bcg8="";
+					
+					$sql = "SELECT k.id,k.nik_baru, k.Nama_Lengkap, k.Nama_Jabatan, do.Nama_OU, dg.Nama_Golongan, dp.Nama_Perusahaan, aa.layer, kk.Nama_Lengkap as nama_atasan, ku.kpi_unit, t.approval_status, t.updated_date, tf.approver_rating_id FROM `karyawan_2023` as k
 					left join daftarou do on k.Kode_OU = do.Kode_OU
 					left join daftarperusahaan dp on k.Kode_Perusahaan = dp.Kode_Perusahaan 
 					left join daftargolongan dg on k.Kode_Golongan = dg.Kode_golongan
 					left join atasan as aa on aa.idkar=k.id
+					left join kpi_unit_2023 as ku on ku.idkar=aa.id_atasan and ku.status_aktif='T'
 					left join karyawan_2023 as kk on kk.id=aa.id_atasan
 					left join transaksi_2023 as t on t.idkar=k.id and t.layer=aa.layer and aa.id_atasan=t.approver_id
 					left join transaksi_2023_final as tf on tf.idkar=k.id
@@ -330,25 +351,127 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 					$stmt->execute();
 					
 					while($scekkar = $stmt->fetch(PDO::FETCH_ASSOC)){
-					?>
-					<tr>
-						<td><?php echo "$no"; ?></td>
-						<td><?php echo "$scekkar[nik_baru]"; ?></td>
-						<td><?php echo "$scekkar[Nama_Lengkap]"; ?></td>
-						<td><?php echo "$scekkar[Nama_Jabatan]"; ?></td>
-						<td><?php echo ""; ?></td>
-						<td><?php echo ""; ?></td>
-						<td><?php echo ""; ?></td>
-						<td><?php echo ""; ?></td>
-						<td><?php echo ""; ?></td>
-						<td><?php echo ""; ?></td>
-						<td><?php echo ""; ?></td>
-						<td><?php echo ""; ?></td>
-						<td><?php echo ""; ?></td>
 
-					</tr>
-					<?php
-					$no++;
+					if(($scekkar['layer']=='L1' || $scekkar['layer']==null) && $nodata<>1){
+						?>
+						<tr>
+							<td><?php echo "$nourut"; ?></td>
+							<td><?php echo "$nikbaru"; ?></td>
+							<td><?php echo "$namakar"; ?></td>
+							<td><?php echo "$namajab"; ?></td>
+							<td style="background-color: <?php echo $bcg1; ?>"><?php echo "$layer1"; ?></td>
+							<td style="background-color: <?php echo $bcg2; ?>"><?php echo "$layer2"; ?></td>
+							<td style="background-color: <?php echo $bcg3; ?>"><?php echo "$layer3"; ?></td>
+							<td style="background-color: <?php echo $bcg4; ?>"><?php echo "$layer4"; ?></td>
+							<td style="background-color: <?php echo $bcg5; ?>"><?php echo "$layer5"; ?></td>
+							<td style="background-color: <?php echo $bcg6; ?>"><?php echo "$layer6"; ?></td>
+							<td style="background-color: <?php echo $bcg7; ?>"><?php echo "$layer7"; ?></td>
+							<td style="background-color: <?php echo $bcg8; ?>"><?php echo "$layer8"; ?></td>
+							<td><?php echo "$detail_status"; ?></td>
+						</tr>
+						<?php
+						$nourut++;
+						$detail_status="";
+						$layer1="";
+						$layer2="";
+						$layer3="";
+						$layer4="";
+						$layer5="";
+						$layer6="";
+						$layer7="";
+						$layer8="";
+						$bcg1="";
+						$bcg2="";
+						$bcg3="";
+						$bcg4="";
+						$bcg5="";
+						$bcg6="";
+						$bcg7="";
+						$bcg8="";
+					}
+					
+					$nikbaru = $scekkar['nik_baru'];
+					$namakar = $scekkar['Nama_Lengkap'];
+					$namajab = $scekkar['Nama_Jabatan'];
+					
+					//detail status
+					if($scekkar['layer']==null){
+						$detail_status="<b>no layer</b>";
+					}else if($scekkar['approval_status']==null){
+						$detail_status="<b>no appraisal</b>";
+					}else if($scekkar['approver_rating_id']==0){
+						$detail_status="<b>Completed</b>";
+					}else{
+						$detail_status="";
+					}
+					
+					//detail layer
+					if($scekkar['layer']=='L1'){
+						if($scekkar['approval_status']=='Approved'){ 
+							$layer1="<i class='fa fa-fw fa-check-circle' style='color: green;'></i>"; 
+						}else if($scekkar['approval_status']=='Pending'){ 
+							$layer1="<i class='fa fa-fw fa-minus' style='color: red;'></i>";
+						}
+						if($scekkar['kpi_unit']<>null){$bcg1="#E3FAD8";}else{$bcg1="#FFF5EE";}
+					}
+					if($scekkar['layer']=='L2'){
+						if($scekkar['approval_status']=='Approved'){ 
+							$layer2="<i class='fa fa-fw fa-check-circle' style='color: green;'></i>"; 
+						}else if($scekkar['approval_status']=='Pending'){ 
+							$layer2="<i class='fa fa-fw fa-minus' style='color: red;'></i>"; 
+						}
+						if($scekkar['kpi_unit']<>null){$bcg2="#E3FAD8";}else{$bcg2="#FFF5EE";}
+					}
+					if($scekkar['layer']=='L3'){
+						if($scekkar['approval_status']=='Approved'){ 
+							$layer3="<i class='fa fa-fw fa-check-circle' style='color: green;'></i>"; 
+						}else if($scekkar['approval_status']=='Pending'){ 
+							$layer3="<i class='fa fa-fw fa-minus' style='color: red;'></i>"; 
+						}
+						if($scekkar['kpi_unit']<>null){$bcg3="#E3FAD8";}else{$bcg3="#FFF5EE";}
+					}
+					if($scekkar['layer']=='L4'){
+						if($scekkar['approval_status']=='Approved'){ 
+							$layer4="<i class='fa fa-fw fa-check-circle' style='color: green;'></i>"; 
+						}else if($scekkar['approval_status']=='Pending'){ 
+							$layer4="<i class='fa fa-fw fa-minus' style='color: red;'></i>"; 
+						}
+						if($scekkar['kpi_unit']<>null){$bcg4="#E3FAD8";}else{$bcg4="#FFF5EE";}
+					}
+					if($scekkar['layer']=='L5'){
+						if($scekkar['approval_status']=='Approved'){ 
+							$layer5="<i class='fa fa-fw fa-check-circle' style='color: green;'></i>"; 
+						}else if($scekkar['approval_status']=='Pending'){ 
+							$layer5="<i class='fa fa-fw fa-minus' style='color: red;'></i>"; 
+						}
+						if($scekkar['kpi_unit']<>null){$bcg5="#E3FAD8";}else{$bcg5="#FFF5EE";}
+					}
+					if($scekkar['layer']=='L6'){
+						if($scekkar['approval_status']=='Approved'){ 
+							$layer6="<i class='fa fa-fw fa-check-circle' style='color: green;'></i>"; 
+						}else if($scekkar['approval_status']=='Pending'){ 
+							$layer6="<i class='fa fa-fw fa-minus' style='color: red;'></i>"; 
+						}
+						if($scekkar['kpi_unit']<>null){$bcg6="#E3FAD8";}else{$bcg6="#FFF5EE";}
+					}
+					if($scekkar['layer']=='L7'){
+						if($scekkar['approval_status']=='Approved'){ 
+							$layer7="<i class='fa fa-fw fa-check-circle' style='color: green;'></i>"; 
+						}else if($scekkar['approval_status']=='Pending'){ 
+							$layer7="<i class='fa fa-fw fa-minus' style='color: red;'></i>"; 
+						}
+						if($scekkar['kpi_unit']<>null){$bcg7="#E3FAD8";}else{$bcg7="#FFF5EE";}
+					}
+					if($scekkar['layer']=='L8'){
+						if($scekkar['approval_status']=='Approved'){ 
+							$layer8="<i class='fa fa-fw fa-check-circle' style='color: green;'></i>"; 
+						}else if($scekkar['approval_status']=='Pending'){ 
+							$layer8="<i class='fa fa-fw fa-minus' style='color: red;'></i>"; 
+						}
+						if($scekkar['kpi_unit']<>null){$bcg8="#E3FAD8";}else{$bcg8="#FFF5EE";}
+					}
+
+					$nodata++;
 					}
 					?>
 				</tbody>

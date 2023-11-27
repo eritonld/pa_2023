@@ -40,58 +40,48 @@ if($bahasa=='eng'){
 	$pass2="Tulis Ulang Password";
 	$save="Simpan";
 }
-if(isset($_POST['add_pass'])){
-	if($_POST['add_pass']=='T'){
-		if(mysqli_query($koneksi, "start transaction"))
-		{
-			try
-			{
-			
-			$passbaru	= $_POST['passbaru'];
-			$passulang	= $_POST['passulang'];
-            $pengacak	="HJBDSUYGQ783242BHJSSDFSD";
-            
+if (isset($_POST['add_pass'])) {
+    if ($_POST['add_pass'] == 'T') {
+        try {
+            $passbaru = $_POST['passbaru'];
+            $passulang = $_POST['passulang'];
+            $pengacak = "HJBDSUYGQ783242BHJSSDFSD";
+
             $passmd5 = md5($pengacak . md5($passbaru) . $pengacak);
-				
-				if($passbaru==$passulang && $passbaru<>""){
-					
-					$update = mysqli_query($koneksi,"update user_pa set password='$passmd5' where id='$idmaster_pa'");
-					
-					if($update){
-						$ket = "success";
-						$isi_ket = "Sukses";
-						$ket_isi = "Password baru berhasil diupdate";
-					} else {
-						$ket = "danger";
-						$isi_ket = "Gagal";
-						$ket_isi = "Password yang di isikan gagal tersimpan";
-					}
-				}else{
-					$ket = "danger";
-					$isi_ket = "Gagal";
-					$ket_isi = "Password yang di isikan tidak sesuai";
-				}
-			
-				if($update)
-				{
-					mysqli_query($koneksi, "COMMIT");
-				}
-				else
-				{
-					throw new Exception('Errorr');					
-				}
-			}
-			catch(Exception $e)
-			{
-				mysqli_query($koneksi, "ROLLBACK");
-				?>
-				<script language="JavaScript">
-					alert('Gagal');
-				</script>
-				<?php
-			}
-		}
-	}
+
+            if ($passbaru == $passulang && $passbaru <> "") {
+                $koneksi->beginTransaction();
+
+                $stmt = $koneksi->prepare("UPDATE user_pa SET password = :passmd5 WHERE id = :idmaster_pa");
+                $stmt->bindParam(':passmd5', $passmd5, PDO::PARAM_STR);
+                $stmt->bindParam(':idmaster_pa', $idmaster_pa, PDO::PARAM_INT);
+                $stmt->execute();
+
+                if ($stmt->rowCount() > 0) {
+                    $ket = "success";
+                    $isi_ket = "Sukses";
+                    $ket_isi = "Password baru berhasil diupdate";
+                    $koneksi->commit();
+                } else {
+                    $ket = "danger";
+                    $isi_ket = "Gagal";
+                    $ket_isi = "Password yang diisikan gagal tersimpan";
+                    $koneksi->rollBack();
+                }
+            } else {
+                $ket = "danger";
+                $isi_ket = "Gagal";
+                $ket_isi = "Password yang diisikan tidak sesuai";
+            }
+        } catch (PDOException $e) {
+            $koneksi->rollBack();
+            ?>
+            <script language="JavaScript">
+                alert('Gagal');
+            </script>
+            <?php
+        }
+    }
 }
 
 ?>
