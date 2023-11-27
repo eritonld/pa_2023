@@ -1543,6 +1543,7 @@ try {
                 results: results 
             }),
         })
+        
         .then(response => response.blob())
         .then(blob => {
             const url = window.URL.createObjectURL(blob);

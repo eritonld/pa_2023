@@ -102,7 +102,7 @@ $username = isset($_COOKIE['username']) && isset($_COOKIE['cookieConsent']) ? $_
 		{	
 			var username = document.getElementById('username').value;
 			var password = document.getElementById('password').value;
-			
+
 			if(password.match(letterNumber) && username.match(letterNumber)) 
 			{
 				document.getElementById('proses').style.display = 'inline';
