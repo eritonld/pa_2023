@@ -87,6 +87,10 @@ if($code == 'getPenilaian') {
             WHEN b.rating < 2 THEN 'E'
         ELSE ''
         END AS convertRating, 
+        CASE
+            WHEN a.nik_baru = '' THEN a.NIK
+        ELSE a.nik_baru
+        END AS nik,
         CONCAT('L', CAST(SUBSTRING(atasan.layer, 2) AS UNSIGNED) + 1) AS nextlayer, atasan.id_atasan AS nextapprover, a.Nama_Lengkap, a.Nama_Jabatan, dg.Nama_Golongan, dou.Nama_OU, dd.Nama_Departemen, DATE_FORMAT(b.created_date, '%d-%m-%Y') AS created_date FROM 
         $karyawan AS a LEFT JOIN 
         $transaksi_pa_final AS b ON b.idkar = a.id LEFT JOIN $transaksi_pa AS b2 ON b2.idkar = a.id LEFT JOIN daftargolongan AS dg ON dg.Kode_Golongan = a.Kode_Golongan LEFT JOIN 

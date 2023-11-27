@@ -45,13 +45,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // Set headers
 			$spreadsheet->getActiveSheet()->setCellValue('A2', 'No');
             $spreadsheet->getActiveSheet()->setCellValue('B2', 'Employee Name');
-            $spreadsheet->getActiveSheet()->setCellValue('C2', 'Job');
-            $spreadsheet->getActiveSheet()->setCellValue('D2', 'Grade');
-            $spreadsheet->getActiveSheet()->setCellValue('E2', 'Division');
-            $spreadsheet->getActiveSheet()->setCellValue('F2', 'Suggested Rating');
-            $spreadsheet->getActiveSheet()->setCellValue('G2', 'Proposed Rating');
+            $spreadsheet->getActiveSheet()->setCellValue('C2', 'Employee ID');
+            $spreadsheet->getActiveSheet()->setCellValue('D2', 'Job');
+            $spreadsheet->getActiveSheet()->setCellValue('E2', 'Grade');
+            $spreadsheet->getActiveSheet()->setCellValue('F2', 'Division');
+            $spreadsheet->getActiveSheet()->setCellValue('G2', 'Suggested Rating');
+            $spreadsheet->getActiveSheet()->setCellValue('H2', 'Proposed Rating');
             
-            $spreadsheet->getActiveSheet()->getStyle('A2:G2')->applyFromArray($headerStyle);
+            $spreadsheet->getActiveSheet()->getStyle('A2:H2')->applyFromArray($headerStyle);
 
             // Start data from row 2
             $no = 1;
@@ -60,17 +61,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $spreadsheet->getActiveSheet()->setCellValue('A1', 'Exported by : '.$rowObject['exportBy']);
                 $spreadsheet->getActiveSheet()->setCellValue('A' . $row, $no);
                 $spreadsheet->getActiveSheet()->setCellValue('B' . $row, $rowObject['Nama_Lengkap']);
-                $spreadsheet->getActiveSheet()->setCellValue('C' . $row, $rowObject['Nama_Jabatan']);
-                $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $rowObject['Nama_Golongan']);
-                $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $rowObject['Nama_Departemen']);
-                $spreadsheet->getActiveSheet()->setCellValue('F' . $row, convertRating($rowObject['suggestedRating']));
-                $spreadsheet->getActiveSheet()->setCellValue('G' . $row, convertRating($rowObject['proposedRating']));
+                $spreadsheet->getActiveSheet()->setCellValue('C' . $row, $rowObject['nik']);
+                $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $rowObject['Nama_Jabatan']);
+                $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $rowObject['Nama_Golongan']);
+                $spreadsheet->getActiveSheet()->setCellValue('F' . $row, $rowObject['Nama_Departemen']);
+                $spreadsheet->getActiveSheet()->setCellValue('G' . $row, convertRating($rowObject['suggestedRating']));
+                $spreadsheet->getActiveSheet()->setCellValue('H' . $row, convertRating($rowObject['proposedRating']));
                 $row++;
                 $no++;
             }
 			$spreadsheet->getActiveSheet()->mergeCells('A1:C1');
 			$lastRow = $row - 1;
-			$lastColumn = 'G';
+			$lastColumn = 'H';
 			$cellRange = 'A2:' . $lastColumn . $lastRow;
 			
 			$spreadsheet->getActiveSheet()->getStyle($cellRange)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
