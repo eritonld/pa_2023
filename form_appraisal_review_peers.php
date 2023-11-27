@@ -319,11 +319,11 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 									<div class="col-md-3">
 										<select class="form-control" name="<?= $data['name'].$no++; ?>">
 											<option value="">- scale -</option>
-											<option value="1">Basic</option>
-											<option value="2">Comprehension</option>
-											<option value="3">Practitioner</option>
-											<option value="4">Advanced</option>
-											<option value="5">Expert</option>
+                                        	<option value="5">Expert</option>
+                                        	<option value="4">Advanced</option>
+                                        	<option value="3">Practitioner</option>
+                                        	<option value="2">Comprehension</option>
+                                        	<option value="1">Basic</option>
 										</select>
 									</div>
 								</div>
@@ -369,18 +369,18 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 							if($bahasa=='eng'){ $item_leadership=$data['item_en']; }else{ $item_leadership=$data['item']; }
 							$lNumber = $y++;
 							?>
-							<div class="row">
+							<div class="row" style="margin-bottom: 20px;">
 								<div class="col-md-9">
 									<span class="h4"><?= $item_leadership; ?></span>
 								</div>
 								<div class="col-md-3">
 									<select class="form-control" name="<?= $data['name'].$lNumber; ?>">
 										<option value="">- scale -</option>
-										<option value="1">Basic</option>
-										<option value="2">Comprehension</option>
-										<option value="3">Practitioner</option>
-										<option value="4">Advanced</option>
-										<option value="5">Expert</option>
+                                    	<option value="5">Expert</option>
+                                    	<option value="4">Advanced</option>
+                                    	<option value="3">Practitioner</option>
+                                    	<option value="2">Comprehension</option>
+                                    	<option value="1">Basic</option>
 									</select>
 								</div>
 							</div>

@@ -7,7 +7,7 @@ if (isset($_COOKIE['id'])) {
 	?>
 	  <script>
 		  alert('Your session has ended, please Signin');
-		  window.location= '<?= "$base_url"; ?>';
+		  window.location= '<?= "$base_url"; ?>'; -->
 	  </script>
 	  <?php
   }

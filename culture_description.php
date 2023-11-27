@@ -26,7 +26,31 @@
                     <th>Indicator</th>
                 </tr>
             </thead>
+			<?php if($bahasa=='eng'){ ?>
             <tbody>
+                <tr>
+                    <td style="vertical-align: middle;">Expert</td>
+                    <td>Shows consistent ability to demonstrate the behavior in any projects and/or within the organization, while also influencing others to do so.</td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: middle;">Advanced</td>
+                    <td>Consistently and independently demonstrate the behavior and being acknowledged within the organization</td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: middle;">Practitioner</td>
+                    <td>Able to demonstrate the competency in consistent manner while still need direction to success</td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: middle;">Comprehension</td>
+                    <td>Start to have a complex understanding and be able to discuss terminology, concepts, and all related things around that</td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: middle;">Basic</td>
+                    <td>Understand but is not able yet to demonstrate</td>
+                </tr>
+            </tbody>
+			<?php }else{ ?>
+			<tbody>
                 <tr>
                     <td style="vertical-align: middle;">Expert</td>
                     <td>Menunjukkan keunggulan yang konsisten dalam menerapkan hal ini di berbagai proyek dan/ atau organisasi dan mengajak orang lain melakukan hal tersebut</td>
@@ -48,6 +72,7 @@
                     <td>Tahu namun belum bisa mempraktekkan</td>
                 </tr>
             </tbody>
+			<?php }  ?>
         </table>
     </div>
 </div>

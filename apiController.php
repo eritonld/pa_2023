@@ -147,8 +147,14 @@ if($code == 'getPenilaian') {
                 $query = "SELECT id_atasan FROM atasan WHERE idkar='$idkar' AND layer='$nextlayer'";
 
                 $stmt = $koneksi->query($query);
-    
+    			$countresult = $stmt->rowCount();
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            	if($countresult>0){
+                	$next_id_atasan = $result['id_atasan'];
+                }else{
+                	$next_id_atasan = 0;
+                }
 
                 // echo $result['id_atasan'];
                 // Replace "your_table_name" with the actual table name in your database
@@ -165,7 +171,7 @@ if($code == 'getPenilaian') {
                 $stmtFinal->bindParam(":rating", $rating);
                 $stmtFinal->bindParam(":idkar", $idkar);
                 $stmtFinal->bindParam(":idpic", $idpic);
-                $stmtFinal->bindParam(":id_atasan", $result['id_atasan']);
+                $stmtFinal->bindParam(":id_atasan", $next_id_atasan);
                 $stmtFinal->bindParam(":nextlayer", $nextlayer);
                 $stmtFinal->bindParam(":updated_date", $datetime);
                 $stmtFinal->bindParam(":status_sr", $status_sr);
@@ -380,10 +386,10 @@ if($code == 'getPenilaian') {
     $value4 = $_POST["value4"];
     $value5 = $_POST["value5"];
     $score1 = $_POST["score1"];
-    $score2 = $_POST["score2"];
-    $score3 = $_POST["score3"];
-    $score4 = $_POST["score4"];
-    $score5 = $_POST["score5"];
+    $score2 = !empty($_POST["score2"]) ? $_POST["score2"] : 0;
+    $score3 = !empty($_POST["score3"]) ? $_POST["score3"] : 0;
+    $score4 = !empty($_POST["score4"]) ? $_POST["score4"] : 0;
+    $score5 = !empty($_POST["score5"]) ? $_POST["score5"] : 0;
     $total_score = floor($_POST["total_score"]);
     $fortable = $_POST["fortable"];
     $periode = $tahunperiode;
@@ -419,6 +425,7 @@ if($code == 'getPenilaian') {
     $rating = $final_score;
     
     $empty = null;
+	$datanol = 0;
 
     $tabel_prosedure="prosedure";
     $a1='Penilaian Kinerja Karyawan';
@@ -498,10 +505,10 @@ if($code == 'getPenilaian') {
         if ($ckaryawan) {
             // Process the data here
             // Define the common SQL INSERT statement
-            $queryInsert = "INSERT INTO %s (`id`, idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, created_by, periode, total_culture, total_leadership, rating, `comment`, created_date, fortable, layer, approver_id, approval_status) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $queryInsertFinal = "INSERT INTO %s (`id`, idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, created_by, periode, total_culture, total_leadership, rating, `comment`, created_date, fortable, layer, approver_review_id, approver_rating_id, layer_rating, approval_review) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $queryInsert = "INSERT INTO %s (idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, created_by, periode, total_culture, total_leadership, rating, `comment`, created_date, fortable, layer, approver_id, approval_status) 
+            VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $queryInsertFinal = "INSERT INTO %s (idkar, value_1, value_2, value_3, value_4, value_5, score_1, score_2, score_3, score_4, score_5, total_score, synergized1, synergized2, synergized3, integrity1, integrity2, integrity3, growth1, growth2, growth3, adaptive1, adaptive2, adaptive3, passion1, passion2, passion3, leadership1, leadership2, leadership3, leadership4, leadership5, leadership6, created_by, periode, total_culture, total_leadership, rating, `comment`, created_date, fortable, layer, approver_review_id, approver_rating_id, layer_rating, approval_review) 
+            VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $errors = false;
         
@@ -518,52 +525,53 @@ if($code == 'getPenilaian') {
                 $stmtInsertL0 = $koneksi->prepare(sprintf($queryInsert, $tableName));
     
                 // Bind parameters
-                $stmtInsertL0->bindParam(1, $id);
-                $stmtInsertL0->bindParam(2, $idkar);
-                $stmtInsertL0->bindParam(3, $value1);
-                $stmtInsertL0->bindParam(4, $value2);
-                $stmtInsertL0->bindParam(5, $value3);
-                $stmtInsertL0->bindParam(6, $value4);
-                $stmtInsertL0->bindParam(7, $value5);
-                $stmtInsertL0->bindParam(8, $score1);
-                $stmtInsertL0->bindParam(9, $score2);
-                $stmtInsertL0->bindParam(10, $score3);
-                $stmtInsertL0->bindParam(11, $score4);
-                $stmtInsertL0->bindParam(12, $score5);
-                $stmtInsertL0->bindParam(13, $total_score);
-                $stmtInsertL0->bindParam(14, $synergized1);
-                $stmtInsertL0->bindParam(15, $synergized2);
-                $stmtInsertL0->bindParam(16, $synergized3);
-                $stmtInsertL0->bindParam(17, $integrity1);
-                $stmtInsertL0->bindParam(18, $integrity2);
-                $stmtInsertL0->bindParam(19, $integrity3);
-                $stmtInsertL0->bindParam(20, $growth1);
-                $stmtInsertL0->bindParam(21, $growth2);
-                $stmtInsertL0->bindParam(22, $growth3);
-                $stmtInsertL0->bindParam(23, $adaptive1);
-                $stmtInsertL0->bindParam(24, $adaptive2);
-                $stmtInsertL0->bindParam(25, $adaptive3);
-                $stmtInsertL0->bindParam(26, $passion1);
-                $stmtInsertL0->bindParam(27, $passion2);
-                $stmtInsertL0->bindParam(28, $passion3);
-                $stmtInsertL0->bindParam(29, $leadership1);
-                $stmtInsertL0->bindParam(30, $leadership2);
-                $stmtInsertL0->bindParam(31, $leadership3);
-                $stmtInsertL0->bindParam(32, $leadership4);
-                $stmtInsertL0->bindParam(33, $leadership5);
-                $stmtInsertL0->bindParam(34, $leadership6);
-                $stmtInsertL0->bindParam(35, $idpic);
-                $stmtInsertL0->bindParam(36, $periode);
-                $stmtInsertL0->bindParam(37, $total_culture);
-                $stmtInsertL0->bindParam(38, $total_leadership);
-                $stmtInsertL0->bindParam(39, $empty);
-                $stmtInsertL0->bindParam(40, $comment);
-                $stmtInsertL0->bindParam(41, $datetime);
-                $stmtInsertL0->bindParam(42, $fortable);
-                $stmtInsertL0->bindParam(43, $L0);
-                $stmtInsertL0->bindParam(44, $idpic);
-
-				$stmtInsertL0->bindParam(45, $approvalStatusL0);
+                // $stmtInsertL0->bindParam(1, $id);
+                $stmtInsertL0->bindParam(1, $idkar);
+                $stmtInsertL0->bindParam(2, $value1);
+                $stmtInsertL0->bindParam(3, $value2);
+                $stmtInsertL0->bindParam(4, $value3);
+                $stmtInsertL0->bindParam(5, $value4);
+                $stmtInsertL0->bindParam(6, $value5);
+                $stmtInsertL0->bindParam(7, $score1);
+                $stmtInsertL0->bindParam(8, $score2);
+                $stmtInsertL0->bindParam(9, $score3);
+                $stmtInsertL0->bindParam(10, $score4);
+                $stmtInsertL0->bindParam(11, $score5);
+                $stmtInsertL0->bindParam(12, $total_score);
+                $stmtInsertL0->bindParam(13, $synergized1);
+                $stmtInsertL0->bindParam(14, $synergized2);
+                $stmtInsertL0->bindParam(15, $synergized3);
+                $stmtInsertL0->bindParam(16, $integrity1);
+                $stmtInsertL0->bindParam(17, $integrity2);
+                $stmtInsertL0->bindParam(18, $integrity3);
+                $stmtInsertL0->bindParam(19, $growth1);
+                $stmtInsertL0->bindParam(20, $growth2);
+                $stmtInsertL0->bindParam(21, $growth3);
+                $stmtInsertL0->bindParam(22, $adaptive1);
+                $stmtInsertL0->bindParam(23, $adaptive2);
+                $stmtInsertL0->bindParam(24, $adaptive3);
+                $stmtInsertL0->bindParam(25, $passion1);
+                $stmtInsertL0->bindParam(26, $passion2);
+                $stmtInsertL0->bindParam(27, $passion3);
+                $stmtInsertL0->bindParam(28, $leadership1);
+                $stmtInsertL0->bindParam(29, $leadership2);
+                $stmtInsertL0->bindParam(30, $leadership3);
+                $stmtInsertL0->bindParam(31, $leadership4);
+                $stmtInsertL0->bindParam(32, $leadership5);
+                $stmtInsertL0->bindParam(33, $leadership6);
+                $stmtInsertL0->bindParam(34, $idpic);
+                $stmtInsertL0->bindParam(35, $periode);
+                $stmtInsertL0->bindParam(36, $total_culture);
+                $stmtInsertL0->bindParam(37, $total_leadership);
+                $stmtInsertL0->bindParam(38, $empty, PDO::PARAM_NULL);
+                $stmtInsertL0->bindParam(39, $comment);
+                $stmtInsertL0->bindParam(40, $datetime);
+                $stmtInsertL0->bindParam(41, $fortable);
+                $stmtInsertL0->bindParam(42, $L0);
+                $stmtInsertL0->bindParam(43, $idpic);
+				$stmtInsertL0->bindParam(44, $approvalStatusL0);
+            
+            	
 
                 // Execute the INSERT statement for the current table
                 if (!$stmtInsertL0->execute()) {
@@ -581,51 +589,51 @@ if($code == 'getPenilaian') {
                 $stmtInsert = $koneksi->prepare(sprintf($queryInsert, $tableName));
 
                 // Bind parameters
-                $stmtInsert->bindParam(1, $id);
-                $stmtInsert->bindParam(2, $idkar);
-                $stmtInsert->bindParam(3, $value1);
-                $stmtInsert->bindParam(4, $value2);
-                $stmtInsert->bindParam(5, $value3);
-                $stmtInsert->bindParam(6, $value4);
-                $stmtInsert->bindParam(7, $value5);
-                $stmtInsert->bindParam(8, $score1);
-                $stmtInsert->bindParam(9, $score2);
-                $stmtInsert->bindParam(10, $score3);
-                $stmtInsert->bindParam(11, $score4);
-                $stmtInsert->bindParam(12, $score5);
-                $stmtInsert->bindParam(13, $total_score);
-                $stmtInsert->bindParam(14, $empty);
-                $stmtInsert->bindParam(15, $empty);
-                $stmtInsert->bindParam(16, $empty);
-                $stmtInsert->bindParam(17, $empty);
-                $stmtInsert->bindParam(18, $empty);
-                $stmtInsert->bindParam(19, $empty);
-                $stmtInsert->bindParam(20, $empty);
-                $stmtInsert->bindParam(21, $empty);
-                $stmtInsert->bindParam(22, $empty);
-                $stmtInsert->bindParam(23, $empty);
-                $stmtInsert->bindParam(24, $empty);
-                $stmtInsert->bindParam(25, $empty);
-                $stmtInsert->bindParam(26, $empty);
-                $stmtInsert->bindParam(27, $empty);
-                $stmtInsert->bindParam(28, $empty);
-                $stmtInsert->bindParam(29, $empty);
-                $stmtInsert->bindParam(30, $empty);
-                $stmtInsert->bindParam(31, $empty);
-                $stmtInsert->bindParam(32, $empty);
-                $stmtInsert->bindParam(33, $empty);
-                $stmtInsert->bindParam(34, $empty);
-                $stmtInsert->bindParam(35, $idpic);
-                $stmtInsert->bindParam(36, $periode);
-                $stmtInsert->bindParam(37, $empty);
-                $stmtInsert->bindParam(38, $empty);
-                $stmtInsert->bindParam(39, $empty);
-                $stmtInsert->bindParam(40, $comment);
-                $stmtInsert->bindParam(41, $datetime);
-                $stmtInsert->bindParam(42, $fortable);
-                $stmtInsert->bindParam(43, $layer);
-                $stmtInsert->bindParam(44, $id_atasan);
-                $stmtInsert->bindParam(45, $approvalStatus);
+                //$stmtInsert->bindParam(1, $id);
+                $stmtInsert->bindParam(1, $idkar);
+                $stmtInsert->bindParam(2, $value1);
+                $stmtInsert->bindParam(3, $value2);
+                $stmtInsert->bindParam(4, $value3);
+                $stmtInsert->bindParam(5, $value4);
+                $stmtInsert->bindParam(6, $value5);
+                $stmtInsert->bindParam(7, $datanol);
+                $stmtInsert->bindParam(8, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(9, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(10, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(11, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(12, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(13, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(14, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(15, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(16, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(17, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(18, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(19, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(20, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(21, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(22, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(23, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(24, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(25, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(26, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(27, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(28, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(29, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(30, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(31, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(32, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(33, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(34, $idpic);
+                $stmtInsert->bindParam(35, $periode);
+                $stmtInsert->bindParam(36, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(37, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(38, $empty, PDO::PARAM_NULL);
+                $stmtInsert->bindParam(39, $comment);
+                $stmtInsert->bindParam(40, $datetime);
+                $stmtInsert->bindParam(41, $fortable);
+                $stmtInsert->bindParam(42, $layer);
+                $stmtInsert->bindParam(43, $id_atasan);
+                $stmtInsert->bindParam(44, $approvalStatus);
 
                 // Execute the INSERT statement for the current table
                 if (!$stmtInsert->execute()) {
@@ -637,53 +645,53 @@ if($code == 'getPenilaian') {
                 $stmtInsertFin = $koneksi->prepare(sprintf($queryInsertFinal, $tableFinal));
 
                 // Bind parameters
-                $stmtInsertFin->bindParam(1, $id);
-                $stmtInsertFin->bindParam(2, $idkar);
-                $stmtInsertFin->bindParam(3, $value1);
-                $stmtInsertFin->bindParam(4, $value2);
-                $stmtInsertFin->bindParam(5, $value3);
-                $stmtInsertFin->bindParam(6, $value4);
-                $stmtInsertFin->bindParam(7, $value5);
-                $stmtInsertFin->bindParam(8, $score1);
-                $stmtInsertFin->bindParam(9, $score2);
-                $stmtInsertFin->bindParam(10, $score3);
-                $stmtInsertFin->bindParam(11, $score4);
-                $stmtInsertFin->bindParam(12, $score5);
-                $stmtInsertFin->bindParam(13, $total_score);
-                $stmtInsertFin->bindParam(14, $synergized1);
-                $stmtInsertFin->bindParam(15, $synergized2);
-                $stmtInsertFin->bindParam(16, $synergized3);
-                $stmtInsertFin->bindParam(17, $integrity1);
-                $stmtInsertFin->bindParam(18, $integrity2);
-                $stmtInsertFin->bindParam(19, $integrity3);
-                $stmtInsertFin->bindParam(20, $growth1);
-                $stmtInsertFin->bindParam(21, $growth2);
-                $stmtInsertFin->bindParam(22, $growth3);
-                $stmtInsertFin->bindParam(23, $adaptive1);
-                $stmtInsertFin->bindParam(24, $adaptive2);
-                $stmtInsertFin->bindParam(25, $adaptive3);
-                $stmtInsertFin->bindParam(26, $passion1);
-                $stmtInsertFin->bindParam(27, $passion2);
-                $stmtInsertFin->bindParam(28, $passion3);
-                $stmtInsertFin->bindParam(29, $leadership1);
-                $stmtInsertFin->bindParam(30, $leadership2);
-                $stmtInsertFin->bindParam(31, $leadership3);
-                $stmtInsertFin->bindParam(32, $leadership4);
-                $stmtInsertFin->bindParam(33, $leadership5);
-                $stmtInsertFin->bindParam(34, $leadership6);
-                $stmtInsertFin->bindParam(35, $idpic);
-                $stmtInsertFin->bindParam(36, $periode);
-                $stmtInsertFin->bindParam(37, $total_culture);
-                $stmtInsertFin->bindParam(38, $total_leadership);
-                $stmtInsertFin->bindParam(39, $rating);
-                $stmtInsertFin->bindParam(40, $comment);
-                $stmtInsertFin->bindParam(41, $datetime);
-                $stmtInsertFin->bindParam(42, $fortable);
-                $stmtInsertFin->bindParam(43, $layerApproval);
-                $stmtInsertFin->bindParam(44, $atasanReview);
-                $stmtInsertFin->bindParam(45, $resultLRating['id_atasan']);
-                $stmtInsertFin->bindParam(46, $resultLRating['layer']);
-                $stmtInsertFin->bindParam(47, $approval_review);
+                // $stmtInsertFin->bindParam(1, $id);
+                $stmtInsertFin->bindParam(1, $idkar);
+                $stmtInsertFin->bindParam(2, $value1);
+                $stmtInsertFin->bindParam(3, $value2);
+                $stmtInsertFin->bindParam(4, $value3);
+                $stmtInsertFin->bindParam(5, $value4);
+                $stmtInsertFin->bindParam(6, $value5);
+                $stmtInsertFin->bindParam(7, $score1);
+                $stmtInsertFin->bindParam(8, $score2);
+                $stmtInsertFin->bindParam(9, $score3);
+                $stmtInsertFin->bindParam(10, $score4);
+                $stmtInsertFin->bindParam(11, $score5);
+                $stmtInsertFin->bindParam(12, $total_score);
+                $stmtInsertFin->bindParam(13, $synergized1);
+                $stmtInsertFin->bindParam(14, $synergized2);
+                $stmtInsertFin->bindParam(15, $synergized3);
+                $stmtInsertFin->bindParam(16, $integrity1);
+                $stmtInsertFin->bindParam(17, $integrity2);
+                $stmtInsertFin->bindParam(18, $integrity3);
+                $stmtInsertFin->bindParam(19, $growth1);
+                $stmtInsertFin->bindParam(20, $growth2);
+                $stmtInsertFin->bindParam(21, $growth3);
+                $stmtInsertFin->bindParam(22, $adaptive1);
+                $stmtInsertFin->bindParam(23, $adaptive2);
+                $stmtInsertFin->bindParam(24, $adaptive3);
+                $stmtInsertFin->bindParam(25, $passion1);
+                $stmtInsertFin->bindParam(26, $passion2);
+                $stmtInsertFin->bindParam(27, $passion3);
+                $stmtInsertFin->bindParam(28, $leadership1);
+                $stmtInsertFin->bindParam(29, $leadership2);
+                $stmtInsertFin->bindParam(30, $leadership3);
+                $stmtInsertFin->bindParam(31, $leadership4);
+                $stmtInsertFin->bindParam(32, $leadership5);
+                $stmtInsertFin->bindParam(33, $leadership6);
+                $stmtInsertFin->bindParam(34, $idpic);
+                $stmtInsertFin->bindParam(35, $periode);
+                $stmtInsertFin->bindParam(36, $total_culture);
+                $stmtInsertFin->bindParam(37, $total_leadership);
+                $stmtInsertFin->bindParam(38, $rating);
+                $stmtInsertFin->bindParam(39, $comment);
+                $stmtInsertFin->bindParam(40, $datetime);
+                $stmtInsertFin->bindParam(41, $fortable);
+                $stmtInsertFin->bindParam(42, $layerApproval);
+                $stmtInsertFin->bindParam(43, $atasanReview);
+                $stmtInsertFin->bindParam(44, $resultLRating['id_atasan']);
+                $stmtInsertFin->bindParam(45, $resultLRating['layer']);
+                $stmtInsertFin->bindParam(46, $approval_review);
 
                 // Execute the INSERT statement for the current table
                 if (!$stmtInsertFin->execute()) {
@@ -804,10 +812,10 @@ if($code == 'getPenilaian') {
     $value4 = $_POST["value4"];
     $value5 = $_POST["value5"];
     $score1 = $_POST["score1"];
-    $score2 = $_POST["score2"];
-    $score3 = $_POST["score3"];
-    $score4 = $_POST["score4"];
-    $score5 = $_POST["score5"];
+    $score2 = !empty($_POST["score2"]) ? $_POST["score2"] : 0;
+    $score3 = !empty($_POST["score3"]) ? $_POST["score3"] : 0;
+    $score4 = !empty($_POST["score4"]) ? $_POST["score4"] : 0;
+    $score5 = !empty($_POST["score5"]) ? $_POST["score5"] : 0;
     $total_score = $_POST["total_score"];
     $fortable = $_POST["fortable"];
     $periode = $tahunperiode;
@@ -1011,10 +1019,10 @@ if($code == 'getPenilaian') {
         $value4 = $_POST["value4"];
         $value5 = $_POST["value5"];
         $score1 = $_POST["score1"];
-        $score2 = $_POST["score2"];
-        $score3 = $_POST["score3"];
-        $score4 = $_POST["score4"];
-        $score5 = $_POST["score5"];
+        $score2 = !empty($_POST["score2"]) ? $_POST["score2"] : 0;
+    	$score3 = !empty($_POST["score3"]) ? $_POST["score3"] : 0;
+    	$score4 = !empty($_POST["score4"]) ? $_POST["score4"] : 0;
+    	$score5 = !empty($_POST["score5"]) ? $_POST["score5"] : 0;
         $total_score = $_POST["total_score"];
         $fortable = $_POST["fortable"];
         $periode = $tahunperiode;

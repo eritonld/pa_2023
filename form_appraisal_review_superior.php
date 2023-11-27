@@ -320,11 +320,11 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 									<div class="col-md-3">
 										<select class="form-control" name="<?= $data['name'].$no++; ?>">
 											<option value="">- scale -</option>
-											<option value="1">Basic</option>
-											<option value="2">Comprehension</option>
-											<option value="3">Practitioner</option>
-											<option value="4">Advanced</option>
 											<option value="5">Expert</option>
+                                        	<option value="4">Advanced</option>
+                                        	<option value="3">Practitioner</option>
+                                        	<option value="2">Comprehension</option>
+                                        	<option value="1">Basic</option>
 										</select>
 									</div>
 								</div>
