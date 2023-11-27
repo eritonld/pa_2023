@@ -476,36 +476,36 @@ try {
                                     <tbody>
                                         <tr>
                                             <td>A</td>
-                                            <td><span><?= $targetRating23['target_a']; ?></span></td>
-                                            <td><span><?= number_format($targetRating23['percent_a'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? $targetRating23['target_a'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? number_format($targetRating23['percent_a'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate23_a"><?= $rating23['A']; ?></span></td>
                                             <td><span id="percent23_a"><?= number_format($rating23['Percent_A'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>B</td>
-                                            <td><span><?= $targetRating23['target_b']; ?></span></td>
-                                            <td><span><?= number_format($targetRating23['percent_b'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? $targetRating23['target_b'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? number_format($targetRating23['percent_b'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate23_b"><?= $rating23['B']; ?></span></td>
                                             <td><span id="percent23_b"><?= number_format($rating23['Percent_B'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>C</td>
-                                            <td><span><?= $targetRating23['target_c']; ?></span></td>
-                                            <td><span><?= number_format($targetRating23['percent_c'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? $targetRating23['target_c'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? number_format($targetRating23['percent_c'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate23_c"><?= $rating23['C']; ?></span></td>
                                             <td><span id="percent23_c"><?= number_format($rating23['Percent_C'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>D</td>
-                                            <td><span><?= $targetRating23['target_d']; ?></span></td>
-                                            <td><span><?= number_format($targetRating23['percent_d'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? $targetRating23['target_d'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? number_format($targetRating23['percent_d'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate23_d"><?= $rating23['D']; ?></span></td>
                                             <td><span id="percent23_d"><?= number_format($rating23['Percent_D'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>E</td>
-                                            <td><span><?= $targetRating23['target_e']; ?></span></td>
-                                            <td><span><?= number_format($targetRating23['percent_e'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? $targetRating23['target_e'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating23['Total'] > 2 ? number_format($targetRating23['percent_e'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate23_e"><?= $rating23['E']; ?></span></td>
                                             <td><span id="percent23_e"><?= number_format($rating23['Percent_E'], 1); ?>%</span></td>
                                         </tr>
@@ -611,36 +611,36 @@ try {
                                     <tbody>
                                         <tr>
                                             <td>A</td>
-                                            <td><span><?= $targetRating45['target_a']; ?></span></td>
-                                            <td><span><?= number_format($targetRating45['percent_a'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? $targetRating45['target_a'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? number_format($targetRating45['percent_a'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate45_a"><?= $rating45['A']; ?></span></td>
                                             <td><span id="percent45_a"><?= number_format($rating45['Percent_A'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>B</td>
-                                            <td><span><?= $targetRating45['target_b']; ?></span></td>
-                                            <td><span><?= number_format($targetRating45['percent_b'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? $targetRating45['target_b'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? number_format($targetRating45['percent_b'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate45_b"><?= $rating45['B']; ?></span></td>
                                             <td><span id="percent45_b"><?= number_format($rating45['Percent_B'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>C</td>
-                                            <td><span><?= $targetRating45['target_c']; ?></span></td>
-                                            <td><span><?= number_format($targetRating45['percent_c'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? $targetRating45['target_c'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? number_format($targetRating45['percent_c'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate45_c"><?= $rating45['C']; ?></span></td>
                                             <td><span id="percent45_c"><?= number_format($rating45['Percent_C'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>D</td>
-                                            <td><span><?= $targetRating45['target_d']; ?></span></td>
-                                            <td><span><?= number_format($targetRating45['percent_d'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? $targetRating45['target_d'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? number_format($targetRating45['percent_d'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate45_d"><?= $rating45['D']; ?></span></td>
                                             <td><span id="percent45_d"><?= number_format($rating45['Percent_D'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>E</td>
-                                            <td><span><?= $targetRating45['target_e']; ?></span></td>
-                                            <td><span><?= number_format($targetRating45['percent_e'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? $targetRating45['target_e'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating45['Total'] > 2 ? number_format($targetRating45['percent_e'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate45_e"><?= $rating45['E']; ?></span></td>
                                             <td><span id="percent45_e"><?= number_format($rating45['Percent_E'], 1); ?>%</span></td>
                                         </tr>
@@ -746,36 +746,36 @@ try {
                                     <tbody>
                                         <tr>
                                             <td>A</td>
-                                            <td><span><?= $targetRating67['target_a']; ?></span></td>
-                                            <td><span><?= number_format($targetRating67['percent_a'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? $targetRating67['target_a'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? number_format($targetRating67['percent_a'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate67_a"><?= $rating67['A']; ?></span></td>
                                             <td><span id="percent67_a"><?= number_format($rating67['Percent_A'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>B</td>
-                                            <td><span><?= $targetRating67['target_b']; ?></span></td>
-                                            <td><span><?= number_format($targetRating67['percent_b'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? $targetRating67['target_b'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? number_format($targetRating67['percent_b'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate67_b"><?= $rating67['B']; ?></span></td>
                                             <td><span id="percent67_b"><?= number_format($rating67['Percent_B'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>C</td>
-                                            <td><span><?= $targetRating67['target_c']; ?></span></td>
-                                            <td><span><?= number_format($targetRating67['percent_c'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? $targetRating67['target_c'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? number_format($targetRating67['percent_c'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate67_c"><?= $rating67['C']; ?></span></td>
                                             <td><span id="percent67_c"><?= number_format($rating67['Percent_C'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>D</td>
-                                            <td><span><?= $targetRating67['target_d']; ?></span></td>
-                                            <td><span><?= number_format($targetRating67['percent_d'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? $targetRating67['target_d'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? number_format($targetRating67['percent_d'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate67_d"><?= $rating67['D']; ?></span></td>
                                             <td><span id="percent67_d"><?= number_format($rating67['Percent_D'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>E</td>
-                                            <td><span><?= $targetRating67['target_e']; ?></span></td>
-                                            <td><span><?= number_format($targetRating67['percent_e'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? $targetRating67['target_e'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating67['Total'] > 2 ? number_format($targetRating67['percent_e'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate67_e"><?= $rating67['E']; ?></span></td>
                                             <td><span id="percent67_e"><?= number_format($rating67['Percent_E'], 1); ?>%</span></td>
                                         </tr>
@@ -881,36 +881,36 @@ try {
                                     <tbody>
                                         <tr>
                                             <td>A</td>
-                                            <td><span><?= $targetRating89['target_a']; ?></span></td>
-                                            <td><span><?= number_format($targetRating89['percent_a'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? $targetRating89['target_a'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? number_format($targetRating89['percent_a'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate89_a"><?= $rating89['A']; ?></span></td>
                                             <td><span id="percent89_a"><?= number_format($rating89['Percent_A'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>B</td>
-                                            <td><span><?= $targetRating89['target_b']; ?></span></td>
-                                            <td><span><?= number_format($targetRating89['percent_b'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? $targetRating89['target_b'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? number_format($targetRating89['percent_b'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate89_b"><?= $rating89['B']; ?></span></td>
                                             <td><span id="percent89_b"><?= number_format($rating89['Percent_B'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>C</td>
-                                            <td><span><?= $targetRating89['target_c']; ?></span></td>
-                                            <td><span><?= number_format($targetRating89['percent_c'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? $targetRating89['target_c'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? number_format($targetRating89['percent_c'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate89_c"><?= $rating89['C']; ?></span></td>
                                             <td><span id="percent89_c"><?= number_format($rating89['Percent_C'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>D</td>
-                                            <td><span><?= $targetRating89['target_d']; ?></span></td>
-                                            <td><span><?= number_format($targetRating89['percent_d'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? $targetRating89['target_d'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? number_format($targetRating89['percent_d'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate89_d"><?= $rating89['D']; ?></span></td>
                                             <td><span id="percent89_d"><?= number_format($rating89['Percent_D'], 1); ?>%</span></td>
                                         </tr>
                                         <tr>
                                             <td>E</td>
-                                            <td><span><?= $targetRating89['target_e']; ?></span></td>
-                                            <td><span><?= number_format($targetRating89['percent_e'], 1); ?>%</span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? $targetRating89['target_e'] : 0; ?></span></td>
+                                            <td><span><?= $targetRating89['Total'] > 2 ? number_format($targetRating89['percent_e'], 1) : 0; ?>%</span></td>
                                             <td><span id="rate89_e"><?= $rating89['E']; ?></span></td>
                                             <td><span id="percent89_e"><?= number_format($rating89['Percent_E'], 1); ?>%</span></td>
                                         </tr>
@@ -1394,52 +1394,57 @@ try {
             const rateContent = parseInt(document.getElementById(`rate${element}`).textContent);
             const targetValue = parseInt(document.getElementById(`target${element}`).value);
             const tdElement = document.querySelector(`td span#rate${element}`).parentElement;
+            
+            if((parseInt($(`#rate${elements[0]}`).text()) + parseInt($(`#rate${elements[1]}`).text()) + parseInt($(`#rate${elements[2]}`).text()) + parseInt($(`#rate${elements[3]}`).text()) + parseInt($(`#rate${elements[4]}`).text())) === 0){
+                allMatch = false;
+            }else{
 
-            if (element === value+'_a') {
-                if (employee==1 && rateContent==0 || employee>2 && rateContent <= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
-                    tdElement.classList.remove("danger");
-                    tdElement.classList.add("success");
-                } else {
-                    // alert(`Rating ( ${element.toUpperCase()} ) allocation must be less than or equal to ${targetValue} employees`);
-                    tdElement.classList.add("danger");
-                    allMatch = false;
-                }
-            } else if (element === value+'_b') {
-                if (employee==1 || employee>2 && rateContent <= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
-                    tdElement.classList.remove("danger");
-                    tdElement.classList.add("success");
-                } else {
-                    // alert(`Rating ( ${element.toUpperCase()} ) allocation must be less than or equal to ${targetValue} employees`);
-                    tdElement.classList.add("danger");
-                    allMatch = false;
-                }
-            } else if (element === value+'_c') {
-                if (employee==1 || employee>2 && rateContent === targetValue || employee==2 && rateContent<2 && rateContent!=2) {
-                    tdElement.classList.remove("danger");
-                    tdElement.classList.add("success");
-                } else {
-                    // alert(`Rating ( ${element.toUpperCase()} ) allocation must be exactly ${targetValue} employees`);
-                    tdElement.classList.add("danger");
-                    allMatch = false;
-                }
-            } else if (element === value+'_d') {
-                const rateContentE = parseInt(document.getElementById('rate'+value+'_e').textContent);
-                if (employee==1 || employee>2 && rateContent + rateContentE >= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
-                    tdElement.classList.remove("danger");
-                    tdElement.classList.add("success");
-                } else {
-                    // alert(`The combined rating of ( ${element.toUpperCase()} and E ) must be greater than or equal to ${targetValue} employees`);
-                    tdElement.classList.add("danger");
-                    allMatch = false;
-                }
-            } else if (element === value+'_e') {
-                if (employee==1 || employee>2 && rateContent >= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
-                    tdElement.classList.remove("danger");
-                    tdElement.classList.add("success");
-                } else {
-                    // alert(`Rating allocation must be greater than or equal to ${targetValue} employees`);
-                    tdElement.classList.add("danger");
-                    allMatch = false;
+                if (element === value+'_a') {
+                    if (employee==1 && rateContent==0 || employee>2 && rateContent <= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
+                        tdElement.classList.remove("danger");
+                        tdElement.classList.add("success");
+                    } else {
+                        // alert(`Rating ( ${element.toUpperCase()} ) allocation must be less than or equal to ${targetValue} employees`);
+                        tdElement.classList.add("danger");
+                        allMatch = false;
+                    }
+                } else if (element === value+'_b') {
+                    if (employee==1 || employee>2 && rateContent <= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
+                        tdElement.classList.remove("danger");
+                        tdElement.classList.add("success");
+                    } else {
+                        // alert(`Rating ( ${element.toUpperCase()} ) allocation must be less than or equal to ${targetValue} employees`);
+                        tdElement.classList.add("danger");
+                        allMatch = false;
+                    }
+                } else if (element === value+'_c') {
+                    if (employee==1 || employee>2 && rateContent === targetValue || employee==2 && rateContent<2 && rateContent!=2) {
+                        tdElement.classList.remove("danger");
+                        tdElement.classList.add("success");
+                    } else {
+                        // alert(`Rating ( ${element.toUpperCase()} ) allocation must be exactly ${targetValue} employees`);
+                        tdElement.classList.add("danger");
+                        allMatch = false;
+                    }
+                } else if (element === value+'_d') {
+                    const rateContentE = parseInt(document.getElementById('rate'+value+'_e').textContent);
+                    if (employee==1 || employee>2 && rateContent + rateContentE >= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
+                        tdElement.classList.remove("danger");
+                        tdElement.classList.add("success");
+                    } else {
+                        // alert(`The combined rating of ( ${element.toUpperCase()} and E ) must be greater than or equal to ${targetValue} employees`);
+                        tdElement.classList.add("danger");
+                        allMatch = false;
+                    }
+                } else if (element === value+'_e') {
+                    if (employee==1 || employee>2 && rateContent >= targetValue || employee==2 && rateContent<2 && rateContent!=2) {
+                        tdElement.classList.remove("danger");
+                        tdElement.classList.add("success");
+                    } else {
+                        // alert(`Rating allocation must be greater than or equal to ${targetValue} employees`);
+                        tdElement.classList.add("danger");
+                        allMatch = false;
+                    }
                 }
             }
         }
@@ -1517,6 +1522,7 @@ try {
                 "proposedRating": selectedValue,
                 "exportBy": pic,
                 "Nama_Departemen": rowData.Nama_Departemen,
+                "nik": rowData.nik,
             };
 
             results.push(rowObject);
