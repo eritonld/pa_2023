@@ -447,6 +447,10 @@ try {
                         </table>
                     </div>
                     <div class="section-rating <?= $countPending23 || $countPending23 && $countPending23['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
+                    <div class="callout callout-default <?= $targetRating23['Total'] && $targetRating23['Total']<3 ? 'block' : 'hidden' ; ?>" style="background-color: ghostwhite;">
+                        <h4>Tip!</h4>
+                        <p><?= $targetRating23['Total']==1 ? 'Khusus untuk jumlah karyawan sama dengan 1, maka rating bisa ditempatkan dimanapun sesuai pencapaian karyawan kecuali nilai rating A.' : 'Khusus untuk jumlah karyawan sama dengan 2, maka rating bisa ditempatkan di 2 nilai rating yang berbeda sesuai pencapaian karyawan.' ; ?></p>
+                    </div>
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target23_a" type="hidden" class="form-control" value="<?= $targetRating23['target_a']; ?>">
@@ -582,6 +586,10 @@ try {
                         </table>
                     </div>
                     <div class="section-rating <?= $countPending45 || $countPending45 && $countPending45['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
+                    <div class="callout callout-default <?= $targetRating45['Total'] && $targetRating45['Total']<3 ? 'block' : 'hidden' ; ?>" style="background-color: ghostwhite;">
+                        <h4>Tip!</h4>
+                        <p><?= $targetRating45['Total']==1 ? 'Khusus untuk jumlah karyawan sama dengan 1, maka rating bisa ditempatkan dimanapun sesuai pencapaian karyawan kecuali nilai rating A.' : 'Khusus untuk jumlah karyawan sama dengan 2, maka rating bisa ditempatkan di 2 nilai rating yang berbeda sesuai pencapaian karyawan.' ; ?></p>
+                    </div>
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target45_a" type="hidden" class="form-control" value="<?= $targetRating45['target_a']; ?>">
@@ -717,6 +725,10 @@ try {
                         </table>
                     </div>
                     <div class="section-rating <?= $countPending67 || $countPending67 && $countPending67['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
+                    <div class="callout callout-default <?= $targetRating67['Total'] && $targetRating67['Total']<3 ? 'block' : 'hidden' ; ?>" style="background-color: ghostwhite;">
+                        <h4>Tip!</h4>
+                        <p><?= $targetRating67['Total']==1 ? 'Khusus untuk jumlah karyawan sama dengan 1, maka rating bisa ditempatkan dimanapun sesuai pencapaian karyawan kecuali nilai rating A.' : 'Khusus untuk jumlah karyawan sama dengan 2, maka rating bisa ditempatkan di 2 nilai rating yang berbeda sesuai pencapaian karyawan.' ; ?></p>
+                    </div>
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target67_a" type="hidden" class="form-control" value="<?= $targetRating67['target_a']; ?>">
@@ -852,6 +864,10 @@ try {
                         </table>
                     </div>
                     <div class="section-rating <?= $countPending89 || $countPending89 && $countPending89['ratingApproved']=='Pending' ? 'hidden' : 'block'; ?>">
+                    <div class="callout callout-default <?= $targetRating89['Total'] && $targetRating89['Total']<3 ? 'block' : 'hidden' ; ?>" style="background-color: ghostwhite;">
+                        <h4>Tip!</h4>
+                        <p><?= $targetRating89['Total']==1 ? 'Khusus untuk jumlah karyawan sama dengan 1, maka rating bisa ditempatkan dimanapun sesuai pencapaian karyawan kecuali nilai rating A.' : 'Khusus untuk jumlah karyawan sama dengan 2, maka rating bisa ditempatkan di 2 nilai rating yang berbeda sesuai pencapaian karyawan.' ; ?></p>
+                    </div>
                         <div class="row">
                             <div class="col-md-1">
                                 <input id="target89_a" type="hidden" class="form-control" value="<?= $targetRating89['target_a']; ?>">
