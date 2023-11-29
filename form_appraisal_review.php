@@ -480,10 +480,22 @@ if ($response === false) {
 					<div class="container-fluid container-culture">
 						<?php 
 						foreach ($cultureTitles as $title) {
+						$query_desctitle = "SELECT `desc`,desc_en FROM question_pa WHERE `group` = 'culture' AND title='$title' AND `role`='$fortable' ORDER BY `id` ASC";
+						$stmt_desc = $koneksi->query($query_desctitle);
+						$desctitle = $stmt_desc->fetch(PDO::FETCH_ASSOC);
+						
+						if($bahasa=='eng'){
+							$desc_culture = $desctitle['desc_en'];
+						}else{
+							$desc_culture = $desctitle['desc'];
+						}
 						?>
 							<!-- // Process the data here -->
-							<div class="row" style="margin-top: 50px; margin-bottom: 20px;">
+							<div class="row" style="margin-top: 50px; margin-bottom: 3px;">
 								<h1 class="col-md-5 text-bold h4 culture"><?= $title; ?></h1>
+							</div>
+							<div class="row" style="margin-top: 3px; margin-bottom: 20px;">
+								<h4 class="col-md-12 text-bold"><?= $desc_culture; ?></h4>
 							</div>
 						<?php
 							try {
@@ -539,10 +551,21 @@ if ($response === false) {
 							<?php 
 							$y = 1;
 							foreach ($leadershipTitles as $title) {
+							$query_desctitle_leader = "SELECT `desc`,desc_en FROM question_pa WHERE `group` = 'leadership' AND title='$title' AND `role`='$fortable' ORDER BY `id` ASC";
+							$stmt_desc_leader = $koneksi->query($query_desctitle_leader);
+							$desctitle_leader = $stmt_desc_leader->fetch(PDO::FETCH_ASSOC);
 							
+							if($bahasa=='eng'){
+								$desc_leader = $desctitle_leader['desc_en'];
+							}else{
+								$desc_leader = $desctitle_leader['desc'];
+							}
 							?>
-							<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
+							<div class="row" style="margin-top: 30px; margin-bottom: 3px;">
 								<h1 class="col-md-3 text-bold h4"><?= $title; ?></h1>
+							</div>
+							<div class="row" style="margin-top: 3px; margin-bottom: 20px;">
+								<h4 class="col-md-12 text-bold"><?= $desc_leader; ?></h4>
 							</div>
 							<?php
 							try {
@@ -562,7 +585,7 @@ if ($response === false) {
 							if($bahasa=='eng'){ $item_leadership=$data['item_en']; }else{ $item_leadership=$data['item']; }
 							$lNumber = $y++;
 								?>
-								<div class="row">
+								<div class="row" style="margin-bottom: 20px;">
 									<div class="col-md-9">
 										<span class="h4"><?= $item_leadership; ?></span>
 									</div>

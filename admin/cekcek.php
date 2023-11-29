@@ -1,7 +1,7 @@
 <?php
 include("../conf/conf.php");
 
-$sql = "SELECT ab.idkar, k.Nama_Lengkap as nama, ab.id_atasan1, kk.Nama_Lengkap as nama_atasan, dg.Nama_Golongan, k.Kode_Golongan  FROM atasan_backup_2023 as ab 
+$sql = "SELECT ab.idkar, k.Nama_Lengkap as nama, ab.id_atasan1, kk.Nama_Lengkap as nama_atasan, dg.Nama_Golongan, k.Kode_Golongan FROM atasan_backup_2023 as ab 
 left join karyawan_2023 as k on k.id=ab.idkar
 left join karyawan_2023 as kk on kk.id=ab.id_atasan1
 left join daftargolongan as dg on dg.Kode_Golongan=kk.Kode_Golongan

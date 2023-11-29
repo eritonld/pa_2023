@@ -19,7 +19,7 @@ if($code == 'getPenilaian') {
 
     try {
 
-        $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b2.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore
+        $sql = "SELECT b.id, a.id as idkar, b.total_score, b.rating, b2.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore, a.Kode_Golongan
         FROM $karyawan as a
         left join atasan as f on f.idkar=a.id and f.layer='L1'
         LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan
@@ -31,7 +31,7 @@ if($code == 'getPenilaian') {
         LEFT JOIN $karyawan AS kg ON kg.id=b2.approver_review_id
         where a.id='$iduser' AND a.Mulai_Bekerja<='$cuttOff'
         UNION
-        SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore
+        SELECT b.id, a.id as idkar, b.total_score, b.rating, b.created_by, b2.updated_by, b2.updated_date, b.approver_id, b.layer, a.Nama_Lengkap, a.Nama_Jabatan, b2.approval_review, b2.approver_review_id, c.Nama_Golongan, d.Nama_OU, e.Nama_Departemen, DATE_FORMAT(b2.created_date, '%d-%m-%Y') AS created_date, f.id_atasan AS id_L1, kf.Nama_Lengkap AS nama_L1, kg.Nama_Lengkap AS review_name, f.layer AS layerL1, b.approval_status, (SELECT approver_id FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' ORDER BY layer DESC LIMIT 1) AS nextApprover, (SELECT total_score FROM $transaksi_pa WHERE idkar=a.id AND approval_status='Approved' AND layer='L0' ORDER BY layer DESC LIMIT 1) AS firstScore, a.Kode_Golongan
         FROM $karyawan as a
         left join atasan as f on f.idkar=a.id AND f.layer='L1'
         LEFT JOIN $karyawan AS kf ON kf.id=f.id_atasan

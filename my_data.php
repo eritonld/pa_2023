@@ -233,8 +233,10 @@ $(document).ready(function () {
 						style = ["formpa_review", "primary", "Review"];
 					} else if (data.nextApprover==idpic && !data.rating && data.approval_review=='Approved') {
 						style = ["formpa_review", "warning", "Revise", "text-black"];
-					}else if(!data.id && data.idkar==idpic && !data.created_by || !data.id && data.id_L1==idpic){
+					} else if(!data.id && data.idkar==idpic && !data.created_by || !data.id && data.id_L1==idpic && data.Kode_Golongan<'GL013'){
 						style = ["formpa", "success", "Create PA"];
+					} else if(!data.id && data.id_L1==idpic && data.Kode_Golongan>'GL012'){
+						return '<a class="btn btn-sm btn-default">Pending</a>';
 					} else {
 						return '<a id="edit" onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" class="btn btn-sm btn-default">Reviewed</a>';
 					}
@@ -288,7 +290,7 @@ $(document).ready(function () {
 					let style;
 					if (data.created_by && data.approver_id==idpic && data.approval_status=='Pending' && data.updated_by==idpic) {
 						style = ["formpa_review_peers", "warning", "Revise"];
-						return '<a id="edit" class="btn btn-sm btn-default">Reviewed</a>';
+						return '<a onclick="alert(\'' + data.Nama_Lengkap + ' has been reviewed\')" id="edit" class="btn btn-sm btn-default">Reviewed</a>';
 					} else if (data.created_by && data.approver_id==idpic && data.approval_status=='Pending') {
 						style = ["formpa_review_peers", "primary", "Review"];
 					}else {

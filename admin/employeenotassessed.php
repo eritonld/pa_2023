@@ -143,7 +143,7 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 <script>
 	function empnotexcel()
 	{
-		window.open("reportexcelempnotssessed.php?bisnis=<?php echo $bisnis ?>&grade=<?php echo $grade ?>&dept=<?php echo $dept ?>&pt=<?php echo $pt ?>&unit=<?php echo $unit ?>");
+		window.open("reportexcelprogressapp.php?bisnis=<?php echo $bisnis ?>&grade=<?php echo $grade ?>&dept=<?php echo $dept ?>&pt=<?php echo $pt ?>&unit=<?php echo $unit ?>");
 	}
 </script>
 <div class="row">
@@ -262,6 +262,17 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 			</tr>
 			<?php } ?>
 			<tr>
+				<td>
+					<label>Status</label><br>
+					<select id="status_completed" name="status_completed" class="form-control" multiple="multiple" style="width:26%">
+						<option value="All"> Completed </option>
+						<option value="Completed"> Completed </option>
+						<option value="Not Completed"> Completed </option>
+					</select>
+				</td>
+				<td style="width:1%"></td>
+			</tr>
+			<tr>
 				<td><br><button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Generate </button></td>
 			</tr>
 			<?php
@@ -269,7 +280,7 @@ if(isset($_GET['generate']) && $_GET['generate']=='T'){
 			//echo "isinya adalah $where";
 			?>
 			<tr>
-				<td><br><b>Export Data Karyawan :</b> <img src="../img/excel2.png" onClick="empnotexcel()" style="padding-top:0px;cursor:pointer;width:15%;" title="Employee Not Assessed on Excel"></img></td>
+				<td><br><b>Export Data Karyawan :</b> <img src="../img/excel2.png" onClick="empnotexcel()" style="padding-top:0px;cursor:pointer;width:15%;" title="Progress Appraisal"></img></td>
 			</tr>
 			<?php
 			}

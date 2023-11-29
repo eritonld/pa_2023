@@ -233,7 +233,7 @@ $objPHPExcel->getActiveSheet()->getStyle('H4')->getBorders()->getRight()->setBor
 $objPHPExcel->getActiveSheet()->SetCellValue('H4', 'Departemen');
 
 $yearnow	= Date('Y');
-$cutoff		= $yearnow."-07-01";
+$cutoff		= $yearnow."-06-30";
 $q_data = mysqli_query ($koneksi, "select k.nik_baru,k.Nama_Lengkap,k.Mulai_Bekerja,dp.Nama_Perusahaan,dep.Nama_Departemen, dg.Nama_Golongan,k.Nama_Jabatan, do.Nama_OU,
 (Select Nama_Lengkap from $karyawan where id = (select id_atasan1 from atasan where idkar = k.id))as atasan1,
 (Select Nama_Lengkap from $karyawan where id = (select id_atasan2 from atasan where idkar = k.id))as atasan2,
