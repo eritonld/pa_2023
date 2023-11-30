@@ -361,54 +361,47 @@ if ($response === false) {
 							<h1 class="col-md-3 text-bold h4">A. <?= $title_a; ?></h1>
 						</div>
 						<?php
-						$quartal = "";
+						$q1 = $ckaryawan['pen_q1'] ? '<b>'.$ckaryawan['pen_q1'].'</b>' : '...';
+						$q2 = $ckaryawan['pen_q2'] ? '<b>'.$ckaryawan['pen_q2'].'</b>' : '...';
+						$q3 = $ckaryawan['pen_q3'] ? '<b>'.$ckaryawan['pen_q3'].'</b>' : '...';
+						$q4 = $ckaryawan['pen_q4'] ? '<b>'.$ckaryawan['pen_q4'].'</b>' : '...';
+						$q5 = $ckaryawan['pen_q5'] ? '<b>'.$ckaryawan['pen_q5'].'</b>' : '...';
+						$q6 = $ckaryawan['pen_q6'] ? '<b>'.$ckaryawan['pen_q6'].'</b>' : '...';
+						$q7 = $ckaryawan['pen_q7'] ? '<b>'.$ckaryawan['pen_q7'].'</b>' : '...';
+						$q8 = $ckaryawan['pen_q8'] ? '<b>'.$ckaryawan['pen_q8'].'</b>' : '...';
+						$q9 = $ckaryawan['pen_q9'] ? '<b>'.$ckaryawan['pen_q9'].'</b>' : '...';
+						$q10 = $ckaryawan['pen_q10'] ? '<b>'.$ckaryawan['pen_q10'].'</b>' : '...';
+						$q11 = $ckaryawan['pen_q11'] ? '<b>'.$ckaryawan['pen_q11'].'</b>' : '...';
+						$q12 = $ckaryawan['pen_q12'] ? '<b>'.$ckaryawan['pen_q12'].'</b>' : '...';
 						
-						if($ckaryawan['pen_q1']<>""){
-							$quartal = $quartal."Bulan 1 : <b>$ckaryawan[pen_q1]</b>";
-						}
-						if($ckaryawan['pen_q2']<>""){
-							$quartal = $quartal." / Bulan 2 : <b>$ckaryawan[pen_q2]</b>";
-						}
-						if($ckaryawan['pen_q3']<>""){
-							$quartal = $quartal." / Bulan 3 : <b>$ckaryawan[pen_q3]</b>";
-						}
-						if($ckaryawan['pen_q4']<>""){
-							$quartal = $quartal." / Bulan 4 : <b>$ckaryawan[pen_q4]</b>";
-						}
-						if($ckaryawan['pen_q5']<>""){
-							$quartal = $quartal." / Bulan 5 : <b>$ckaryawan[pen_q5]</b>";
-						}
-						if($ckaryawan['pen_q6']<>""){
-							$quartal = $quartal." / Bulan 6 : <b>$ckaryawan[pen_q6]</b>";
-						}
-						if($ckaryawan['pen_q7']<>""){
-							$quartal = $quartal." / Bulan 7 : <b>$ckaryawan[pen_q7]</b>";
-						}
-						if($ckaryawan['pen_q8']<>""){
-							$quartal = $quartal." / Bulan 8 : <b>$ckaryawan[pen_q8]</b>";
-						}
-						if($ckaryawan['pen_q9']<>""){
-							$quartal = $quartal." / Bulan 9 : <b>$ckaryawan[pen_q9]</b>";
-						}
-						if($ckaryawan['pen_q10']<>""){
-							$quartal = $quartal." / Bulan 10 : <b>$ckaryawan[pen_q10]</b>";
-						}
-						if($ckaryawan['pen_q11']<>""){
-							$quartal = $quartal." / Bulan 11 : <b>$ckaryawan[pen_q11]</b>";
-						}
-						if($ckaryawan['pen_q12']<>""){
-							$quartal = $quartal." / Bulan 12 : <b>$ckaryawan[pen_q12]</b>";
-						}
-						
-						if($quartal<>""){
-							?>
-							<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
-								<div class="col-md-1 text-bold">KPI/Bulan</div>
-								<div class="col-md-4">: <?php echo "$quartal"; ?></div>
-							</div>
-							<?php
-						}
+						if($q1){
 						?>
+						<div class="row" style="margin-top: 10px;">
+							<div class="col-md-2 text-bold">Monthly KPI : </div>
+						</div>
+						<div class="row" style="margin-top: 10px; margin-bottom: 30px;">
+							<div class="col-md-10">
+							<table class="table">
+								<tr>
+									<td>Bulan 1 : <?= $q1; ?></td>
+									<td>Bulan 2 : <?= $q2; ?></td>
+									<td>Bulan 3 : <?= $q3; ?></td>
+									<td>Bulan 4 : <?= $q4; ?></td>
+									<td>Bulan 5 : <?= $q5; ?></td>
+									<td>Bulan 6 : <?= $q6; ?></td>
+								</tr>
+								<tr>
+									<td>Bulan 7 : <?= $q7; ?></td>
+									<td>Bulan 8 : <?= $q8; ?></td>
+									<td>Bulan 9 : <?= $q9; ?></td>
+									<td>Bulan 10 : <?= $q10; ?></td>
+									<td>Bulan 11 : <?= $q11; ?></td>
+									<td>Bulan 12 : <?= $q12; ?></td>
+									</tr>
+							</table>
+							</div>
+						</div>
+						<?php } ?>
 						<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
 							<h1 class="col-md-3 text-bold h5"><?= $title_aa; ?></h1>
 						</div>
