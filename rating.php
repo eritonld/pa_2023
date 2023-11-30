@@ -526,6 +526,12 @@ try {
                                 <div class="col-md-2">
                                     <button class="btn btn-success" id="exportRating23"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
+                                <div class="col-md-4" style="margin-top: 20px;">
+                                    <div class="callout callout-default text-red <?= $targetRating23['Total'] && $targetRating23['Total']<3 ? 'block' : 'hidden' ; ?>" style="background-color: #FCFCFC;">
+                                        <h4>Attention!</h4>
+                                        <p><?= $targetRating23['Total']==1 ? 'Untuk jumlah bawahan = 1 maka rating dapat dialokasikan sesuai dengan pencapaian kinerja karyawan' : 'Untuk jumlah bawahan = 2 maka rating harus dialokasikan di 2 rating yang berbeda disesuaikan dengan pencapaian kinerja karyawan.' ; ?></p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="<?= $rating23['Total'] ? 'block' : 'hidden'; ?>">
                                 <div class="col-md-4">
@@ -661,6 +667,12 @@ try {
                                 <div class="col-md-2">
                                     <button class="btn btn-success" id="exportRating45"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
                                 </div>
+                                <div class="col-md-4" style="margin-top: 20px;">
+                                    <div class="callout callout-default text-red <?= $targetRating45['Total'] && $targetRating45['Total']<3 ? 'block' : 'hidden' ; ?>" style="background-color: #FCFCFC;">
+                                        <h4>Attention!</h4>
+                                        <p><?= $targetRating45['Total']==1 ? 'Untuk jumlah bawahan = 1 maka rating dapat dialokasikan sesuai dengan pencapaian kinerja karyawan' : 'Untuk jumlah bawahan = 2 maka rating harus dialokasikan di 2 rating yang berbeda disesuaikan dengan pencapaian kinerja karyawan.' ; ?></p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="<?= $rating45['Total'] ? 'block' : 'hidden'; ?>">
                                 <div class="col-md-4">
@@ -794,7 +806,13 @@ try {
                                     <button class="btn btn-primary" id="submitRating67">Submit Ratings</button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-success" id="exportRating67"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
+                                    <button class="btn btn-success pull-right" id="exportRating67"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
+                                </div>
+                                <div class="col-md-4" style="margin-top: 20px;">
+                                    <div class="callout callout-default text-red <?= $targetRating67['Total'] && $targetRating67['Total']<3 ? 'block' : 'hidden' ; ?>" style="background-color: #FCFCFC;">
+                                        <h4>Attention!</h4>
+                                        <p><?= $targetRating67['Total']==1 ? 'Untuk jumlah bawahan = 1 maka rating dapat dialokasikan sesuai dengan pencapaian kinerja karyawan' : 'Untuk jumlah bawahan = 2 maka rating harus dialokasikan di 2 rating yang berbeda disesuaikan dengan pencapaian kinerja karyawan.' ; ?></p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="<?= $rating67['Total'] ? 'block' : 'hidden'; ?>">
@@ -930,6 +948,12 @@ try {
                                 </div>
                                 <div class="col-md-2">
                                     <button class="btn btn-success" id="exportRating89"><i class="fa fa-cloud-download" style="margin-right: 5px;"></i> Ratings</button>
+                                </div>
+                                <div class="col-md-4" style="margin-top: 20px;">
+                                    <div class="callout callout-default text-red <?= $targetRating89['Total'] && $targetRating89['Total']<3 ? 'block' : 'hidden' ; ?>" style="background-color: #FCFCFC;">
+                                        <h4>Attention!</h4>
+                                        <p><?= $targetRating89['Total']==1 ? 'Untuk jumlah bawahan = 1 maka rating dapat dialokasikan sesuai dengan pencapaian kinerja karyawan' : 'Untuk jumlah bawahan = 2 maka rating harus dialokasikan di 2 rating yang berbeda disesuaikan dengan pencapaian kinerja karyawan.' ; ?></p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="<?= $rating89['Total'] ? 'block' : 'hidden'; ?>">

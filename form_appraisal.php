@@ -164,8 +164,125 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 }
 </style>
 <link href="dist/css/stepper.css" rel="stylesheet" type="text/css" />
-<script src="plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
 <script src="dist/js/stepper.js"></script>
+<script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script>
+        function checkSelfReview(value) {
+            // Loop through the textareas
+			let emptyFieldFound = false;
+			let textValue = document.getElementById('value1').value;
+			let idPic = document.getElementById('idpic').value;
+			let idKar = document.getElementById('idkar').value;
+			let commentA1 = document.getElementById('comment');
+			if (textValue.trim() === '') {
+				alert('Please fill in the field.');
+				document.getElementById('value1').focus();
+				return false; // Prevent form submission
+			}
+            for (let i = 1; i <= 5; i++) {
+                let textareaValue = document.getElementById('value' + i).value;
+                let scoreValue = document.getElementById('score' + i).value;
+                if (textareaValue.trim() != '' && scoreValue === '' || textareaValue.trim() === '' && scoreValue != '') {
+					if(scoreValue === ''){
+						alert('Please select the score.');
+						document.getElementById('score' + i).focus();
+					}
+					if(textareaValue.trim() === ''){
+						alert('Please fill in the field.');
+						document.getElementById('value' + i).focus();
+					}
+					emptyFieldFound = true;
+                    return false; // Prevent form submission
+                }
+            }
+			// if (!commentA1.value&&idPic!=idKar){
+			// 	alert('Please fill Komentar Atasan Langsung.');
+			// 	commentA1.focus();
+			// 	return false;
+			// }			
+			if(value=='final'){
+				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
+				if (confirm){
+        			$('#loader').css('display', 'block');
+					document.getElementById('addAppraisal').submit();
+				}
+			}
+			return true;
+        }
+		function checkCulture(value) {
+			let cultureContainer = document.querySelector('.container-culture');
+			let selectElements = cultureContainer.querySelectorAll('select');
+			let foundEmpty = false;
+
+			for (let i = 0; i < selectElements.length; i++) {
+				let selectElement = selectElements[i];
+
+				if (selectElement.value === "") {
+					foundEmpty = true;
+					alert("Please select a value for " + selectElement.name);
+					selectElement.focus();
+					break; // Exit the loop after displaying the first alert
+				}
+			}
+
+			if (!foundEmpty) {
+				if(value=='final'){
+					let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
+					if (confirm){
+						$('#loader').css('display', 'block');
+						document.getElementById('addAppraisal').submit();
+					}
+				}
+				return true;
+			}
+		}
+		function checkLeadership() {
+			let cultureContainer = document.querySelector('.container-leadership');
+			let selectElements = cultureContainer.querySelectorAll('select');
+			let foundEmpty = false;
+
+			for (let i = 0; i < selectElements.length; i++) {
+				let selectElement = selectElements[i];
+
+				if (selectElement.value === "") {
+					foundEmpty = true;
+					alert("Please select a value for " + selectElement.name);
+					selectElement.focus();
+					break; // Exit the loop after displaying the first alert
+				}
+			}
+
+			if (!foundEmpty) {
+				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
+				if (confirm){
+					$('#loader').css('display', 'block');
+					document.getElementById('addAppraisal').submit();
+				}
+			}
+			return false;
+		}
+    </script>
+<script>
+    function calculateAverage() {
+		var total = 0;
+        var count = 0;
+
+        // Loop through the select elements and calculate the total
+        for (var i = 1; i <= 5; i++) {
+            var score = document.getElementById('score' + i).value;
+            if (score !== "") {
+                total += parseInt(score);
+                count++;
+            }
+        }
+
+        // Calculate the average
+        var average = count === 0 ? 0 : total / count;
+
+		// Update the input element with the result
+		document.getElementById('total_score').value = average;
+    }
+</script>
 
 <!-- +"&id_atasan1="+id_atasan1+"&email_atasan1="+email_atasan1+"&id_atasan2="+id_atasan2+"&email_atasan2="+email_atasan2+"&id_atasan3="+id_atasan3+"&email_atasan3="+email_atasan3 -->
 
@@ -257,54 +374,49 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 							<h1 class="col-md-12 text-bold h4">A. <?= $title_a; ?></h1>
 						</div>
 						<?php
-						$quartal = "";
+						$q1 = $ckaryawan['pen_q1'] ? '<b>'.$ckaryawan['pen_q1'].'</b>' : '...';
+						$q2 = $ckaryawan['pen_q2'] ? '<b>'.$ckaryawan['pen_q2'].'</b>' : '...';
+						$q3 = $ckaryawan['pen_q3'] ? '<b>'.$ckaryawan['pen_q3'].'</b>' : '...';
+						$q4 = $ckaryawan['pen_q4'] ? '<b>'.$ckaryawan['pen_q4'].'</b>' : '...';
+						$q5 = $ckaryawan['pen_q5'] ? '<b>'.$ckaryawan['pen_q5'].'</b>' : '...';
+						$q6 = $ckaryawan['pen_q6'] ? '<b>'.$ckaryawan['pen_q6'].'</b>' : '...';
+						$q7 = $ckaryawan['pen_q7'] ? '<b>'.$ckaryawan['pen_q7'].'</b>' : '...';
+						$q8 = $ckaryawan['pen_q8'] ? '<b>'.$ckaryawan['pen_q8'].'</b>' : '...';
+						$q9 = $ckaryawan['pen_q9'] ? '<b>'.$ckaryawan['pen_q9'].'</b>' : '...';
+						$q10 = $ckaryawan['pen_q10'] ? '<b>'.$ckaryawan['pen_q10'].'</b>' : '...';
+						$q11 = $ckaryawan['pen_q11'] ? '<b>'.$ckaryawan['pen_q11'].'</b>' : '...';
+						$q12 = $ckaryawan['pen_q12'] ? '<b>'.$ckaryawan['pen_q12'].'</b>' : '...';
 						
-						if($ckaryawan['pen_q1']<>""){
-							$quartal = $quartal."Bulan 1 : <b>$ckaryawan[pen_q1]</b>";
-						}
-						if($ckaryawan['pen_q2']<>""){
-							$quartal = $quartal." / Bulan 2 : <b>$ckaryawan[pen_q2]</b>";
-						}
-						if($ckaryawan['pen_q3']<>""){
-							$quartal = $quartal." / Bulan 3 : <b>$ckaryawan[pen_q3]</b>";
-						}
-						if($ckaryawan['pen_q4']<>""){
-							$quartal = $quartal." / Bulan 4 : <b>$ckaryawan[pen_q4]</b>";
-						}
-						if($ckaryawan['pen_q5']<>""){
-							$quartal = $quartal." / Bulan 5 : <b>$ckaryawan[pen_q5]</b>";
-						}
-						if($ckaryawan['pen_q6']<>""){
-							$quartal = $quartal." / Bulan 6 : <b>$ckaryawan[pen_q6]</b>";
-						}
-						if($ckaryawan['pen_q7']<>""){
-							$quartal = $quartal." / Bulan 7 : <b>$ckaryawan[pen_q7]</b>";
-						}
-						if($ckaryawan['pen_q8']<>""){
-							$quartal = $quartal." / Bulan 8 : <b>$ckaryawan[pen_q8]</b>";
-						}
-						if($ckaryawan['pen_q9']<>""){
-							$quartal = $quartal." / Bulan 9 : <b>$ckaryawan[pen_q9]</b>";
-						}
-						if($ckaryawan['pen_q10']<>""){
-							$quartal = $quartal." / Bulan 10 : <b>$ckaryawan[pen_q10]</b>";
-						}
-						if($ckaryawan['pen_q11']<>""){
-							$quartal = $quartal." / Bulan 11 : <b>$ckaryawan[pen_q11]</b>";
-						}
-						if($ckaryawan['pen_q12']<>""){
-							$quartal = $quartal." / Bulan 12 : <b>$ckaryawan[pen_q12]</b>";
-						}
-						
-						if($quartal<>""){
-							?>
-							<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
-								<div class="col-md-1 text-bold">KPI/Bulan</div>
-								<div class="col-md-4">: <?php echo "$quartal"; ?></div>
-							</div>
-							<?php
-						}
+						if($q1){
 						?>
+						<div class="row" style="margin-top: 10px;">
+							<div class="col-md-2 text-bold">Monthly KPI : </div>
+						</div>
+						<div class="row" style="margin-top: 10px; margin-bottom: 30px;">
+							<div class="col-md-10">
+							<table class="table">
+								<tr>
+									<td>Bulan 1 : <?= $q1; ?></td>
+									<td>Bulan 2 : <?= $q2; ?></td>
+									<td>Bulan 3 : <?= $q3; ?></td>
+									<td>Bulan 4 : <?= $q4; ?></td>
+									<td>Bulan 5 : <?= $q5; ?></td>
+									<td>Bulan 6 : <?= $q6; ?></td>
+								</tr>
+								<tr>
+									<td>Bulan 7 : <?= $q7; ?></td>
+									<td>Bulan 8 : <?= $q8; ?></td>
+									<td>Bulan 9 : <?= $q9; ?></td>
+									<td>Bulan 10 : <?= $q10; ?></td>
+									<td>Bulan 11 : <?= $q11; ?></td>
+									<td>Bulan 12 : <?= $q12; ?></td>
+									</tr>
+							</table>
+							</div>
+						</div>
+						<?php } ?>
+					
+						
 						<div class="row" style="margin-top: 10px; margin-bottom: 20px;">
 							<h1 class="col-md-3 text-bold h5"><?= $title_aa; ?></h1>
 						</div>
@@ -525,120 +637,3 @@ $periode = isset($cgetsp['periode']) ? $cgetsp['periode'] : '';
 
 </section>
 </div>
-<script>
-        function checkSelfReview(value) {
-            // Loop through the textareas
-			let emptyFieldFound = false;
-			let textValue = document.getElementById('value1').value;
-			let idPic = document.getElementById('idpic').value;
-			let idKar = document.getElementById('idkar').value;
-			let commentA1 = document.getElementById('comment');
-			if (textValue.trim() === '') {
-				alert('Please fill in the field.');
-				document.getElementById('value1').focus();
-				return false; // Prevent form submission
-			}
-            for (let i = 1; i <= 5; i++) {
-                let textareaValue = document.getElementById('value' + i).value;
-                let scoreValue = document.getElementById('score' + i).value;
-                if (textareaValue.trim() != '' && scoreValue === '' || textareaValue.trim() === '' && scoreValue != '') {
-					if(scoreValue === ''){
-						alert('Please select the score.');
-						document.getElementById('score' + i).focus();
-					}
-					if(textareaValue.trim() === ''){
-						alert('Please fill in the field.');
-						document.getElementById('value' + i).focus();
-					}
-					emptyFieldFound = true;
-                    return false; // Prevent form submission
-                }
-            }
-			// if (!commentA1.value&&idPic!=idKar){
-			// 	alert('Please fill Komentar Atasan Langsung.');
-			// 	commentA1.focus();
-			// 	return false;
-			// }			
-			if(value=='final'){
-				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
-				if (confirm){
-        			$('#loader').css('display', 'block');
-					document.getElementById('addAppraisal').submit();
-				}
-			}
-			return true;
-        }
-		function checkCulture(value) {
-			let cultureContainer = document.querySelector('.container-culture');
-			let selectElements = cultureContainer.querySelectorAll('select');
-			let foundEmpty = false;
-
-			for (let i = 0; i < selectElements.length; i++) {
-				let selectElement = selectElements[i];
-
-				if (selectElement.value === "") {
-					foundEmpty = true;
-					alert("Please select a value for " + selectElement.name);
-					selectElement.focus();
-					break; // Exit the loop after displaying the first alert
-				}
-			}
-
-			if (!foundEmpty) {
-				if(value=='final'){
-					let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
-					if (confirm){
-						$('#loader').css('display', 'block');
-						document.getElementById('addAppraisal').submit();
-					}
-				}
-				return true;
-			}
-		}
-		function checkLeadership() {
-			let cultureContainer = document.querySelector('.container-leadership');
-			let selectElements = cultureContainer.querySelectorAll('select');
-			let foundEmpty = false;
-
-			for (let i = 0; i < selectElements.length; i++) {
-				let selectElement = selectElements[i];
-
-				if (selectElement.value === "") {
-					foundEmpty = true;
-					alert("Please select a value for " + selectElement.name);
-					selectElement.focus();
-					break; // Exit the loop after displaying the first alert
-				}
-			}
-
-			if (!foundEmpty) {
-				let confirm = window.confirm("Penilaian akan di Submit, klik OK untuk melanjutkan dan klik Cancel apabila ada yang belum sesuai.");
-				if (confirm){
-					$('#loader').css('display', 'block');
-					document.getElementById('addAppraisal').submit();
-				}
-			}
-			return false;
-		}
-    </script>
-<script>
-    function calculateAverage() {
-		var total = 0;
-        var count = 0;
-
-        // Loop through the select elements and calculate the total
-        for (var i = 1; i <= 5; i++) {
-            var score = document.getElementById('score' + i).value;
-            if (score !== "") {
-                total += parseInt(score);
-                count++;
-            }
-        }
-
-        // Calculate the average
-        var average = count === 0 ? 0 : total / count;
-
-		// Update the input element with the result
-		document.getElementById('total_score').value = average;
-    }
-</script>
